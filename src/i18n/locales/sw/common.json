@@ -1,0 +1,37 @@
+{
+  "app": {
+    "name": "INSTIWISE",
+    "tagline": "Rekodi za miradi unazoweza kuziamini"
+  },
+  "theme": {
+    "label": "Mandhari",
+    "light": "Mwanga",
+    "dark": "Giza",
+    "system": "Mfumo"
+  },
+  "language": {
+    "label": "Lugha",
+    "en": "English",
+    "sw": "Kiswahili"
+  },
+  "starter": {
+    "eyebrow": "Kifurushi cha kuanzia, hatua ya 0",
+    "title": "Miradi, makubaliano na malipo yako mahali pamoja",
+    "subtitle": "Hii ni skrini ya kuanzia. Skrini halisi zitakuja katika hatua ya 1 na 2.",
+    "api": {
+      "checking": "Inakagua API…",
+      "connected": "API imeunganishwa, toleo {{version}}",
+      "unreachable": "API haipatikani. Washa backend kwa npm run dev."
+    },
+    "sample": {
+      "heading": "Mradi wa mfano",
+      "title": "Kidhibiti mahiri cha umwagiliaji",
+      "status": "Unaendelea",
+      "deadline": "Tarehe ya mwisho",
+      "agreed": "Iliyokubaliwa",
+      "paid": "Iliyolipwa",
+      "balance": "Salio",
+      "note": "Takwimu za mfano. Jumla halisi huhesabiwa na seva."
+    }
+  }
+}

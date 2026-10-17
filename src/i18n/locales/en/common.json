@@ -1,0 +1,37 @@
+{
+  "app": {
+    "name": "INSTIWISE",
+    "tagline": "Project records you can trust"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "sw": "Kiswahili"
+  },
+  "starter": {
+    "eyebrow": "Starter pack, phase 0",
+    "title": "Your projects, agreements and payments in one place",
+    "subtitle": "This is the starter screen. The real screens arrive in phases 1 and 2.",
+    "api": {
+      "checking": "Checking the API…",
+      "connected": "API connected, version {{version}}",
+      "unreachable": "API not reachable. Start the backend with npm run dev."
+    },
+    "sample": {
+      "heading": "Sample project",
+      "title": "Smart irrigation controller",
+      "status": "Active",
+      "deadline": "Deadline",
+      "agreed": "Agreed",
+      "paid": "Paid",
+      "balance": "Balance",
+      "note": "Demo figures. Real totals are calculated by the server."
+    }
+  }
+}

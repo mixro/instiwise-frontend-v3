@@ -1,0 +1,53 @@
+/*
+ * Design tokens. The only place colors are defined.
+ * Components use the semantic names (bg-surface, text-muted, bg-brand ...),
+ * never raw hex values, so light and dark mode stay consistent.
+ *
+ * Brand green: #0E7150 (see docs/decisions/0003-brand-and-theme.md).
+ */
+
+:root {
+  --brand: #0e7150;
+  --brand-hover: #0b5e43;
+  --brand-fg: #ffffff;
+  --brand-soft: #e7f3ee;
+  --brand-text: #0b5e43;
+
+  --background: #f4f6f4;
+  --foreground: #0a0a0a;
+  --surface: #ffffff;
+  --surface-muted: #f4f6f4;
+  --border: #e3e6e2;
+  --border-strong: #c9d0cb;
+  --muted: #5b655f;
+
+  --warning-bg: #fdf3dc;
+  --warning-fg: #7a4b07;
+  --danger-bg: #fdecea;
+  --danger-fg: #9b1c1c;
+
+  --ring: #0e7150;
+}
+
+.dark {
+  --brand: #0e7150;
+  --brand-hover: #12875f;
+  --brand-fg: #ffffff;
+  --brand-soft: #12332a;
+  --brand-text: #6fd3aa;
+
+  --background: #0c1512;
+  --foreground: #eaf1ed;
+  --surface: #131f1a;
+  --surface-muted: #0c1512;
+  --border: #223229;
+  --border-strong: #2f4339;
+  --muted: #98a8a0;
+
+  --warning-bg: #3a2c0e;
+  --warning-fg: #f1c873;
+  --danger-bg: #3d1a17;
+  --danger-fg: #f5a9a1;
+
+  --ring: #6fd3aa;
+}
