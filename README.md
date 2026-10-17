@@ -5,10 +5,11 @@ React + TypeScript + Vite + Tailwind CSS. Dark mode and English/Swahili from the
 ```bash
 cp .env.example .env
 npm install
-npm run dev          # http://localhost:5173
+npm run dev          # http://localhost:5173, talks to the backend
+npm run dev:mock     # same, with the mock backend (no backend needed)
 ```
 
-The dev server forwards `/api` to the backend at `http://localhost:3000`. Without a backend the starter page shows "API not reachable", which is expected. To work with fake data instead, run `npm run msw:init` once, then set `VITE_USE_MOCKS=true` in `.env`.
+The dev server forwards `/api` to the backend at `http://localhost:3000`. Without a backend the yellow development toolbar shows "API not reachable", which is expected. The same toolbar has the mock role switcher (CLIENT, OPERATOR, ADMIN, signed out); it only exists in development builds. To work with fake data instead, run `npm run dev:mock`: every `/api` call is answered by the MSW handlers in `src/mocks` (demo accounts and invitation codes are listed on the sign-in and invitation pages). Plain `npm run dev` without a backend shows "The INSTIWISE server is not answering" on screens that load data, and `http proxy error ... ECONNREFUSED` in the terminal.
 
 ## Before you push
 

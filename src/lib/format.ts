@@ -32,3 +32,46 @@ export function formatDate(value: string | Date, language: Language): string {
     timeZone: APP_TIME_ZONE,
   }).format(date);
 }
+
+/** Date and time (messages, receipts), in Dar es Salaam time. */
+export function formatDateTime(value: string | Date, language: Language): string {
+  const date = typeof value === "string" ? new Date(value) : value;
+  return new Intl.DateTimeFormat(LOCALES[language], {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: APP_TIME_ZONE,
+  }).format(date);
+}
+
+/** A file size in the largest sensible unit: "820 kB", "4.2 MB". */
+export function formatFileSize(bytes: number, language: Language): string {
+  const units = ["byte", "kilobyte", "megabyte", "gigabyte"] as const;
+  let value = bytes;
+  let unit = 0;
+  while (value >= 1000 && unit < units.length - 1) {
+    value /= 1000;
+    unit += 1;
+  }
+  return new Intl.NumberFormat(LOCALES[language], {
+    style: "unit",
+    unit: units[unit],
+    unitDisplay: "short",
+    maximumFractionDigits: value < 10 && unit > 0 ? 1 : 0,
+  }).format(value);
+}
+
+/** Reads typed shillings: "2,050,000" or "2 050 000" -> 2050000. Anything else -> NaN. */
+export function parseTzs(value: string): number {
+  const compact = value.replace(/[\s,]/g, "");
+  return /^\d{1,11}$/.test(compact) ? Number(compact) : Number.NaN;
+}
+
+/** "2026-10" as "October 2026" / "Oktoba 2026". */
+export function formatMonth(month: string, language: Language): string {
+  const [year, number] = month.split("-").map(Number);
+  return new Intl.DateTimeFormat(LOCALES[language], {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(year ?? 1970, (number ?? 1) - 1, 15)));
+}

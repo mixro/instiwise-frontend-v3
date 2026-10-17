@@ -3,6 +3,31 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * hover and focus-visible also match [data-preview="hover"] / [data-preview="focus"],
+ * so /dev/components can show those states without a pointer or keyboard.
+ * Product screens never set data-preview.
+ */
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+  &[data-preview~="hover"] {
+    @slot;
+  }
+}
+
+@custom-variant focus-visible {
+  &:focus-visible {
+    @slot;
+  }
+  &[data-preview~="focus"] {
+    @slot;
+  }
+}
+
 @theme inline {
   --font-sans:
     "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -19,7 +44,9 @@
   --color-surface-muted: var(--surface-muted);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
   --color-muted: var(--muted);
+  --color-overlay: var(--overlay);
 
   --color-warning-bg: var(--warning-bg);
   --color-warning-fg: var(--warning-fg);
@@ -46,7 +73,8 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  :focus-visible {
+  :focus-visible,
+  [data-preview~="focus"] {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
   }

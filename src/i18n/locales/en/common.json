@@ -14,24 +14,951 @@
     "en": "English",
     "sw": "Kiswahili"
   },
-  "starter": {
-    "eyebrow": "Starter pack, phase 0",
-    "title": "Your projects, agreements and payments in one place",
-    "subtitle": "This is the starter screen. The real screens arrive in phases 1 and 2.",
+  "ui": {
+    "close": "Close",
+    "notifications": "Notifications",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "optional": "(optional)"
+  },
+  "dev": {
+    "title": "Components",
+    "subtitle": "Every base component in each of its states. Development only: this page is not linked from the app and is not in production builds.",
+    "contents": "On this page",
+    "states": {
+      "default": "Default",
+      "hover": "Hover",
+      "focus": "Focus",
+      "disabled": "Disabled",
+      "error": "Error",
+      "loading": "Loading",
+      "checked": "Checked",
+      "disabledChecked": "Disabled, checked",
+      "active": "Active",
+      "selected": "Selected",
+      "empty": "Empty",
+      "tryIt": "Try it"
+    },
+    "sections": {
+      "button": "Button",
+      "input": "Input",
+      "textarea": "Textarea",
+      "select": "Select",
+      "checkbox": "Checkbox",
+      "label": "Label",
+      "tabs": "Tabs",
+      "table": "Table",
+      "dialog": "Dialog",
+      "sheet": "Sheet",
+      "toast": "Toast",
+      "tooltip": "Tooltip",
+      "skeleton": "Skeleton",
+      "statusBadge": "StatusBadge",
+      "moneyCell": "MoneyCell",
+      "emptyState": "EmptyState",
+      "confirmDialog": "ConfirmDialog",
+      "pageHeader": "PageHeader",
+      "timeline": "Timeline",
+      "dataTable": "DataTable",
+      "formField": "FormField"
+    },
+    "variants": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "ghost": "Ghost"
+    },
+    "actions": {
+      "recordPayment": "Record payment",
+      "cancel": "Cancel",
+      "viewReceipt": "View receipt",
+      "saving": "Saving…",
+      "save": "Save payment",
+      "retry": "Try again",
+      "close": "Close"
+    },
+    "fields": {
+      "amount": "Amount received (TZS)",
+      "amountPlaceholder": "e.g. 450000",
+      "amountError": "Enter a whole number of shillings, more than 0.",
+      "notes": "Notes for the client",
+      "notesPlaceholder": "Second instalment for the irrigation controller",
+      "notesError": "Notes can be at most 500 characters.",
+      "method": "Payment method",
+      "methodPlaceholder": "Choose a method",
+      "methodError": "Choose how the client paid.",
+      "confirm": "I have checked the client's payment",
+      "confirmError": "Confirm before saving.",
+      "labelHint": "The label dims with a disabled control."
+    },
+    "methods": {
+      "cash": "Cash",
+      "bank": "Bank transfer",
+      "mobile": "Mobile money",
+      "other": "Other"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "agreement": "Agreement",
+      "progress": "Progress",
+      "payments": "Payments",
+      "documents": "Documents",
+      "overviewBody": "Smart irrigation controller with soil-moisture sensors and SMS alerts.",
+      "body": "The {{tab}} tab content appears here.",
+      "statesHint": "Each tab shows one state."
+    },
+    "table": {
+      "caption": "Payments recorded for Smart irrigation controller",
+      "receipt": "Receipt",
+      "date": "Date received",
+      "client": "Client",
+      "method": "Method",
+      "amount": "Amount",
+      "rowStates": "Row 2 shows hover, row 3 shows a selected row.",
+      "empty": "No payments recorded yet.",
+      "error": "Payments could not be loaded."
+    },
+    "dialog": {
+      "open": "Open dialog",
+      "openFailing": "Open dialog that fails to save",
+      "title": "Record a payment of {{amount}}?",
+      "description": "A receipt is issued to {{client}} when you save. Mistakes are corrected with a reversal, not by editing.",
+      "saveError": "Payment not saved. Check your connection and try again."
+    },
+    "sheet": {
+      "openRight": "Open side sheet",
+      "openBottom": "Open bottom sheet",
+      "description": "Contact and project details for this client.",
+      "phone": "Phone",
+      "projects": "Projects"
+    },
+    "toast": {
+      "showInfo": "Show info",
+      "showSuccess": "Show success",
+      "showError": "Show error",
+      "infoTitle": "Invitation link copied",
+      "infoBody": "Share it with the client on WhatsApp or SMS.",
+      "successTitle": "Payment recorded",
+      "successBody": "Receipt {{number}} is ready for the client.",
+      "errorTitle": "Payment not saved",
+      "errorBody": "Check your connection and try again."
+    },
+    "tooltip": {
+      "copyLink": "Copy invitation link",
+      "hint": "Hover or press Tab to show the tooltip."
+    },
+    "skeleton": {
+      "card": "Project card",
+      "rows": "Table rows"
+    },
+    "groups": {
+      "base": "Base components",
+      "shared": "Shared components"
+    },
+    "status": {
+      "project": "Project",
+      "payment": "Payment",
+      "invitation": "Invitation"
+    },
+    "money": {
+      "entry": "Entry",
+      "agreed": "Agreed price",
+      "payment": "Payment",
+      "zero": "Nothing outstanding",
+      "reversal": "Reversal"
+    },
+    "empty": {
+      "withAction": "With action",
+      "withoutAction": "Without action",
+      "title": "No payments recorded yet",
+      "description": "Payments appear here once an operator records them.",
+      "messagesTitle": "No messages in this project"
+    },
+    "confirm": {
+      "revokeOpen": "Revoke invitation",
+      "revokeTitle": "Revoke the invitation for {{name}}?",
+      "revokeBody": "The link and code stop working at once. You can send a new invitation later.",
+      "revoked": "Invitation revoked",
+      "reverseOpen": "Reverse payment",
+      "reverseTitle": "Reverse receipt {{number}}?",
+      "reverseBody": "The original payment stays in the history and a reversal is added. The server updates the client's balance.",
+      "reasonLabel": "Reason for the reversal",
+      "reasonHint": "Saved in the audit log with your name.",
+      "reversed": "Payment reversed",
+      "failOpen": "Reverse payment (fails)",
+      "failError": "The payment was not reversed. Check your connection and try again.",
+      "danger": "Danger",
+      "withReason": "With reason"
+    },
+    "header": {
+      "titleOnly": "Title only",
+      "full": "With badge and actions",
+      "simpleTitle": "Payment records",
+      "title": "Smart irrigation controller",
+      "description": "{{client}} · assigned to {{operator}}",
+      "messageClient": "Message client"
+    },
+    "timeline": {
+      "withItems": "With items",
+      "agreementAccepted": "Agreement version 2 accepted",
+      "sensorsTested": "Soil-moisture sensors wired and tested",
+      "sensorsBody": "Two of three sensors read correctly; the third is being replaced.",
+      "enclosurePrinted": "Enclosure printed",
+      "internal": "Internal",
+      "clientVisible": "Visible to client",
+      "empty": "No progress updates yet",
+      "emptyBody": "Updates the team posts appear here."
+    },
+    "dataTable": {
+      "caption": "Payment records",
+      "status": "Status",
+      "stateLabel": "Table state",
+      "mobileHint": "Narrow the window below 640 px to see the card layout on phones."
+    },
+    "formField": {
+      "withHint": "With hint",
+      "optional": "Optional",
+      "phone": "Client phone number",
+      "phoneHint": "Used for the WhatsApp link, e.g. +255 754 321 987",
+      "phoneError": "Enter a Tanzanian number starting with +255.",
+      "reference": "Transaction reference"
+    },
+    "mockRole": "Mock role (development only)",
+    "signedOut": "Signed out",
     "api": {
       "checking": "Checking the API…",
       "connected": "API connected, version {{version}}",
-      "unreachable": "API not reachable. Start the backend with npm run dev."
+      "unreachable": "API not reachable. Start the backend, or run npm run dev:mock to use the mock data."
     },
-    "sample": {
-      "heading": "Sample project",
-      "title": "Smart irrigation controller",
-      "status": "Active",
-      "deadline": "Deadline",
-      "agreed": "Agreed",
-      "paid": "Paid",
-      "balance": "Balance",
-      "note": "Demo figures. Real totals are calculated by the server."
+    "demo": {
+      "accountsTitle": "Mock backend: demo accounts",
+      "codesTitle": "Mock backend: demo invitation codes",
+      "password": "Password for every account: {{password}}",
+      "states": {
+        "ACTIVE": "signs in",
+        "PENDING_APPROVAL": "waiting for approval",
+        "SUSPENDED": "suspended",
+        "RATE_LIMITED": "too many attempts",
+        "REJECTED": "not approved"
+      },
+      "codes": {
+        "CLIENT": "client invitation",
+        "OPERATOR": "operator invitation",
+        "INVITATION_EXPIRED": "expired",
+        "INVITATION_REVOKED": "revoked",
+        "INVITATION_ALREADY_USED": "already used",
+        "other": "Any other code: does not exist."
+      },
+      "emailTaken": "Registering with a demo account's email address gives the 'already exists' error."
     }
+  },
+  "status": {
+    "project": {
+      "DRAFT": "Draft",
+      "AWAITING_CLIENT_ACCEPTANCE": "Awaiting client acceptance",
+      "ACTIVE": "Active",
+      "CHANGE_REQUEST_PENDING": "Change request pending",
+      "ON_HOLD": "On hold",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "ARCHIVED": "Archived"
+    },
+    "payment": {
+      "RECORDED": "Recorded",
+      "REVERSED": "Reversed",
+      "ADJUSTED": "Adjusted"
+    },
+    "invitation": {
+      "PENDING": "Pending",
+      "ACCEPTED": "Accepted",
+      "EXPIRED": "Expired",
+      "REVOKED": "Revoked",
+      "REJECTED": "Rejected"
+    },
+    "agreement": {
+      "AWAITING_ACCEPTANCE": "Awaiting your acceptance",
+      "ACCEPTED": "Accepted",
+      "SUPERSEDED": "Replaced by a newer version"
+    },
+    "changeRequest": {
+      "UNDER_REVIEW": "Waiting for admin approval",
+      "AWAITING_CLIENT_ACCEPTANCE": "Waiting for client decision",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    },
+    "correction": {
+      "REVERSAL": "Reversal",
+      "ADJUSTMENT": "Adjustment"
+    },
+    "operator": {
+      "PENDING_APPROVAL": "Waiting for approval",
+      "ACTIVE": "Active",
+      "SUSPENDED": "Suspended",
+      "REJECTED": "Not approved"
+    }
+  },
+  "roles": {
+    "CLIENT": "Client",
+    "OPERATOR": "Operator",
+    "ADMIN": "Admin"
+  },
+  "nav": {
+    "client": {
+      "home": "Home",
+      "projects": "Projects",
+      "payments": "Payments",
+      "account": "Account"
+    },
+    "operator": {
+      "dashboard": "Dashboard",
+      "clients": "My clients",
+      "projects": "My projects",
+      "messages": "Messages",
+      "payments": "Payment records",
+      "profile": "Profile"
+    },
+    "admin": {
+      "overview": "Overview",
+      "clients": "Clients",
+      "projects": "Projects",
+      "operators": "Operators",
+      "finance": "Finance",
+      "messages": "Messages",
+      "auditLogs": "Audit logs",
+      "settings": "Settings"
+    }
+  },
+  "shell": {
+    "mainNav": "Main navigation",
+    "breadcrumb": "Breadcrumb",
+    "openMenu": "Open menu",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "signOut": "Sign out",
+    "skipToContent": "Skip to main content",
+    "preferences": "Preferences",
+    "placeholder": {
+      "title": "This screen is not built yet",
+      "body": "It is a placeholder. The real screen arrives in phase 2."
+    }
+  },
+  "errors": {
+    "goHome": "Go to my home page",
+    "notFound": {
+      "title": "Page not found",
+      "body": "The link may be old or mistyped."
+    },
+    "noAccess": {
+      "title": "You don't have access to this page",
+      "body": "Your account can't open this page. If you think this is a mistake, contact the INSTIWISE admin."
+    }
+  },
+  "auth": {
+    "fields": {
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "password": "Password"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password",
+      "rule": "At least 8 characters, with at least one letter and one number."
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Use the email address you registered with.",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "haveInvitation": "Got an invitation?",
+      "enterCode": "Enter your link or code"
+    },
+    "invite": {
+      "title": "Enter your invitation",
+      "subtitle": "Paste the link you received on WhatsApp or SMS, or type the code.",
+      "field": "Invitation link or code",
+      "hint": "The code has 8 letters and numbers, for example KX7P-M4Q2.",
+      "submit": "Continue",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "checking": "Checking your invitation…",
+      "loadFailed": "We couldn't check your invitation",
+      "context": {
+        "client": "{{inviter}} invited you to INSTIWISE as a client.",
+        "operator": "{{inviter}} invited you to join the INSTIWISE team as an operator.",
+        "expires": "This invitation expires on {{date}}."
+      },
+      "states": {
+        "tryAnother": "Enter a different code",
+        "invalid": {
+          "title": "This invitation doesn't exist",
+          "body": "Check the link or code and try again. Codes look like KX7P-M4Q2."
+        },
+        "expired": {
+          "title": "This invitation has expired",
+          "body": "Ask the person who invited you to send a new one."
+        },
+        "revoked": {
+          "title": "This invitation was cancelled",
+          "body": "The INSTIWISE team cancelled it. Contact them if you still need an account."
+        },
+        "used": {
+          "title": "This invitation has already been used",
+          "body": "An account was created with it. Sign in with that account's email address."
+        }
+      }
+    },
+    "register": {
+      "clientTitle": "Create your client account",
+      "operatorTitle": "Create your operator account",
+      "password": "Create a password",
+      "phoneHint": "Tanzanian number, e.g. 0754 321 987 or +255 754 321 987.",
+      "clientPhoneHint": "Lets the team reach you on WhatsApp. Tanzanian number, e.g. 0754 321 987.",
+      "approvalNote": "An INSTIWISE admin approves every operator account before it can be used.",
+      "submit": "Create account",
+      "submitting": "Creating account…"
+    },
+    "pending": {
+      "title": "Your account is waiting for approval",
+      "body": "An INSTIWISE admin checks every new operator account. You can sign in once it is approved.",
+      "backToLogin": "Back to sign in"
+    }
+  },
+  "validation": {
+    "nameRequired": "Enter your full name.",
+    "nameTooLong": "Use at most 100 characters.",
+    "emailRequired": "Enter your email address.",
+    "emailInvalid": "Enter an email address like name@example.com.",
+    "phoneRequired": "Enter your phone number.",
+    "phoneInvalid": "Enter a Tanzanian number: 0 or +255 followed by 9 digits.",
+    "passwordRequired": "Enter your password.",
+    "passwordTooShort": "Use at least 8 characters.",
+    "passwordTooLong": "Use at most 128 characters.",
+    "passwordNeedsLetter": "Include at least one letter.",
+    "passwordNeedsNumber": "Include at least one number.",
+    "invitationRequired": "Paste your invitation link or type the code.",
+    "invitationFormat": "That doesn't look like an invitation link or code. Codes look like KX7P-M4Q2.",
+    "changeTitleRequired": "Give the change a short title.",
+    "changeReasonRequired": "Explain why the change is needed (at least 10 characters).",
+    "scopeRequired": "Keep at least one scope item.",
+    "amountInvalid": "Enter a whole number of shillings, e.g. 2050000.",
+    "dateInvalid": "Choose a date.",
+    "tooLong": "This is too long.",
+    "clientRequired": "Choose a client.",
+    "projectRequired": "Choose a project.",
+    "amountPositive": "Enter a whole number of shillings, more than 0.",
+    "methodRequired": "Choose how the client paid.",
+    "referenceRequired": "Enter the reference for bank and mobile-money payments.",
+    "dateFuture": "The date received cannot be in the future.",
+    "dateTooOld": "This is more than 30 days ago. Ask an admin to record older payments.",
+    "assignRequired": "Choose who to assign.",
+    "correctionReason": "Explain the correction (at least 10 characters).",
+    "dateRange": "The end date is before the start date.",
+    "invitationDays": "Enter a whole number of days from 1 to 30.",
+    "issuerNameRequired": "Enter the name printed on receipts.",
+    "addressRequired": "Enter the address printed on receipts."
+  },
+  "apiErrors": {
+    "INVALID_CREDENTIALS": "The email address or password is wrong.",
+    "ACCOUNT_SUSPENDED": "This account is suspended. Contact the INSTIWISE admin.",
+    "ACCOUNT_REJECTED": "This operator account was not approved. Contact the INSTIWISE admin.",
+    "RATE_LIMITED": "Too many attempts. Wait a few minutes and try again.",
+    "EMAIL_TAKEN": "An account with this email address already exists. Sign in instead.",
+    "VALIDATION_FAILED": "Some details are not valid. Check the highlighted fields.",
+    "NETWORK_ERROR": "Can't reach INSTIWISE. Check your connection and try again.",
+    "UNKNOWN_ERROR": "Something went wrong on our side. Try again.",
+    "CHANGE_REQUEST_ALREADY_DECIDED": "This change was already decided. The page now shows the outcome.",
+    "CHANGE_REQUEST_ALREADY_OPEN": "A change is already open on this project.",
+    "CHANGE_REQUEST_NO_CHANGES": "Nothing is different from the current agreement yet.",
+    "AGREEMENT_NOT_ACCEPTED": "The client has not accepted an agreement yet.",
+    "REASON_REQUIRED": "Give a reason.",
+    "PAYMENT_REFERENCE_REQUIRED": "Enter the reference for bank and mobile-money payments.",
+    "PAYMENT_DATE_OUT_OF_RANGE": "The date must be today or within the last 30 days.",
+    "SERVER_UNREACHABLE": "The INSTIWISE server is not answering right now. Try again in a few minutes.",
+    "OPERATOR_HAS_CLIENTS": "Give this operator's clients to another operator before suspending them.",
+    "OPERATOR_NOT_ACTIVE": "Only active operators can be given clients.",
+    "OPERATOR_NOT_PENDING": "This operator was already approved or turned down. The page now shows the result.",
+    "OPERATOR_STATUS_CHANGED": "This operator's status changed in the meantime. The page now shows it.",
+    "PAYMENT_ALREADY_REVERSED": "This payment was already reversed.",
+    "ADJUSTMENT_BELOW_ZERO": "That would take the payment below zero. Reverse it instead."
+  },
+  "client": {
+    "home": {
+      "greeting": "Hello, {{name}}. Here is where your projects stand.",
+      "actions": "Needs your action",
+      "acceptAgreement": "Agreement version {{version}} for {{project}} is waiting for you.",
+      "reviewAgreement": "Review the agreement",
+      "balance": "Your balance",
+      "acrossProjects_one": "Across your {{count}} project.",
+      "acrossProjects_other": "Across your {{count}} projects.",
+      "seePayments": "Payments and receipts",
+      "unread": "Unread messages",
+      "noUnread": "No unread messages",
+      "progress": "Latest progress"
+    },
+    "money": {
+      "outstanding": "Still to pay",
+      "paid": "Paid so far",
+      "agreed": "Agreed price",
+      "credit": "Paid in advance (credit)",
+      "fullyPaid": "Fully paid",
+      "toPay": "{{amount}} still to pay",
+      "notAgreedYet": "The price is agreed once you accept the agreement."
+    },
+    "projects": {
+      "title": "My projects",
+      "empty": "No projects yet",
+      "emptyBody": "Projects the team creates for you appear here."
+    },
+    "project": {
+      "sections": "Project sections",
+      "start": "Started",
+      "deadline": "Deadline",
+      "category": "Type of work"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "agreement": "Agreement",
+      "progress": "Progress",
+      "messages": "Messages",
+      "payments": "Payments",
+      "documents": "Documents",
+      "changes": "Changes"
+    },
+    "overview": {
+      "awaitingAcceptance": "Work starts after you accept the agreement.",
+      "deliverables": "What you will receive",
+      "money": "Money",
+      "seePayments": "Payments and receipts for this project",
+      "team": "Your team",
+      "teamMember": "{{name}} is working on your project."
+    },
+    "agreement": {
+      "version": "Version {{version}}",
+      "price": "Price",
+      "scope": "What is included",
+      "exclusions": "Not included",
+      "paymentTerms": "Payment terms",
+      "reviewPrompt": "Read the terms below. Work starts once you accept them.",
+      "acceptedBy": "Accepted by {{name}} on {{date}}.",
+      "acceptedOn": "accepted {{date}}",
+      "accept": "Accept version {{version}}",
+      "accepted": "Agreement version {{version}} accepted",
+      "confirmTitle": "Accept agreement version {{version}}?",
+      "confirmBody": "You agree to the scope above, the price of {{price}} and the deadline of {{date}}. Your name and the time are recorded and this cannot be undone. Any later change needs a new version.",
+      "history": "Earlier versions",
+      "none": "No agreement yet"
+    },
+    "progress": {
+      "next": "Next:",
+      "empty": "No progress updates yet",
+      "emptyBody": "The team posts an update here at each step of the work."
+    },
+    "messages": {
+      "unread_one": "{{count}} unread",
+      "unread_other": "{{count}} unread",
+      "conversation": "Conversation",
+      "you": "You",
+      "sending": "Sending…",
+      "notSent": "Not sent.",
+      "write": "Write a message",
+      "send": "Send",
+      "textOnly": "Text only. Ctrl+Enter sends.",
+      "empty": "No messages yet",
+      "emptyBody": "Ask the team anything about this project. Your messages stay with the project.",
+      "urgent": "Urgent? Chat on WhatsApp"
+    },
+    "whatsapp": {
+      "open": "Chat with {{name}} on WhatsApp",
+      "newTab": "(opens WhatsApp)",
+      "note": "WhatsApp messages are not saved in INSTIWISE. Decisions about scope, price or dates go in the project here."
+    },
+    "payments": {
+      "title": "Payments and receipts",
+      "external": "You pay the team by cash, bank or mobile money. The team records each payment here and a receipt appears.",
+      "recorded": "Recorded payments",
+      "caption": "Recorded payments",
+      "receipt": "Receipt",
+      "viewReceipt": "View receipt {{number}}",
+      "amount": "Amount",
+      "received": "Received",
+      "project": "Project",
+      "method": "Method",
+      "status": "Status",
+      "empty": "No payments recorded yet",
+      "emptyBody": "When the team records a payment, its receipt appears here."
+    },
+    "methods": {
+      "cash": "Cash",
+      "bank": "Bank transfer",
+      "mobile": "Mobile money",
+      "other": "Other"
+    },
+    "receipt": {
+      "title": "Receipt {{number}}",
+      "disclaimer": "This receipt shows what INSTIWISE recorded. It is not a confirmation from a bank or mobile-money provider.",
+      "client": "Client",
+      "project": "Project",
+      "received": "Date received",
+      "method": "Paid by",
+      "agreed": "Agreed price",
+      "paidToDate": "Paid to date",
+      "balanceAfter": "Still to pay after this payment",
+      "recordedBy": "Recorded by",
+      "issued": "Issued"
+    },
+    "documents": {
+      "download": "Download {{name}}",
+      "failed": "Download did not start",
+      "empty": "No documents yet",
+      "emptyBody": "Final deliverables appear here when the work is finished."
+    },
+    "account": {
+      "profile": "Profile",
+      "emailHint": "This is how you sign in. Ask the INSTIWISE team if it needs to change.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Profile saved"
+    }
+  },
+  "changes": {
+    "before": "Before",
+    "after": "After",
+    "price": "Price",
+    "deadline": "Deadline",
+    "scope": "Scope",
+    "why": "Why this change",
+    "added": "Added",
+    "removed": "Removed",
+    "unchanged_one": "{{count}} item unchanged",
+    "unchanged_other": "{{count}} items unchanged",
+    "noChange": "No change",
+    "priceUp": "{{amount}} more",
+    "priceDown": "{{amount}} less",
+    "deadlineLater": "Later than before",
+    "deadlineEarlier": "Earlier than before",
+    "proposedBy": "{{number}} · proposed by {{name}} on {{date}}",
+    "showDetails": "Show before and after",
+    "history": {
+      "title": "Change history",
+      "accepted": "Accepted by {{name}} on {{date}}.",
+      "becameVersion": "It became agreement version {{version}}.",
+      "rejected": "Rejected by {{name}} on {{date}}:",
+      "adminRejected": "Not approved by {{name}} on {{date}}:",
+      "approved": "Approved by {{name}} on {{date}}.",
+      "direct": "Scope only, so no admin approval was needed.",
+      "waitingAdmin": "Waiting for an admin to approve the new price or deadline.",
+      "waitingClient": "Waiting for the client to accept or reject it."
+    },
+    "client": {
+      "badge": "change waiting for your decision",
+      "waiting": "Waiting for your decision",
+      "whatAcceptMeans": "If you accept, a new agreement version is created with these terms and recorded as accepted by you. If you reject, the current agreement stays as it is.",
+      "accept": "Accept change",
+      "reject": "Reject change",
+      "acceptTitle": "Accept change {{number}}?",
+      "acceptBody": "A new agreement version is created with the new scope, a price of {{price}} and a deadline of {{date}}. It is recorded as accepted by you and cannot be undone.",
+      "rejectTitle": "Reject change {{number}}?",
+      "rejectBody": "The current agreement stays as it is. The team sees your reason.",
+      "reasonLabel": "Why are you rejecting this change?",
+      "reasonHint": "For example: too expensive right now, or the deadline does not work.",
+      "acceptedToast": "Change {{number}} accepted. The agreement is updated.",
+      "rejectedToast": "Change {{number}} rejected",
+      "homeAction": "Change {{number}} to {{project}} is waiting for your decision.",
+      "review": "Review the change",
+      "empty": "No changes proposed",
+      "emptyBody": "When the team proposes a change to the scope, price or deadline, you review it here before anything changes."
+    },
+    "operator": {
+      "current": "Current agreement",
+      "noAgreement": "The client has not accepted an agreement yet. Changes can be proposed after that.",
+      "propose": "Propose a change",
+      "oneOpen": "A change is already open on this project. Wait for its decision before proposing another.",
+      "title": "Short title",
+      "reason": "Why the change is needed",
+      "reasonHint": "The client reads this. Mention their request if they asked for it.",
+      "scopeHint": "The full scope after the change. Edit, add or remove items.",
+      "scopeItem": "Scope item {{number}}",
+      "removeItem": "Remove scope item {{number}}",
+      "addItem": "Add an item",
+      "price": "New price (TZS)",
+      "priceHint": "Whole shillings, e.g. 2050000.",
+      "needsAdmin": "The price or deadline changes, so an admin approves this before the client sees it.",
+      "goesToClient": "Scope only: this goes straight to the client.",
+      "submit": "Send proposal",
+      "sentToAdmin": "{{number}} sent to an admin for approval",
+      "sentToClient": "{{number}} sent to the client",
+      "empty": "No changes proposed on this project yet"
+    },
+    "admin": {
+      "title": "Changes waiting for approval",
+      "subtitle": "Price or deadline changes proposed by operators. The client sees them only after you approve.",
+      "waitingCount_one": "{{count}} change waiting for your approval",
+      "waitingCount_other": "{{count}} changes waiting for your approval",
+      "approve": "Approve for the client",
+      "reject": "Do not approve",
+      "approveTitle": "Approve {{number}}?",
+      "approveBody": "{{client}} will see this change and can accept or reject it.",
+      "rejectTitle": "Do not approve {{number}}?",
+      "rejectBody": "The client never sees this proposal. The operator sees your reason.",
+      "reasonLabel": "Reason for the operator",
+      "reasonHint": "Saved in the audit log with your name.",
+      "approvedToast": "{{number}} approved and sent to the client",
+      "rejectedToast": "{{number}} not approved",
+      "empty": "Nothing waiting for your approval"
+    }
+  },
+  "operator": {
+    "projects": {
+      "subtitle": "Projects of clients assigned to you.",
+      "changeOpen": "Change open",
+      "empty": "No projects assigned to you yet"
+    },
+    "dashboard": {
+      "scope": "Figures cover only the clients assigned to you.",
+      "work": "Your work",
+      "clients": "Assigned clients",
+      "clientsRule": "Clients with an active assignment to you.",
+      "activeProjects": "Active projects",
+      "activeRule_one": "Out of {{count}} project for your clients.",
+      "activeRule_other": "Out of {{count}} projects for your clients.",
+      "openChanges": "Open changes",
+      "openChangesRule": "Waiting for an admin or for the client.",
+      "money": "Money",
+      "collected": "Collected",
+      "allTimeRule": "All time, accepted agreements of your clients.",
+      "recordedThisMonth": "Recorded this month",
+      "monthRule_one": "{{month}} · {{count}} payment, by date received (Dar es Salaam time).",
+      "monthRule_other": "{{month}} · {{count}} payments, by date received (Dar es Salaam time).",
+      "notProfit": "Collections are money received from clients, not profit.",
+      "deadlines": "Deadlines in the next 30 days",
+      "noDeadlines": "No deadlines in the next 30 days",
+      "recentPayments": "Latest payments"
+    },
+    "clients": {
+      "subtitle": "Clients assigned to you.",
+      "name": "Client",
+      "projects": "Projects",
+      "empty": "No clients assigned to you yet"
+    },
+    "client": {
+      "whatsapp": "WhatsApp {{phone}}",
+      "email": "Send an email"
+    },
+    "payments": {
+      "subtitle": "Payments recorded for your clients. Each one has a receipt the client can see.",
+      "caption": "Payment records",
+      "client": "Client",
+      "emptyBody": "Record a payment when a client pays by cash, bank or mobile money."
+    },
+    "record": {
+      "cta": "Record payment",
+      "title": "Record a payment",
+      "subtitle": "For money a client has already paid by cash, bank or mobile money. INSTIWISE does not take payments.",
+      "step1": "Step 1 of 2: payment details",
+      "step2": "Step 2 of 2: check and confirm",
+      "chooseClient": "Choose a client",
+      "chooseProject": "Choose a project",
+      "chooseMethod": "Choose a method",
+      "amount": "Amount received (TZS)",
+      "reference": "Transaction reference",
+      "referenceHint": "Required for bank and mobile money, e.g. M-Pesa SGH7K2LQ9P.",
+      "referenceOptional": "Optional for cash.",
+      "date": "Date received",
+      "dateHint": "Today or up to 30 days back. Older payments are recorded by an admin.",
+      "note": "Note",
+      "review": "Review payment",
+      "confirmTitle": "Record {{amount}}?",
+      "balanceBefore": "Still to pay before",
+      "balanceAfter": "Still to pay after",
+      "credit": "This is {{amount}} more than the balance. It will show as credit for the client.",
+      "permanent": "A receipt is issued and the client sees it at once. Mistakes are fixed by a reversal, not by editing.",
+      "edit": "Change details",
+      "confirm": "Record payment",
+      "done": "Payment recorded. Receipt {{number}} is ready, and the client can see it now.",
+      "another": "Record another payment",
+      "backToRecords": "Back to payment records"
+    }
+  },
+  "admin": {
+    "actions": "Actions",
+    "overview": {
+      "scope": "Figures for the whole system: every client, operator and project.",
+      "needsYou": "Needs an admin",
+      "pendingOperators_one": "{{count}} operator waiting for approval",
+      "pendingOperators_other": "{{count}} operators waiting for approval",
+      "unassigned_one": "{{count}} client without an operator",
+      "unassigned_other": "{{count}} clients without an operator",
+      "people": "People and projects",
+      "clientsRule_one": "{{count}} of them without an operator.",
+      "clientsRule_other": "{{count}} of them without an operator.",
+      "activeOperators": "Active operators",
+      "operatorsRule_one": "{{count}} more waiting for approval.",
+      "operatorsRule_other": "{{count}} more waiting for approval.",
+      "projectsRule_one": "Out of {{count}} project in total.",
+      "projectsRule_other": "Out of {{count}} projects in total.",
+      "allTimeRule": "All clients, all time, accepted agreements.",
+      "collectedRule": "All clients, all time, after reversals and adjustments.",
+      "monthRule_one": "{{month}} · {{count}} payment, {{corrections}} corrections, by date (Dar es Salaam time).",
+      "monthRule_other": "{{month}} · {{count}} payments, {{corrections}} corrections, by date (Dar es Salaam time).",
+      "activity": "Latest activity",
+      "allActivity": "All activity in the audit log"
+    },
+    "clients": {
+      "subtitle": "Every client and the operator who works with them.",
+      "unassigned": "No operator",
+      "assign": "Assign operator",
+      "reassign": "Change operator",
+      "empty": "No clients yet",
+      "emptyBody": "Clients appear here when they register with an invitation."
+    },
+    "projects": {
+      "subtitle": "Every project in the system.",
+      "empty": "No projects yet"
+    },
+    "assign": {
+      "clientTitle": "Operator for {{name}}",
+      "clientNow": "{{name}} works with this client now. Their projects, payments and messages move to the operator you choose.",
+      "clientNone": "This client has no operator yet. The operator you choose sees their projects, payments and messages.",
+      "clientCount_one": "{{count}} client",
+      "clientCount_other": "{{count}} clients",
+      "operatorTitle": "Assign a client to {{name}}",
+      "operatorBody": "The operator then sees this client's projects, payments and messages. A client has one operator at a time.",
+      "nowWith": "now with {{name}}",
+      "choose": "Choose…",
+      "noOptions": "Nobody to choose from.",
+      "save": "Assign",
+      "done": "{{client}} is now with {{operator}}"
+    },
+    "operators": {
+      "subtitle": "Approve new operators, give them clients, and suspend or reactivate accounts.",
+      "byStatus": "Operators by status",
+      "registered": "Registered {{date}}",
+      "reason": "Reason:",
+      "clients_one": "{{count}} client",
+      "clients_other": "{{count}} clients",
+      "approve": "Approve",
+      "reject": "Do not approve",
+      "assign": "Assign a client",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate",
+      "reasonLabel": "Reason",
+      "reassignFirst_one": "To suspend, first give their {{count}} client to another operator on",
+      "reassignFirst_other": "To suspend, first give their {{count}} clients to other operators on",
+      "confirm": {
+        "approve": {
+          "title": "Approve {{name}}?",
+          "body": "{{name}} can sign in and work with the clients you assign to them."
+        },
+        "reject": {
+          "title": "Not approve {{name}}?",
+          "body": "{{name}} cannot sign in. They see that their account was not approved."
+        },
+        "suspend": {
+          "title": "Suspend {{name}}?",
+          "body": "{{name}} can no longer sign in. Their history stays. You can reactivate them later."
+        },
+        "reactivate": {
+          "title": "Reactivate {{name}}?",
+          "body": "{{name}} can sign in again. Assign clients to them afterwards."
+        }
+      },
+      "done": {
+        "approve": "{{name}} approved",
+        "reject": "{{name}} not approved",
+        "suspend": "{{name}} suspended",
+        "reactivate": "{{name}} reactivated"
+      },
+      "empty": {
+        "PENDING_APPROVAL": "Nobody waiting for approval",
+        "ACTIVE": "No active operators",
+        "SUSPENDED": "No suspended operators",
+        "REJECTED": "No operators were turned down"
+      }
+    }
+  },
+  "finance": {
+    "subtitle": "Every payment and correction, for all clients.",
+    "ledger": "Payments and corrections",
+    "neverDeleted": "Payments are never edited or deleted. Reversing or adjusting adds a COR row and marks the original; the original keeps its receipt number.",
+    "number": "Number",
+    "date": "Date",
+    "by": "Recorded by",
+    "emptyBody": "Payments appear here when operators record them.",
+    "corrects": "corrects {{number}}",
+    "showHistory": "show its history",
+    "reverse": "Reverse",
+    "reverseTitle": "Reverse {{number}}?",
+    "reverseBody": "A correction row cancels what is left of {{number}}. {{number}} stays on record, marked Reversed. To replace it, record the right payment afterwards.",
+    "reverseDone": "{{number}} reversed by {{correction}}",
+    "adjust": "Adjust",
+    "adjustTitle": "Adjust {{number}}",
+    "adjustBody": "{{number}} was recorded as {{amount}}. A correction row adds or removes the difference; {{number}} stays on record, marked Adjusted.",
+    "direction": "The payment was recorded",
+    "decrease": "Too high: reduce it",
+    "increase": "Too low: increase it",
+    "adjustAmount": "By how much (TZS)",
+    "adjustDone": "{{number}} adjusted by {{correction}}",
+    "reasonLabel": "Reason for the correction",
+    "historyTitle": "History of {{number}}",
+    "historyBody": "As first recorded, then every correction, oldest first. Nothing here is ever edited.",
+    "original": "Original",
+    "recordedBy": "Recorded by {{name}}",
+    "correctedBy": "By {{name}} on {{date}}",
+    "noCorrections": "No corrections.",
+    "correctionsTitle": "Corrections"
+  },
+  "audit": {
+    "subtitle": "Every sensitive action, newest first. The log is only ever added to.",
+    "filters": "Filter the audit log",
+    "when": "When",
+    "user": "User",
+    "action": "Action",
+    "target": "On",
+    "from": "From",
+    "to": "To",
+    "allUsers": "Everyone",
+    "allActions": "All actions",
+    "apply": "Apply filters",
+    "clear": "Clear filters",
+    "empty": "Nothing in the audit log yet",
+    "noMatches": "No entries match these filters",
+    "details": {
+      "title": "Details",
+      "correction": "by {{number}}",
+      "fromTo": "from {{from}} to {{to}}",
+      "to": "to {{to}}",
+      "reason": "reason: {{reason}}"
+    },
+    "actions": {
+      "PAYMENT_RECORDED": "Payment recorded",
+      "PAYMENT_REVERSED": "Payment reversed",
+      "PAYMENT_ADJUSTED": "Payment adjusted",
+      "OPERATOR_APPROVED": "Operator approved",
+      "OPERATOR_REJECTED": "Operator not approved",
+      "OPERATOR_SUSPENDED": "Operator suspended",
+      "OPERATOR_REACTIVATED": "Operator reactivated",
+      "CLIENT_ASSIGNED": "Client assigned",
+      "CHANGE_APPROVED": "Change approved for the client",
+      "CHANGE_NOT_APPROVED": "Change not approved",
+      "CHANGE_ACCEPTED": "Change accepted by the client",
+      "CHANGE_REJECTED": "Change rejected by the client",
+      "AGREEMENT_ACCEPTED": "Agreement accepted",
+      "SETTINGS_UPDATED": "Settings updated"
+    }
+  },
+  "settings": {
+    "subtitle": "Changes are saved in the audit log.",
+    "saved": "Settings saved",
+    "issuer": "Receipt issuer",
+    "issuerHint": "Printed on every receipt.",
+    "issuerName": "Name",
+    "issuerPhone": "Phone number",
+    "issuerAddress": "Address",
+    "contact": "Contact",
+    "whatsapp": "Team WhatsApp number",
+    "whatsappHint": "Used for the WhatsApp shortcut when a client's operator has no number.",
+    "invitations": "Invitations",
+    "validity": "Invitations stay valid for (days)",
+    "validityHint": "Between {{min}} and {{max}} days. Applies to new invitations."
   }
 }

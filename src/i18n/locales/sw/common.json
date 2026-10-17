@@ -14,24 +14,951 @@
     "en": "English",
     "sw": "Kiswahili"
   },
-  "starter": {
-    "eyebrow": "Kifurushi cha kuanzia, hatua ya 0",
-    "title": "Miradi, makubaliano na malipo yako mahali pamoja",
-    "subtitle": "Hii ni skrini ya kuanzia. Skrini halisi zitakuja katika hatua ya 1 na 2.",
+  "ui": {
+    "close": "Funga",
+    "notifications": "Arifa",
+    "cancel": "Ghairi",
+    "retry": "Jaribu tena",
+    "optional": "(si lazima)"
+  },
+  "dev": {
+    "title": "Vipengele",
+    "subtitle": "Kila kipengele cha msingi katika kila hali yake. Ni kwa uundaji tu: ukurasa huu hauunganishwi kwenye programu na haumo kwenye toleo la uzalishaji.",
+    "contents": "Kwenye ukurasa huu",
+    "states": {
+      "default": "Kawaida",
+      "hover": "Kielekezi juu",
+      "focus": "Umakini",
+      "disabled": "Imezimwa",
+      "error": "Hitilafu",
+      "loading": "Inapakia",
+      "checked": "Imeteuliwa",
+      "disabledChecked": "Imezimwa, imeteuliwa",
+      "active": "Kinachotumika",
+      "selected": "Imechaguliwa",
+      "empty": "Tupu",
+      "tryIt": "Jaribu"
+    },
+    "sections": {
+      "button": "Kitufe",
+      "input": "Sehemu ya kuandika",
+      "textarea": "Eneo la maandishi",
+      "select": "Orodha ya chaguo",
+      "checkbox": "Kisanduku cha kuteua",
+      "label": "Lebo",
+      "tabs": "Vichupo",
+      "table": "Jedwali",
+      "dialog": "Kidirisha",
+      "sheet": "Paneli",
+      "toast": "Arifa fupi",
+      "tooltip": "Kidokezo",
+      "skeleton": "Kishika nafasi",
+      "statusBadge": "Beji ya hali",
+      "moneyCell": "Kisanduku cha fedha",
+      "emptyState": "Hali tupu",
+      "confirmDialog": "Kidirisha cha kuthibitisha",
+      "pageHeader": "Kichwa cha ukurasa",
+      "timeline": "Mfuatano wa matukio",
+      "dataTable": "Jedwali la data",
+      "formField": "Sehemu ya fomu"
+    },
+    "variants": {
+      "primary": "Kikuu",
+      "secondary": "Cha pili",
+      "ghost": "Hafifu"
+    },
+    "actions": {
+      "recordPayment": "Rekodi malipo",
+      "cancel": "Ghairi",
+      "viewReceipt": "Angalia risiti",
+      "saving": "Inahifadhi…",
+      "save": "Hifadhi malipo",
+      "retry": "Jaribu tena",
+      "close": "Funga"
+    },
+    "fields": {
+      "amount": "Kiasi kilichopokelewa (TZS)",
+      "amountPlaceholder": "mf. 450000",
+      "amountError": "Weka idadi kamili ya shilingi, zaidi ya 0.",
+      "notes": "Maelezo kwa mteja",
+      "notesPlaceholder": "Awamu ya pili ya kidhibiti cha umwagiliaji",
+      "notesError": "Maelezo yasizidi herufi 500.",
+      "method": "Njia ya malipo",
+      "methodPlaceholder": "Chagua njia",
+      "methodError": "Chagua jinsi mteja alivyolipa.",
+      "confirm": "Nimehakiki malipo ya mteja",
+      "confirmError": "Thibitisha kabla ya kuhifadhi.",
+      "labelHint": "Lebo hufifia kidhibiti kikiwa kimezimwa."
+    },
+    "methods": {
+      "cash": "Taslimu",
+      "bank": "Uhamisho wa benki",
+      "mobile": "Pesa kwa simu",
+      "other": "Nyingine"
+    },
+    "tabs": {
+      "overview": "Muhtasari",
+      "agreement": "Makubaliano",
+      "progress": "Maendeleo",
+      "payments": "Malipo",
+      "documents": "Nyaraka",
+      "overviewBody": "Kidhibiti mahiri cha umwagiliaji chenye vihisi vya unyevu wa udongo na arifa za SMS.",
+      "body": "Maudhui ya kichupo cha {{tab}} yanaonekana hapa.",
+      "statesHint": "Kila kichupo kinaonyesha hali moja."
+    },
+    "table": {
+      "caption": "Malipo yaliyorekodiwa kwa Kidhibiti mahiri cha umwagiliaji",
+      "receipt": "Risiti",
+      "date": "Tarehe ya kupokea",
+      "client": "Mteja",
+      "method": "Njia",
+      "amount": "Kiasi",
+      "rowStates": "Safu ya 2 inaonyesha kielekezi juu, safu ya 3 inaonyesha safu iliyochaguliwa.",
+      "empty": "Bado hakuna malipo yaliyorekodiwa.",
+      "error": "Malipo hayakuweza kupakiwa."
+    },
+    "dialog": {
+      "open": "Fungua kidirisha",
+      "openFailing": "Fungua kidirisha kinachoshindwa kuhifadhi",
+      "title": "Rekodi malipo ya {{amount}}?",
+      "description": "Risiti itatolewa kwa {{client}} utakapohifadhi. Makosa hurekebishwa kwa kubatilisha, si kwa kuhariri.",
+      "saveError": "Malipo hayajahifadhiwa. Angalia mtandao wako kisha ujaribu tena."
+    },
+    "sheet": {
+      "openRight": "Fungua paneli ya pembeni",
+      "openBottom": "Fungua paneli ya chini",
+      "description": "Mawasiliano na taarifa za miradi ya mteja huyu.",
+      "phone": "Simu",
+      "projects": "Miradi"
+    },
+    "toast": {
+      "showInfo": "Onyesha taarifa",
+      "showSuccess": "Onyesha mafanikio",
+      "showError": "Onyesha hitilafu",
+      "infoTitle": "Kiungo cha mwaliko kimenakiliwa",
+      "infoBody": "Kitume kwa mteja kupitia WhatsApp au SMS.",
+      "successTitle": "Malipo yamerekodiwa",
+      "successBody": "Risiti {{number}} iko tayari kwa mteja.",
+      "errorTitle": "Malipo hayajahifadhiwa",
+      "errorBody": "Angalia mtandao wako kisha ujaribu tena."
+    },
+    "tooltip": {
+      "copyLink": "Nakili kiungo cha mwaliko",
+      "hint": "Weka kielekezi juu au bonyeza Tab ili kuona kidokezo."
+    },
+    "skeleton": {
+      "card": "Kadi ya mradi",
+      "rows": "Safu za jedwali"
+    },
+    "groups": {
+      "base": "Vipengele vya msingi",
+      "shared": "Vipengele vya pamoja"
+    },
+    "status": {
+      "project": "Mradi",
+      "payment": "Malipo",
+      "invitation": "Mwaliko"
+    },
+    "money": {
+      "entry": "Ingizo",
+      "agreed": "Bei iliyokubaliwa",
+      "payment": "Malipo",
+      "zero": "Hakuna deni",
+      "reversal": "Kubatilisha"
+    },
+    "empty": {
+      "withAction": "Na kitendo",
+      "withoutAction": "Bila kitendo",
+      "title": "Bado hakuna malipo yaliyorekodiwa",
+      "description": "Malipo yataonekana hapa mhudumu atakapoyarekodi.",
+      "messagesTitle": "Hakuna ujumbe katika mradi huu"
+    },
+    "confirm": {
+      "revokeOpen": "Batilisha mwaliko",
+      "revokeTitle": "Batilisha mwaliko wa {{name}}?",
+      "revokeBody": "Kiungo na msimbo vitaacha kufanya kazi mara moja. Unaweza kutuma mwaliko mpya baadaye.",
+      "revoked": "Mwaliko umebatilishwa",
+      "reverseOpen": "Batilisha malipo",
+      "reverseTitle": "Batilisha risiti {{number}}?",
+      "reverseBody": "Malipo ya awali yanabaki kwenye historia na ubatilishaji unaongezwa. Seva inasasisha salio la mteja.",
+      "reasonLabel": "Sababu ya kubatilisha",
+      "reasonHint": "Inahifadhiwa kwenye kumbukumbu za ukaguzi pamoja na jina lako.",
+      "reversed": "Malipo yamebatilishwa",
+      "failOpen": "Batilisha malipo (inashindwa)",
+      "failError": "Malipo hayajabatilishwa. Angalia mtandao wako kisha ujaribu tena.",
+      "danger": "Hatari",
+      "withReason": "Na sababu"
+    },
+    "header": {
+      "titleOnly": "Kichwa pekee",
+      "full": "Na beji na vitendo",
+      "simpleTitle": "Rekodi za malipo",
+      "title": "Kidhibiti mahiri cha umwagiliaji",
+      "description": "{{client}} · amekabidhiwa {{operator}}",
+      "messageClient": "Mtumie mteja ujumbe"
+    },
+    "timeline": {
+      "withItems": "Yenye matukio",
+      "agreementAccepted": "Toleo la 2 la makubaliano limekubaliwa",
+      "sensorsTested": "Vihisi vya unyevu wa udongo vimeunganishwa na kujaribiwa",
+      "sensorsBody": "Vihisi viwili kati ya vitatu vinasoma sawasawa; cha tatu kinabadilishwa.",
+      "enclosurePrinted": "Kasha limechapishwa",
+      "internal": "Ndani tu",
+      "clientVisible": "Mteja anaona",
+      "empty": "Bado hakuna taarifa za maendeleo",
+      "emptyBody": "Taarifa ambazo timu inaweka zitaonekana hapa."
+    },
+    "dataTable": {
+      "caption": "Rekodi za malipo",
+      "status": "Hali",
+      "stateLabel": "Hali ya jedwali",
+      "mobileHint": "Punguza upana wa dirisha chini ya px 640 kuona mpangilio wa kadi wa simu."
+    },
+    "formField": {
+      "withHint": "Na kidokezo",
+      "optional": "Si lazima",
+      "phone": "Namba ya simu ya mteja",
+      "phoneHint": "Inatumika kwa kiungo cha WhatsApp, mf. +255 754 321 987",
+      "phoneError": "Weka namba ya Tanzania inayoanza na +255.",
+      "reference": "Namba ya muamala"
+    },
+    "mockRole": "Jukumu la majaribio (uundaji tu)",
+    "signedOut": "Hajaingia",
     "api": {
       "checking": "Inakagua API…",
       "connected": "API imeunganishwa, toleo {{version}}",
-      "unreachable": "API haipatikani. Washa backend kwa npm run dev."
+      "unreachable": "API haipatikani. Washa backend, au endesha npm run dev:mock kutumia data ya majaribio."
     },
-    "sample": {
-      "heading": "Mradi wa mfano",
-      "title": "Kidhibiti mahiri cha umwagiliaji",
-      "status": "Unaendelea",
-      "deadline": "Tarehe ya mwisho",
-      "agreed": "Iliyokubaliwa",
-      "paid": "Iliyolipwa",
-      "balance": "Salio",
-      "note": "Takwimu za mfano. Jumla halisi huhesabiwa na seva."
+    "demo": {
+      "accountsTitle": "Seva ya majaribio: akaunti za mfano",
+      "codesTitle": "Seva ya majaribio: misimbo ya mialiko ya mfano",
+      "password": "Nenosiri la kila akaunti: {{password}}",
+      "states": {
+        "ACTIVE": "anaingia",
+        "PENDING_APPROVAL": "anasubiri kuidhinishwa",
+        "SUSPENDED": "amesimamishwa",
+        "RATE_LIMITED": "majaribio mengi mno",
+        "REJECTED": "hakuidhinishwa"
+      },
+      "codes": {
+        "CLIENT": "mwaliko wa mteja",
+        "OPERATOR": "mwaliko wa mhudumu",
+        "INVITATION_EXPIRED": "muda umeisha",
+        "INVITATION_REVOKED": "umefutwa",
+        "INVITATION_ALREADY_USED": "umeshatumika",
+        "other": "Msimbo mwingine wowote: haupo."
+      },
+      "emailTaken": "Kujisajili kwa barua pepe ya akaunti ya mfano kunaleta hitilafu ya 'tayari ipo'."
     }
+  },
+  "status": {
+    "project": {
+      "DRAFT": "Rasimu",
+      "AWAITING_CLIENT_ACCEPTANCE": "Inasubiri idhini ya mteja",
+      "ACTIVE": "Inaendelea",
+      "CHANGE_REQUEST_PENDING": "Ombi la mabadiliko linasubiri",
+      "ON_HOLD": "Imesimamishwa",
+      "COMPLETED": "Imekamilika",
+      "CANCELLED": "Imeghairiwa",
+      "ARCHIVED": "Imehifadhiwa kumbukumbu"
+    },
+    "payment": {
+      "RECORDED": "Imerekodiwa",
+      "REVERSED": "Imebatilishwa",
+      "ADJUSTED": "Imerekebishwa"
+    },
+    "invitation": {
+      "PENDING": "Inasubiri",
+      "ACCEPTED": "Imekubaliwa",
+      "EXPIRED": "Muda umeisha",
+      "REVOKED": "Imebatilishwa",
+      "REJECTED": "Imekataliwa"
+    },
+    "agreement": {
+      "AWAITING_ACCEPTANCE": "Inasubiri ukubali",
+      "ACCEPTED": "Imekubaliwa",
+      "SUPERSEDED": "Imebadilishwa na toleo jipya"
+    },
+    "changeRequest": {
+      "UNDER_REVIEW": "Inasubiri idhini ya msimamizi",
+      "AWAITING_CLIENT_ACCEPTANCE": "Inasubiri uamuzi wa mteja",
+      "ACCEPTED": "Imekubaliwa",
+      "REJECTED": "Imekataliwa"
+    },
+    "correction": {
+      "REVERSAL": "Ubatilishaji",
+      "ADJUSTMENT": "Marekebisho"
+    },
+    "operator": {
+      "PENDING_APPROVAL": "Anasubiri idhini",
+      "ACTIVE": "Hai",
+      "SUSPENDED": "Amesimamishwa",
+      "REJECTED": "Hakuidhinishwa"
+    }
+  },
+  "roles": {
+    "CLIENT": "Mteja",
+    "OPERATOR": "Mhudumu",
+    "ADMIN": "Msimamizi"
+  },
+  "nav": {
+    "client": {
+      "home": "Nyumbani",
+      "projects": "Miradi",
+      "payments": "Malipo",
+      "account": "Akaunti"
+    },
+    "operator": {
+      "dashboard": "Dashibodi",
+      "clients": "Wateja wangu",
+      "projects": "Miradi yangu",
+      "messages": "Ujumbe",
+      "payments": "Rekodi za malipo",
+      "profile": "Wasifu"
+    },
+    "admin": {
+      "overview": "Muhtasari",
+      "clients": "Wateja",
+      "projects": "Miradi",
+      "operators": "Wahudumu",
+      "finance": "Fedha",
+      "messages": "Ujumbe",
+      "auditLogs": "Kumbukumbu za ukaguzi",
+      "settings": "Mipangilio"
+    }
+  },
+  "shell": {
+    "mainNav": "Urambazaji mkuu",
+    "breadcrumb": "Njia ya ukurasa",
+    "openMenu": "Fungua menyu",
+    "collapseSidebar": "Kunja upau wa pembeni",
+    "expandSidebar": "Panua upau wa pembeni",
+    "signOut": "Toka",
+    "skipToContent": "Ruka hadi maudhui makuu",
+    "preferences": "Mapendeleo",
+    "placeholder": {
+      "title": "Skrini hii bado haijajengwa",
+      "body": "Hii ni ya muda. Skrini halisi itakuja katika hatua ya 2."
+    }
+  },
+  "errors": {
+    "goHome": "Nenda ukurasa wangu wa mwanzo",
+    "notFound": {
+      "title": "Ukurasa haujapatikana",
+      "body": "Huenda kiungo ni cha zamani au kimekosewa."
+    },
+    "noAccess": {
+      "title": "Huna ruhusa ya kufungua ukurasa huu",
+      "body": "Akaunti yako haiwezi kufungua ukurasa huu. Ukidhani ni kosa, wasiliana na msimamizi wa INSTIWISE."
+    }
+  },
+  "auth": {
+    "fields": {
+      "name": "Jina kamili",
+      "email": "Barua pepe",
+      "phone": "Namba ya simu",
+      "password": "Nenosiri"
+    },
+    "password": {
+      "show": "Onyesha nenosiri",
+      "hide": "Ficha nenosiri",
+      "rule": "Angalau herufi 8, zikiwemo angalau herufi moja ya alfabeti na tarakimu moja."
+    },
+    "login": {
+      "title": "Ingia",
+      "subtitle": "Tumia barua pepe uliyojisajili nayo.",
+      "submit": "Ingia",
+      "submitting": "Inaingia…",
+      "haveInvitation": "Una mwaliko?",
+      "enterCode": "Weka kiungo au msimbo wako"
+    },
+    "invite": {
+      "title": "Weka mwaliko wako",
+      "subtitle": "Bandika kiungo ulichopokea kwa WhatsApp au SMS, au andika msimbo.",
+      "field": "Kiungo au msimbo wa mwaliko",
+      "hint": "Msimbo una herufi na tarakimu 8, kwa mfano KX7P-M4Q2.",
+      "submit": "Endelea",
+      "haveAccount": "Tayari una akaunti?",
+      "signIn": "Ingia",
+      "checking": "Tunakagua mwaliko wako…",
+      "loadFailed": "Hatukuweza kukagua mwaliko wako",
+      "context": {
+        "client": "{{inviter}} amekualika kwenye INSTIWISE kama mteja.",
+        "operator": "{{inviter}} amekualika ujiunge na timu ya INSTIWISE kama mhudumu.",
+        "expires": "Mwaliko huu unaisha tarehe {{date}}."
+      },
+      "states": {
+        "tryAnother": "Weka msimbo mwingine",
+        "invalid": {
+          "title": "Mwaliko huu haupo",
+          "body": "Hakiki kiungo au msimbo kisha ujaribu tena. Misimbo inafanana na KX7P-M4Q2."
+        },
+        "expired": {
+          "title": "Muda wa mwaliko huu umeisha",
+          "body": "Muombe aliyekualika akutumie mwaliko mpya."
+        },
+        "revoked": {
+          "title": "Mwaliko huu umefutwa",
+          "body": "Timu ya INSTIWISE imeufuta. Wasiliana nao ikiwa bado unahitaji akaunti."
+        },
+        "used": {
+          "title": "Mwaliko huu umeshatumika",
+          "body": "Akaunti imeshafunguliwa kwa mwaliko huu. Ingia kwa barua pepe ya akaunti hiyo."
+        }
+      }
+    },
+    "register": {
+      "clientTitle": "Fungua akaunti yako ya mteja",
+      "operatorTitle": "Fungua akaunti yako ya mhudumu",
+      "password": "Tengeneza nenosiri",
+      "phoneHint": "Namba ya Tanzania, mf. 0754 321 987 au +255 754 321 987.",
+      "clientPhoneHint": "Inaiwezesha timu kukufikia kwa WhatsApp. Namba ya Tanzania, mf. 0754 321 987.",
+      "approvalNote": "Msimamizi wa INSTIWISE huidhinisha kila akaunti ya mhudumu kabla haijatumika.",
+      "submit": "Fungua akaunti",
+      "submitting": "Inafungua akaunti…"
+    },
+    "pending": {
+      "title": "Akaunti yako inasubiri kuidhinishwa",
+      "body": "Msimamizi wa INSTIWISE hukagua kila akaunti mpya ya mhudumu. Utaweza kuingia ikishaidhinishwa.",
+      "backToLogin": "Rudi kwenye kuingia"
+    }
+  },
+  "validation": {
+    "nameRequired": "Weka jina lako kamili.",
+    "nameTooLong": "Tumia herufi zisizozidi 100.",
+    "emailRequired": "Weka barua pepe yako.",
+    "emailInvalid": "Weka barua pepe kama jina@example.com.",
+    "phoneRequired": "Weka namba yako ya simu.",
+    "phoneInvalid": "Weka namba ya Tanzania: 0 au +255 ikifuatiwa na tarakimu 9.",
+    "passwordRequired": "Weka nenosiri lako.",
+    "passwordTooShort": "Tumia angalau herufi 8.",
+    "passwordTooLong": "Tumia herufi zisizozidi 128.",
+    "passwordNeedsLetter": "Weka angalau herufi moja ya alfabeti.",
+    "passwordNeedsNumber": "Weka angalau tarakimu moja.",
+    "invitationRequired": "Bandika kiungo cha mwaliko au andika msimbo.",
+    "invitationFormat": "Hicho hakifanani na kiungo au msimbo wa mwaliko. Misimbo inafanana na KX7P-M4Q2.",
+    "changeTitleRequired": "Yape mabadiliko kichwa kifupi.",
+    "changeReasonRequired": "Eleza kwa nini mabadiliko yanahitajika (angalau herufi 10).",
+    "scopeRequired": "Bakiza angalau kipengele kimoja cha kazi.",
+    "amountInvalid": "Weka idadi kamili ya shilingi, mf. 2050000.",
+    "dateInvalid": "Chagua tarehe.",
+    "tooLong": "Hii ni ndefu mno.",
+    "clientRequired": "Chagua mteja.",
+    "projectRequired": "Chagua mradi.",
+    "amountPositive": "Weka idadi kamili ya shilingi, zaidi ya 0.",
+    "methodRequired": "Chagua jinsi mteja alivyolipa.",
+    "referenceRequired": "Weka namba ya muamala kwa malipo ya benki na pesa kwa simu.",
+    "dateFuture": "Tarehe ya kupokea haiwezi kuwa ya baadaye.",
+    "dateTooOld": "Hii ni zaidi ya siku 30 zilizopita. Muombe msimamizi arekodi malipo ya zamani.",
+    "assignRequired": "Chagua wa kukabidhi.",
+    "correctionReason": "Eleza marekebisho (angalau herufi 10).",
+    "dateRange": "Tarehe ya mwisho iko kabla ya tarehe ya kuanzia.",
+    "invitationDays": "Weka idadi kamili ya siku kuanzia 1 hadi 30.",
+    "issuerNameRequired": "Weka jina linalochapishwa kwenye risiti.",
+    "addressRequired": "Weka anwani inayochapishwa kwenye risiti."
+  },
+  "apiErrors": {
+    "INVALID_CREDENTIALS": "Barua pepe au nenosiri si sahihi.",
+    "ACCOUNT_SUSPENDED": "Akaunti hii imesimamishwa. Wasiliana na msimamizi wa INSTIWISE.",
+    "ACCOUNT_REJECTED": "Akaunti hii ya mhudumu haikuidhinishwa. Wasiliana na msimamizi wa INSTIWISE.",
+    "RATE_LIMITED": "Majaribio mengi mno. Subiri dakika chache kisha ujaribu tena.",
+    "EMAIL_TAKEN": "Tayari kuna akaunti yenye barua pepe hii. Ingia badala yake.",
+    "VALIDATION_FAILED": "Baadhi ya taarifa si sahihi. Hakiki sehemu zilizoangaziwa.",
+    "NETWORK_ERROR": "Imeshindwa kufikia INSTIWISE. Angalia mtandao wako kisha ujaribu tena.",
+    "UNKNOWN_ERROR": "Hitilafu imetokea upande wetu. Jaribu tena.",
+    "CHANGE_REQUEST_ALREADY_DECIDED": "Mabadiliko haya yameshaamuliwa. Ukurasa sasa unaonyesha matokeo.",
+    "CHANGE_REQUEST_ALREADY_OPEN": "Tayari kuna mabadiliko yaliyo wazi kwenye mradi huu.",
+    "CHANGE_REQUEST_NO_CHANGES": "Bado hakuna tofauti na makubaliano ya sasa.",
+    "AGREEMENT_NOT_ACCEPTED": "Mteja bado hajakubali makubaliano.",
+    "REASON_REQUIRED": "Toa sababu.",
+    "PAYMENT_REFERENCE_REQUIRED": "Weka namba ya muamala kwa malipo ya benki na pesa kwa simu.",
+    "PAYMENT_DATE_OUT_OF_RANGE": "Tarehe iwe leo au ndani ya siku 30 zilizopita.",
+    "SERVER_UNREACHABLE": "Seva ya INSTIWISE haijibu kwa sasa. Jaribu tena baada ya dakika chache.",
+    "OPERATOR_HAS_CLIENTS": "Wape wahudumu wengine wateja wa mhudumu huyu kabla ya kumsimamisha.",
+    "OPERATOR_NOT_ACTIVE": "Wahudumu hai tu ndio wanaweza kukabidhiwa wateja.",
+    "OPERATOR_NOT_PENDING": "Mhudumu huyu ameshaidhinishwa au kukataliwa. Ukurasa sasa unaonyesha matokeo.",
+    "OPERATOR_STATUS_CHANGED": "Hali ya mhudumu huyu imebadilika. Ukurasa sasa unaionyesha.",
+    "PAYMENT_ALREADY_REVERSED": "Malipo haya yameshabatilishwa.",
+    "ADJUSTMENT_BELOW_ZERO": "Hilo lingeshusha malipo chini ya sifuri. Yabatilishe badala yake."
+  },
+  "client": {
+    "home": {
+      "greeting": "Habari, {{name}}. Hivi ndivyo miradi yako ilivyo.",
+      "actions": "Inahitaji hatua yako",
+      "acceptAgreement": "Toleo la {{version}} la makubaliano ya {{project}} linakusubiri.",
+      "reviewAgreement": "Soma makubaliano",
+      "balance": "Salio lako",
+      "acrossProjects_one": "Kwa mradi wako {{count}}.",
+      "acrossProjects_other": "Kwa miradi yako {{count}}.",
+      "seePayments": "Malipo na risiti",
+      "unread": "Ujumbe ambao haujasomwa",
+      "noUnread": "Hakuna ujumbe ambao haujasomwa",
+      "progress": "Maendeleo ya hivi karibuni"
+    },
+    "money": {
+      "outstanding": "Kiasi kilichobaki kulipa",
+      "paid": "Kilicholipwa hadi sasa",
+      "agreed": "Bei iliyokubaliwa",
+      "credit": "Kilicholipwa mapema (salio la ziada)",
+      "fullyPaid": "Imelipwa kikamilifu",
+      "toPay": "{{amount}} bado kulipa",
+      "notAgreedYet": "Bei inakubaliwa utakapokubali makubaliano."
+    },
+    "projects": {
+      "title": "Miradi yangu",
+      "empty": "Bado hakuna miradi",
+      "emptyBody": "Miradi ambayo timu inakufungulia itaonekana hapa."
+    },
+    "project": {
+      "sections": "Sehemu za mradi",
+      "start": "Ulianza",
+      "deadline": "Tarehe ya mwisho",
+      "category": "Aina ya kazi"
+    },
+    "tabs": {
+      "overview": "Muhtasari",
+      "agreement": "Makubaliano",
+      "progress": "Maendeleo",
+      "messages": "Ujumbe",
+      "payments": "Malipo",
+      "documents": "Nyaraka",
+      "changes": "Mabadiliko"
+    },
+    "overview": {
+      "awaitingAcceptance": "Kazi inaanza baada ya kukubali makubaliano.",
+      "deliverables": "Utakachopokea",
+      "money": "Fedha",
+      "seePayments": "Malipo na risiti za mradi huu",
+      "team": "Timu yako",
+      "teamMember": "{{name}} anashughulikia mradi wako."
+    },
+    "agreement": {
+      "version": "Toleo la {{version}}",
+      "price": "Bei",
+      "scope": "Kilichojumuishwa",
+      "exclusions": "Kisichojumuishwa",
+      "paymentTerms": "Masharti ya malipo",
+      "reviewPrompt": "Soma masharti hapa chini. Kazi inaanza ukishayakubali.",
+      "acceptedBy": "Yamekubaliwa na {{name}} tarehe {{date}}.",
+      "acceptedOn": "yalikubaliwa {{date}}",
+      "accept": "Kubali toleo la {{version}}",
+      "accepted": "Toleo la {{version}} la makubaliano limekubaliwa",
+      "confirmTitle": "Ukubali toleo la {{version}} la makubaliano?",
+      "confirmBody": "Unakubali kazi iliyoelezwa hapo juu, bei ya {{price}} na tarehe ya mwisho {{date}}. Jina lako na muda vinarekodiwa na hili haliwezi kutenduliwa. Mabadiliko yoyote baadaye yanahitaji toleo jipya.",
+      "history": "Matoleo ya awali",
+      "none": "Bado hakuna makubaliano"
+    },
+    "progress": {
+      "next": "Hatua inayofuata:",
+      "empty": "Bado hakuna taarifa za maendeleo",
+      "emptyBody": "Timu inaweka taarifa hapa kila hatua ya kazi."
+    },
+    "messages": {
+      "unread_one": "{{count}} haujasomwa",
+      "unread_other": "{{count}} haijasomwa",
+      "conversation": "Mazungumzo",
+      "you": "Wewe",
+      "sending": "Unatumwa…",
+      "notSent": "Haujatumwa.",
+      "write": "Andika ujumbe",
+      "send": "Tuma",
+      "textOnly": "Maandishi tu. Ctrl+Enter inatuma.",
+      "empty": "Bado hakuna ujumbe",
+      "emptyBody": "Uliza timu chochote kuhusu mradi huu. Ujumbe wako unabaki na mradi.",
+      "urgent": "Ni haraka? Ongea kwa WhatsApp"
+    },
+    "whatsapp": {
+      "open": "Ongea na {{name}} kwa WhatsApp",
+      "newTab": "(inafungua WhatsApp)",
+      "note": "Ujumbe wa WhatsApp hauhifadhiwi kwenye INSTIWISE. Maamuzi kuhusu kazi, bei au tarehe yaandikwe kwenye mradi hapa."
+    },
+    "payments": {
+      "title": "Malipo na risiti",
+      "external": "Unalipa timu kwa taslimu, benki au pesa kwa simu. Timu inarekodi kila malipo hapa na risiti inaonekana.",
+      "recorded": "Malipo yaliyorekodiwa",
+      "caption": "Malipo yaliyorekodiwa",
+      "receipt": "Risiti",
+      "viewReceipt": "Angalia risiti {{number}}",
+      "amount": "Kiasi",
+      "received": "Yamepokelewa",
+      "project": "Mradi",
+      "method": "Njia",
+      "status": "Hali",
+      "empty": "Bado hakuna malipo yaliyorekodiwa",
+      "emptyBody": "Timu ikirekodi malipo, risiti yake itaonekana hapa."
+    },
+    "methods": {
+      "cash": "Taslimu",
+      "bank": "Uhamisho wa benki",
+      "mobile": "Pesa kwa simu",
+      "other": "Nyingine"
+    },
+    "receipt": {
+      "title": "Risiti {{number}}",
+      "disclaimer": "Risiti hii inaonyesha kile INSTIWISE ilichorekodi. Si uthibitisho kutoka benki au mtoa huduma wa pesa kwa simu.",
+      "client": "Mteja",
+      "project": "Mradi",
+      "received": "Tarehe ya kupokea",
+      "method": "Imelipwa kwa",
+      "agreed": "Bei iliyokubaliwa",
+      "paidToDate": "Kilicholipwa hadi sasa",
+      "balanceAfter": "Kilichobaki baada ya malipo haya",
+      "recordedBy": "Imerekodiwa na",
+      "issued": "Imetolewa"
+    },
+    "documents": {
+      "download": "Pakua {{name}}",
+      "failed": "Upakuaji haukuanza",
+      "empty": "Bado hakuna nyaraka",
+      "emptyBody": "Kazi za mwisho zitaonekana hapa kazi ikikamilika."
+    },
+    "account": {
+      "profile": "Wasifu",
+      "emailHint": "Hivi ndivyo unavyoingia. Muombe timu ya INSTIWISE ikiwa inahitaji kubadilishwa.",
+      "save": "Hifadhi mabadiliko",
+      "saving": "Inahifadhi…",
+      "saved": "Wasifu umehifadhiwa"
+    }
+  },
+  "changes": {
+    "before": "Kabla",
+    "after": "Baada",
+    "price": "Bei",
+    "deadline": "Tarehe ya mwisho",
+    "scope": "Kazi",
+    "why": "Kwa nini mabadiliko haya",
+    "added": "Imeongezwa",
+    "removed": "Imeondolewa",
+    "unchanged_one": "Kipengele {{count}} hakijabadilika",
+    "unchanged_other": "Vipengele {{count}} havijabadilika",
+    "noChange": "Hakuna mabadiliko",
+    "priceUp": "{{amount}} zaidi",
+    "priceDown": "{{amount}} pungufu",
+    "deadlineLater": "Baadaye kuliko awali",
+    "deadlineEarlier": "Mapema kuliko awali",
+    "proposedBy": "{{number}} · imependekezwa na {{name}} tarehe {{date}}",
+    "showDetails": "Onyesha kabla na baada",
+    "history": {
+      "title": "Historia ya mabadiliko",
+      "accepted": "Yamekubaliwa na {{name}} tarehe {{date}}.",
+      "becameVersion": "Yakawa toleo la {{version}} la makubaliano.",
+      "rejected": "Yamekataliwa na {{name}} tarehe {{date}}:",
+      "adminRejected": "Hayakuidhinishwa na {{name}} tarehe {{date}}:",
+      "approved": "Yameidhinishwa na {{name}} tarehe {{date}}.",
+      "direct": "Kazi tu, hivyo idhini ya msimamizi haikuhitajika.",
+      "waitingAdmin": "Inasubiri msimamizi aidhinishe bei au tarehe mpya.",
+      "waitingClient": "Inasubiri mteja akubali au akatae."
+    },
+    "client": {
+      "badge": "mabadiliko yanayosubiri uamuzi wako",
+      "waiting": "Inasubiri uamuzi wako",
+      "whatAcceptMeans": "Ukikubali, toleo jipya la makubaliano linaundwa kwa masharti haya na kurekodiwa kuwa umelikubali. Ukikataa, makubaliano ya sasa yanabaki kama yalivyo.",
+      "accept": "Kubali mabadiliko",
+      "reject": "Kataa mabadiliko",
+      "acceptTitle": "Ukubali mabadiliko {{number}}?",
+      "acceptBody": "Toleo jipya la makubaliano linaundwa lenye kazi mpya, bei ya {{price}} na tarehe ya mwisho {{date}}. Linarekodiwa kuwa umelikubali na haliwezi kutenduliwa.",
+      "rejectTitle": "Ukatae mabadiliko {{number}}?",
+      "rejectBody": "Makubaliano ya sasa yanabaki kama yalivyo. Timu itaona sababu yako.",
+      "reasonLabel": "Kwa nini unakataa mabadiliko haya?",
+      "reasonHint": "Kwa mfano: ni ghali kwa sasa, au tarehe haifai.",
+      "acceptedToast": "Mabadiliko {{number}} yamekubaliwa. Makubaliano yamesasishwa.",
+      "rejectedToast": "Mabadiliko {{number}} yamekataliwa",
+      "homeAction": "Mabadiliko {{number}} ya {{project}} yanasubiri uamuzi wako.",
+      "review": "Soma mabadiliko",
+      "empty": "Hakuna mabadiliko yaliyopendekezwa",
+      "emptyBody": "Timu ikipendekeza mabadiliko ya kazi, bei au tarehe, utayasoma hapa kabla chochote hakijabadilika."
+    },
+    "operator": {
+      "current": "Makubaliano ya sasa",
+      "noAgreement": "Mteja bado hajakubali makubaliano. Mabadiliko yanaweza kupendekezwa baada ya hapo.",
+      "propose": "Pendekeza mabadiliko",
+      "oneOpen": "Tayari kuna mabadiliko yaliyo wazi kwenye mradi huu. Subiri uamuzi wake kabla ya kupendekeza mengine.",
+      "title": "Kichwa kifupi",
+      "reason": "Kwa nini mabadiliko yanahitajika",
+      "reasonHint": "Mteja atasoma hili. Taja ombi lake kama aliliomba.",
+      "scopeHint": "Kazi yote baada ya mabadiliko. Hariri, ongeza au ondoa vipengele.",
+      "scopeItem": "Kipengele cha kazi {{number}}",
+      "removeItem": "Ondoa kipengele cha kazi {{number}}",
+      "addItem": "Ongeza kipengele",
+      "price": "Bei mpya (TZS)",
+      "priceHint": "Shilingi kamili, mf. 2050000.",
+      "needsAdmin": "Bei au tarehe inabadilika, hivyo msimamizi ataidhinisha kabla mteja hajaona.",
+      "goesToClient": "Kazi tu: hili linaenda moja kwa moja kwa mteja.",
+      "submit": "Tuma pendekezo",
+      "sentToAdmin": "{{number}} imetumwa kwa msimamizi kuidhinishwa",
+      "sentToClient": "{{number}} imetumwa kwa mteja",
+      "empty": "Bado hakuna mabadiliko yaliyopendekezwa kwenye mradi huu"
+    },
+    "admin": {
+      "title": "Mabadiliko yanayosubiri idhini",
+      "subtitle": "Mabadiliko ya bei au tarehe yaliyopendekezwa na wahudumu. Mteja anayaona tu baada ya wewe kuidhinisha.",
+      "waitingCount_one": "Mabadiliko {{count}} yanasubiri idhini yako",
+      "waitingCount_other": "Mabadiliko {{count}} yanasubiri idhini yako",
+      "approve": "Idhinisha kwa mteja",
+      "reject": "Usiidhinishe",
+      "approveTitle": "Uidhinishe {{number}}?",
+      "approveBody": "{{client}} ataona mabadiliko haya na anaweza kuyakubali au kuyakataa.",
+      "rejectTitle": "Usiidhinishe {{number}}?",
+      "rejectBody": "Mteja hataona pendekezo hili. Mhudumu ataona sababu yako.",
+      "reasonLabel": "Sababu kwa mhudumu",
+      "reasonHint": "Inahifadhiwa kwenye kumbukumbu za ukaguzi pamoja na jina lako.",
+      "approvedToast": "{{number}} imeidhinishwa na kutumwa kwa mteja",
+      "rejectedToast": "{{number}} haikuidhinishwa",
+      "empty": "Hakuna kinachosubiri idhini yako"
+    }
+  },
+  "operator": {
+    "projects": {
+      "subtitle": "Miradi ya wateja uliokabidhiwa.",
+      "changeOpen": "Mabadiliko yako wazi",
+      "empty": "Bado hujakabidhiwa miradi"
+    },
+    "dashboard": {
+      "scope": "Takwimu zinahusu wateja uliokabidhiwa tu.",
+      "work": "Kazi yako",
+      "clients": "Wateja uliokabidhiwa",
+      "clientsRule": "Wateja waliokabidhiwa kwako kwa sasa.",
+      "activeProjects": "Miradi inayoendelea",
+      "activeRule_one": "Kati ya mradi {{count}} wa wateja wako.",
+      "activeRule_other": "Kati ya miradi {{count}} ya wateja wako.",
+      "openChanges": "Mabadiliko yaliyo wazi",
+      "openChangesRule": "Yanasubiri msimamizi au mteja.",
+      "money": "Fedha",
+      "collected": "Kilichokusanywa",
+      "allTimeRule": "Tangu mwanzo, makubaliano yaliyokubaliwa ya wateja wako.",
+      "recordedThisMonth": "Yaliyorekodiwa mwezi huu",
+      "monthRule_one": "{{month}} · malipo {{count}}, kwa tarehe ya kupokea (saa za Dar es Salaam).",
+      "monthRule_other": "{{month}} · malipo {{count}}, kwa tarehe ya kupokea (saa za Dar es Salaam).",
+      "notProfit": "Makusanyo ni fedha zilizopokelewa kutoka kwa wateja, si faida.",
+      "deadlines": "Tarehe za mwisho ndani ya siku 30",
+      "noDeadlines": "Hakuna tarehe za mwisho ndani ya siku 30",
+      "recentPayments": "Malipo ya karibuni"
+    },
+    "clients": {
+      "subtitle": "Wateja uliokabidhiwa.",
+      "name": "Mteja",
+      "projects": "Miradi",
+      "empty": "Bado hujakabidhiwa wateja"
+    },
+    "client": {
+      "whatsapp": "WhatsApp {{phone}}",
+      "email": "Tuma barua pepe"
+    },
+    "payments": {
+      "subtitle": "Malipo yaliyorekodiwa kwa wateja wako. Kila moja lina risiti ambayo mteja anaiona.",
+      "caption": "Rekodi za malipo",
+      "client": "Mteja",
+      "emptyBody": "Rekodi malipo mteja anapolipa kwa taslimu, benki au pesa kwa simu."
+    },
+    "record": {
+      "cta": "Rekodi malipo",
+      "title": "Rekodi malipo",
+      "subtitle": "Kwa fedha ambazo mteja ameshalipa kwa taslimu, benki au pesa kwa simu. INSTIWISE haipokei malipo.",
+      "step1": "Hatua ya 1 kati ya 2: taarifa za malipo",
+      "step2": "Hatua ya 2 kati ya 2: hakiki na thibitisha",
+      "chooseClient": "Chagua mteja",
+      "chooseProject": "Chagua mradi",
+      "chooseMethod": "Chagua njia",
+      "amount": "Kiasi kilichopokelewa (TZS)",
+      "reference": "Namba ya muamala",
+      "referenceHint": "Inahitajika kwa benki na pesa kwa simu, mf. M-Pesa SGH7K2LQ9P.",
+      "referenceOptional": "Si lazima kwa taslimu.",
+      "date": "Tarehe ya kupokea",
+      "dateHint": "Leo au hadi siku 30 zilizopita. Malipo ya zamani zaidi yanarekodiwa na msimamizi.",
+      "note": "Maelezo",
+      "review": "Hakiki malipo",
+      "confirmTitle": "Rekodi {{amount}}?",
+      "balanceBefore": "Kilichobaki kabla",
+      "balanceAfter": "Kilichobaki baada",
+      "credit": "Hiki ni {{amount}} zaidi ya salio. Kitaonekana kama salio la ziada kwa mteja.",
+      "permanent": "Risiti inatolewa na mteja anaiona mara moja. Makosa hurekebishwa kwa kubatilisha, si kwa kuhariri.",
+      "edit": "Badilisha taarifa",
+      "confirm": "Rekodi malipo",
+      "done": "Malipo yamerekodiwa. Risiti {{number}} iko tayari, na mteja anaweza kuiona sasa.",
+      "another": "Rekodi malipo mengine",
+      "backToRecords": "Rudi kwenye rekodi za malipo"
+    }
+  },
+  "admin": {
+    "actions": "Vitendo",
+    "overview": {
+      "scope": "Takwimu za mfumo mzima: kila mteja, mhudumu na mradi.",
+      "needsYou": "Inahitaji msimamizi",
+      "pendingOperators_one": "Mhudumu {{count}} anasubiri idhini",
+      "pendingOperators_other": "Wahudumu {{count}} wanasubiri idhini",
+      "unassigned_one": "Mteja {{count}} hana mhudumu",
+      "unassigned_other": "Wateja {{count}} hawana mhudumu",
+      "people": "Watu na miradi",
+      "clientsRule_one": "{{count}} kati yao hana mhudumu.",
+      "clientsRule_other": "{{count}} kati yao hawana mhudumu.",
+      "activeOperators": "Wahudumu hai",
+      "operatorsRule_one": "{{count}} zaidi anasubiri idhini.",
+      "operatorsRule_other": "{{count}} zaidi wanasubiri idhini.",
+      "projectsRule_one": "Kati ya mradi {{count}} kwa jumla.",
+      "projectsRule_other": "Kati ya miradi {{count}} kwa jumla.",
+      "allTimeRule": "Wateja wote, tangu mwanzo, makubaliano yaliyokubaliwa.",
+      "collectedRule": "Wateja wote, tangu mwanzo, baada ya ubatilishaji na marekebisho.",
+      "monthRule_one": "{{month}} · malipo {{count}}, marekebisho {{corrections}}, kwa tarehe (saa za Dar es Salaam).",
+      "monthRule_other": "{{month}} · malipo {{count}}, marekebisho {{corrections}}, kwa tarehe (saa za Dar es Salaam).",
+      "activity": "Shughuli za karibuni",
+      "allActivity": "Shughuli zote kwenye kumbukumbu za ukaguzi"
+    },
+    "clients": {
+      "subtitle": "Kila mteja na mhudumu anayefanya kazi naye.",
+      "unassigned": "Hana mhudumu",
+      "assign": "Kabidhi mhudumu",
+      "reassign": "Badilisha mhudumu",
+      "empty": "Bado hakuna wateja",
+      "emptyBody": "Wateja wanaonekana hapa wanapojisajili kwa mwaliko."
+    },
+    "projects": {
+      "subtitle": "Kila mradi kwenye mfumo.",
+      "empty": "Bado hakuna miradi"
+    },
+    "assign": {
+      "clientTitle": "Mhudumu wa {{name}}",
+      "clientNow": "{{name}} anafanya kazi na mteja huyu sasa. Miradi, malipo na ujumbe wake vitahamia kwa mhudumu utakayemchagua.",
+      "clientNone": "Mteja huyu bado hana mhudumu. Mhudumu utakayemchagua ataona miradi, malipo na ujumbe wake.",
+      "clientCount_one": "mteja {{count}}",
+      "clientCount_other": "wateja {{count}}",
+      "operatorTitle": "Mkabidhi {{name}} mteja",
+      "operatorBody": "Mhudumu ataona miradi, malipo na ujumbe wa mteja huyu. Mteja ana mhudumu mmoja kwa wakati mmoja.",
+      "nowWith": "sasa yuko na {{name}}",
+      "choose": "Chagua…",
+      "noOptions": "Hakuna wa kuchagua.",
+      "save": "Kabidhi",
+      "done": "{{client}} sasa yuko na {{operator}}"
+    },
+    "operators": {
+      "subtitle": "Idhinisha wahudumu wapya, wakabidhi wateja, na simamisha au rejesha akaunti.",
+      "byStatus": "Wahudumu kwa hali",
+      "registered": "Alijisajili {{date}}",
+      "reason": "Sababu:",
+      "clients_one": "mteja {{count}}",
+      "clients_other": "wateja {{count}}",
+      "approve": "Idhinisha",
+      "reject": "Usiidhinishe",
+      "assign": "Mkabidhi mteja",
+      "suspend": "Simamisha",
+      "reactivate": "Rejesha",
+      "reasonLabel": "Sababu",
+      "reassignFirst_one": "Ili kumsimamisha, kwanza mpe mhudumu mwingine mteja wake {{count}} kwenye",
+      "reassignFirst_other": "Ili kumsimamisha, kwanza wape wahudumu wengine wateja wake {{count}} kwenye",
+      "confirm": {
+        "approve": {
+          "title": "Umwidhinishe {{name}}?",
+          "body": "{{name}} ataweza kuingia na kufanya kazi na wateja utakaomkabidhi."
+        },
+        "reject": {
+          "title": "Usimwidhinishe {{name}}?",
+          "body": "{{name}} hataweza kuingia. Ataona kuwa akaunti yake haikuidhinishwa."
+        },
+        "suspend": {
+          "title": "Umsimamishe {{name}}?",
+          "body": "{{name}} hataweza kuingia tena. Historia yake inabaki. Unaweza kumrejesha baadaye."
+        },
+        "reactivate": {
+          "title": "Umrejeshe {{name}}?",
+          "body": "{{name}} ataweza kuingia tena. Mkabidhi wateja baadaye."
+        }
+      },
+      "done": {
+        "approve": "{{name}} ameidhinishwa",
+        "reject": "{{name}} hakuidhinishwa",
+        "suspend": "{{name}} amesimamishwa",
+        "reactivate": "{{name}} amerejeshwa"
+      },
+      "empty": {
+        "PENDING_APPROVAL": "Hakuna anayesubiri idhini",
+        "ACTIVE": "Hakuna wahudumu hai",
+        "SUSPENDED": "Hakuna wahudumu waliosimamishwa",
+        "REJECTED": "Hakuna wahudumu waliokataliwa"
+      }
+    }
+  },
+  "finance": {
+    "subtitle": "Kila malipo na rekebisho, kwa wateja wote.",
+    "ledger": "Malipo na marekebisho",
+    "neverDeleted": "Malipo hayahaririwi wala kufutwa. Kubatilisha au kurekebisha huongeza safu ya COR na kuweka alama kwenye ya awali; ya awali inabaki na namba yake ya risiti.",
+    "number": "Namba",
+    "date": "Tarehe",
+    "by": "Imerekodiwa na",
+    "emptyBody": "Malipo yataonekana hapa wahudumu wakiyarekodi.",
+    "corrects": "inarekebisha {{number}}",
+    "showHistory": "onyesha historia yake",
+    "reverse": "Batilisha",
+    "reverseTitle": "Ubatilishe {{number}}?",
+    "reverseBody": "Safu ya marekebisho inafuta kilichobaki cha {{number}}. {{number}} inabaki kwenye rekodi, ikiwa na alama Imebatilishwa. Ili kuibadilisha, rekodi malipo sahihi baadaye.",
+    "reverseDone": "{{number}} imebatilishwa kwa {{correction}}",
+    "adjust": "Rekebisha",
+    "adjustTitle": "Rekebisha {{number}}",
+    "adjustBody": "{{number}} ilirekodiwa kama {{amount}}. Safu ya marekebisho inaongeza au kupunguza tofauti; {{number}} inabaki kwenye rekodi, ikiwa na alama Imerekebishwa.",
+    "direction": "Malipo yalirekodiwa",
+    "decrease": "Juu mno: punguza",
+    "increase": "Chini mno: ongeza",
+    "adjustAmount": "Kwa kiasi gani (TZS)",
+    "adjustDone": "{{number}} imerekebishwa kwa {{correction}}",
+    "reasonLabel": "Sababu ya marekebisho",
+    "historyTitle": "Historia ya {{number}}",
+    "historyBody": "Kama ilivyorekodiwa mara ya kwanza, kisha kila rekebisho, la zamani kwanza. Hakuna kinachohaririwa hapa.",
+    "original": "Ya awali",
+    "recordedBy": "Imerekodiwa na {{name}}",
+    "correctedBy": "Na {{name}} tarehe {{date}}",
+    "noCorrections": "Hakuna marekebisho.",
+    "correctionsTitle": "Marekebisho"
+  },
+  "audit": {
+    "subtitle": "Kila kitendo nyeti, cha karibuni kwanza. Kumbukumbu zinaongezwa tu, hazifutwi.",
+    "filters": "Chuja kumbukumbu za ukaguzi",
+    "when": "Lini",
+    "user": "Mtumiaji",
+    "action": "Kitendo",
+    "target": "Kwenye",
+    "from": "Kuanzia",
+    "to": "Hadi",
+    "allUsers": "Wote",
+    "allActions": "Vitendo vyote",
+    "apply": "Tumia vichujio",
+    "clear": "Ondoa vichujio",
+    "empty": "Bado hakuna kitu kwenye kumbukumbu za ukaguzi",
+    "noMatches": "Hakuna kumbukumbu zinazolingana na vichujio hivi",
+    "details": {
+      "title": "Maelezo",
+      "correction": "kwa {{number}}",
+      "fromTo": "kutoka {{from}} hadi {{to}}",
+      "to": "kwa {{to}}",
+      "reason": "sababu: {{reason}}"
+    },
+    "actions": {
+      "PAYMENT_RECORDED": "Malipo yamerekodiwa",
+      "PAYMENT_REVERSED": "Malipo yamebatilishwa",
+      "PAYMENT_ADJUSTED": "Malipo yamerekebishwa",
+      "OPERATOR_APPROVED": "Mhudumu ameidhinishwa",
+      "OPERATOR_REJECTED": "Mhudumu hakuidhinishwa",
+      "OPERATOR_SUSPENDED": "Mhudumu amesimamishwa",
+      "OPERATOR_REACTIVATED": "Mhudumu amerejeshwa",
+      "CLIENT_ASSIGNED": "Mteja amekabidhiwa",
+      "CHANGE_APPROVED": "Mabadiliko yameidhinishwa kwa mteja",
+      "CHANGE_NOT_APPROVED": "Mabadiliko hayakuidhinishwa",
+      "CHANGE_ACCEPTED": "Mabadiliko yamekubaliwa na mteja",
+      "CHANGE_REJECTED": "Mabadiliko yamekataliwa na mteja",
+      "AGREEMENT_ACCEPTED": "Makubaliano yamekubaliwa",
+      "SETTINGS_UPDATED": "Mipangilio imesasishwa"
+    }
+  },
+  "settings": {
+    "subtitle": "Mabadiliko yanahifadhiwa kwenye kumbukumbu za ukaguzi.",
+    "saved": "Mipangilio imehifadhiwa",
+    "issuer": "Mtoaji wa risiti",
+    "issuerHint": "Inachapishwa kwenye kila risiti.",
+    "issuerName": "Jina",
+    "issuerPhone": "Namba ya simu",
+    "issuerAddress": "Anwani",
+    "contact": "Mawasiliano",
+    "whatsapp": "Namba ya WhatsApp ya timu",
+    "whatsappHint": "Inatumika kwa njia ya WhatsApp pale mhudumu wa mteja hana namba.",
+    "invitations": "Mialiko",
+    "validity": "Mialiko inadumu kwa (siku)",
+    "validityHint": "Kati ya siku {{min}} na {{max}}. Inahusu mialiko mipya."
   }
 }

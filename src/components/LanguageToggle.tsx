@@ -18,7 +18,8 @@ export function LanguageToggle() {
           type="button"
           lang={language}
           aria-pressed={active === language}
-          aria-label={t(`language.${language}`)}
+          // The name contains the visible code ("sw"), as WCAG 2.5.3 requires.
+          aria-label={`${t(`language.${language}`)}, ${language}`}
           title={t(`language.${language}`)}
           onClick={() => void i18n.changeLanguage(language)}
           className={cn(

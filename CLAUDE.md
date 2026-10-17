@@ -8,7 +8,7 @@ Read the workspace `CLAUDE.md` first (`../workspace/CLAUDE.md`). Product rules t
 npm install            # first time (also installs the git hooks)
 npm run dev            # http://localhost:5173, proxies /api to the backend
 npm run verify         # lint, format check, type check, tests, build: run before every push
-npm run msw:init       # once, if you want VITE_USE_MOCKS=true (fake API, no backend needed)
+npm run dev:mock       # same, answered by the MSW mock backend in src/mocks (no backend needed)
 ```
 
 ## Structure

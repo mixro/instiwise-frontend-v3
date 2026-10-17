@@ -19,7 +19,11 @@
   --surface-muted: #f4f6f4;
   --border: #e3e6e2;
   --border-strong: #c9d0cb;
+  /* Outline of form controls: at least 3:1 against --surface (WCAG 1.4.11). */
+  --input: #859089;
   --muted: #5b655f;
+  /* Backdrop behind dialogs and sheets. */
+  --overlay: rgb(10 10 10 / 0.45);
 
   --warning-bg: #fdf3dc;
   --warning-fg: #7a4b07;
@@ -42,7 +46,9 @@
   --surface-muted: #0c1512;
   --border: #223229;
   --border-strong: #2f4339;
+  --input: #5f766a;
   --muted: #98a8a0;
+  --overlay: rgb(0 0 0 / 0.6);
 
   --warning-bg: #3a2c0e;
   --warning-fg: #f1c873;

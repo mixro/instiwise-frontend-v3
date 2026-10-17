@@ -5,6 +5,9 @@ coverage
 .env
 .env.*
 !.env.example
+!.env.mock
 .DS_Store
 playwright-report
 test-results
+# Smoke-suite screenshots for review (npm run test:e2e); not committed
+e2e/screenshots
