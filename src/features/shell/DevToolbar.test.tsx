@@ -29,7 +29,7 @@ describe("DevToolbar (mock role switcher)", () => {
 
   it("reports the API status", async () => {
     renderApp("/client", "CLIENT");
-    const toolbar = await screen.findByText("Mock role (development only)");
+    const toolbar = await screen.findByText("Mock role (demo and development only)");
     expect(
       await within(toolbar.parentElement as HTMLElement).findByText("API connected, version mock"),
     ).toBeInTheDocument();

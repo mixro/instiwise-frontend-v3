@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/brand/Logo";
+import { DemoBanner } from "./DemoBanner";
 import { DevToolbar } from "./DevToolbar";
 import { MAIN_CONTENT_ID, SkipLink } from "./SkipLink";
 
@@ -10,6 +11,7 @@ export function StandalonePage({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh">
       <SkipLink />
+      <DemoBanner />
       <DevToolbar />
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">

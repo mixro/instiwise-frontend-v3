@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/S
 import { cn } from "@/lib/cn";
 import type { Role } from "@/lib/roles";
 import { Breadcrumb } from "./Breadcrumb";
+import { DemoBanner } from "./DemoBanner";
 import { DevToolbar } from "./DevToolbar";
 import { SidebarNav } from "./SidebarNav";
 import { MAIN_CONTENT_ID, SkipLink } from "./SkipLink";
@@ -89,6 +90,7 @@ export function SidebarLayout({ role }: { role: Exclude<Role, "CLIENT"> }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
+        <DemoBanner />
         <DevToolbar />
         <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-surface px-4">
           <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>

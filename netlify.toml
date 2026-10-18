@@ -1,0 +1,32 @@
+# Netlify: builds the site and serves it as a single-page app.
+#
+# Public demo: set VITE_USE_MOCKS=true under Site configuration > Environment
+# variables and redeploy. Vite reads it at build time, so changing it always
+# needs a new deploy. See "Deploying a demo to Netlify" in README.md.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Matches .nvmrc.
+  NODE_VERSION = "22"
+
+# When the real backend exists, forward /api to it here, ABOVE the SPA rule, so
+# the browser keeps one origin (the httpOnly refresh cookie needs it) and no CORS
+# setup is needed. For example:
+#
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://api.example.com/api/:splat"
+#   status = 200
+#   force = true
+
+# Every other path is a screen of the app: answer with index.html so deep links
+# and reloads (for example /client/projects) work. Real files such as
+# /mockServiceWorker.js and /assets/* are served first, because this rule is not
+# forced.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

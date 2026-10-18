@@ -222,7 +222,7 @@
       "phoneError": "Weka namba ya Tanzania inayoanza na +255.",
       "reference": "Namba ya muamala"
     },
-    "mockRole": "Jukumu la majaribio (uundaji tu)",
+    "mockRole": "Jukumu la majaribio (maonyesho na uundaji tu)",
     "signedOut": "Hajaingia",
     "api": {
       "checking": "Inakagua API…",
@@ -971,5 +971,11 @@
     "invitations": "Mialiko",
     "validity": "Mialiko inadumu kwa (siku)",
     "validityHint": "Kati ya siku {{min}} na {{max}}. Inahusu mialiko mipya."
+  },
+  "demo": {
+    "banner": {
+      "title": "Data ya maonyesho.",
+      "body": "Kila kitu hapa ni cha kubuni na kinarudi mwanzo ukipakia ukurasa upya."
+    }
   }
 }

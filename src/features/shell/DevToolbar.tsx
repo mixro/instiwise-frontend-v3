@@ -24,7 +24,7 @@ function ApiStatus() {
   return <span>{t("dev.api.connected", { version: health.data.version })}</span>;
 }
 
-/** Development builds only: switch the mock role and see whether the API is up. */
+/** Demo and development builds only: switch the mock role and see whether the API is up. */
 export function DevToolbar() {
   const { t } = useTranslation();
   const { user, setMockRole } = useSession();

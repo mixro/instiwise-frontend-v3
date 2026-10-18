@@ -222,7 +222,7 @@
       "phoneError": "Enter a Tanzanian number starting with +255.",
       "reference": "Transaction reference"
     },
-    "mockRole": "Mock role (development only)",
+    "mockRole": "Mock role (demo and development only)",
     "signedOut": "Signed out",
     "api": {
       "checking": "Checking the API…",
@@ -971,5 +971,11 @@
     "invitations": "Invitations",
     "validity": "Invitations stay valid for (days)",
     "validityHint": "Between {{min}} and {{max}} days. Applies to new invitations."
+  },
+  "demo": {
+    "banner": {
+      "title": "Demo data.",
+      "body": "Everything here is fictional and resets when you refresh the page."
+    }
   }
 }

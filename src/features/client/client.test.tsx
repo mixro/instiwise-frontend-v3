@@ -154,8 +154,11 @@ describe("project detail", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Send" }));
 
-    expect(await within(conversation).findByText("Yes, my brother will be there.")).toBeVisible();
+    // The optimistic bubble is replaced by the server's copy, so query again until it settles.
     await waitFor(() => expect(within(conversation).getAllByRole("listitem")).toHaveLength(7));
+    await waitFor(() =>
+      expect(within(conversation).getByText("Yes, my brother will be there.")).toBeVisible(),
+    );
     expect(screen.getByLabelText("Write a message")).toHaveValue("");
   });
 

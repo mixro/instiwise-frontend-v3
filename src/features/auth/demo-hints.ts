@@ -1,10 +1,10 @@
 import { lazy } from "react";
+import { DEMO_MODE } from "@/lib/demo-mode";
 
 /**
- * Demo accounts and codes panel: development builds running the mock backend
- * only. Lazy, so neither the panel nor the demo data reaches production.
+ * Demo accounts and codes panel: only when the mock backend answers (dev:mock or
+ * the public demo). Lazy, so neither the panel nor the demo data reaches a real build.
  */
-export const DemoHints =
-  import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS === "true"
-    ? lazy(() => import("./DemoHints").then((module) => ({ default: module.DemoHints })))
-    : null;
+export const DemoHints = DEMO_MODE
+  ? lazy(() => import("./DemoHints").then((module) => ({ default: module.DemoHints })))
+  : null;
