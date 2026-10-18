@@ -275,6 +275,7 @@
       "REJECTED": "Imekataliwa"
     },
     "agreement": {
+      "DRAFT": "Rasimu",
       "AWAITING_ACCEPTANCE": "Inasubiri ukubali",
       "ACCEPTED": "Imekubaliwa",
       "SUPERSEDED": "Imebadilishwa na toleo jipya"
@@ -943,7 +944,17 @@
       "CHANGE_ACCEPTED": "Mabadiliko yamekubaliwa na mteja",
       "CHANGE_REJECTED": "Mabadiliko yamekataliwa na mteja",
       "AGREEMENT_ACCEPTED": "Makubaliano yamekubaliwa",
-      "SETTINGS_UPDATED": "Mipangilio imesasishwa"
+      "SETTINGS_UPDATED": "Mipangilio imesasishwa",
+      "OPERATOR_PERMISSIONS_CHANGED": "Ruhusa za mhudumu zimebadilishwa",
+      "CLIENT_UPDATED": "Taarifa za mteja zimerekebishwa",
+      "INVITATION_CREATED": "Mwaliko umetengenezwa",
+      "INVITATION_REVOKED": "Mwaliko umefutwa",
+      "PROJECT_CREATED": "Mradi umetengenezwa",
+      "AGREEMENT_SENT": "Makubaliano yametumwa kwa mteja",
+      "DOCUMENT_UPLOADED": "Hati imepakiwa",
+      "DOCUMENT_VISIBILITY_CHANGED": "Mwonekano wa hati umebadilishwa",
+      "CONVERSATION_VIEWED": "Mazungumzo yamesomwa na msimamizi",
+      "PASSWORD_RESET": "Nenosiri limewekwa upya"
     }
   },
   "settings": {

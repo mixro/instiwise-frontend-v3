@@ -1,4 +1,4 @@
-import { delay, http, HttpResponse } from "msw";
+import { delay, HttpResponse } from "msw";
 import type {
   AgreementVersion,
   Balance,
@@ -17,6 +17,7 @@ import type { ProjectStatus } from "@/lib/status";
 import type { ChangeRecord } from "./changes";
 import { seedChangeRequests, seedOtherClientProjects } from "./change-seed";
 import { addAudit } from "./admin-store";
+import { fail, on } from "./contract";
 import { seedUnassignedProjects } from "./staff-seed";
 
 /*
@@ -238,9 +239,9 @@ function seedNeema(): { projects: SeedProject[]; profile: Profile } {
           ),
           document(
             "doc_2",
-            "Bench demo.mp4",
-            "video",
-            38_500_000,
+            "Bench demo photo.jpg",
+            "image",
+            2_400_000,
             "Progress record",
             "2026-10-09T12:05:00Z",
           ),
@@ -348,17 +349,17 @@ function seedNeema(): { projects: SeedProject[]; profile: Profile } {
           ),
           document(
             "doc_5",
-            "Presentation slides.pptx",
-            "slides",
-            8_100_000,
+            "Bill of materials.xlsx",
+            "spreadsheet",
+            180_000,
             "Final deliverable",
             "2026-08-12T08:35:00Z",
           ),
           document(
             "doc_6",
-            "Scale model demo.mp4",
-            "video",
-            46_000_000,
+            "Scale model photo.png",
+            "image",
+            3_600_000,
             "Final deliverable",
             "2026-08-12T08:40:00Z",
           ),
@@ -413,7 +414,16 @@ function seedNeema(): { projects: SeedProject[]; profile: Profile } {
 }
 
 function message(id: string, sentAt: string, senderName: string, body: string, read: boolean) {
-  return { id, sentAt, senderName, body, mine: senderName === CLIENT, read };
+  const mine = senderName === CLIENT;
+  return {
+    id,
+    sentAt,
+    senderName,
+    senderRole: mine ? "CLIENT" : "OPERATOR",
+    body,
+    mine,
+    read,
+  } as const;
 }
 
 function payment(
@@ -559,10 +569,6 @@ const byNewest =
   (a: T, b: T) =>
     date(b).localeCompare(date(a));
 
-function notFound(code: string) {
-  return HttpResponse.json({ error: { code, message: "Not found" } }, { status: 404 });
-}
-
 /** A project's receipt, with the totals as they stood when it was issued. */
 export function receiptFor(project: MockProject, receiptNumber: string): Receipt | undefined {
   const ordered = [...project.payments].sort((a, b) => a.receivedAt.localeCompare(b.receivedAt));
@@ -601,8 +607,8 @@ export function receiptFor(project: MockProject, receiptNumber: string): Receipt
 }
 
 /** A stored message without the server-side read flag. */
-function publicMessage({ id, body, sentAt, senderName, mine }: Message): Message {
-  return { id, body, sentAt, senderName, mine };
+function publicMessage({ id, body, sentAt, senderName, senderRole, mine }: Message): Message {
+  return { id, body, sentAt, senderName, senderRole, mine };
 }
 
 function findProject(id: unknown): MockProject | undefined {
@@ -610,7 +616,7 @@ function findProject(id: unknown): MockProject | undefined {
 }
 
 export const clientHandlers = [
-  http.get("/api/client/home", async () => {
+  on.get("/client/home", async () => {
     await delay();
     const summary: HomeSummary = {
       totals: sumBalances(myProjects().map(balanceOf)),
@@ -651,15 +657,15 @@ export const clientHandlers = [
     return HttpResponse.json(summary);
   }),
 
-  http.get("/api/client/projects", async () => {
+  on.get("/client/projects", async () => {
     await delay();
     return HttpResponse.json(myProjects().map(summaryOf));
   }),
 
-  http.get("/api/client/projects/:id", async ({ params }) => {
+  on.get("/client/projects/{projectId}", async ({ params }) => {
     await delay();
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
     const detail: ProjectDetail = {
       ...summaryOf(project),
       category: project.category,
@@ -671,25 +677,22 @@ export const clientHandlers = [
     return HttpResponse.json(detail);
   }),
 
-  http.get("/api/client/projects/:id/agreement", async ({ params }) => {
+  on.get("/client/projects/{projectId}/agreement", async ({ params }) => {
     await delay();
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
     return HttpResponse.json({ versions: project.agreements });
   }),
 
-  http.post(
-    "/api/client/projects/:id/agreement/versions/:version/acceptance",
+  on.post(
+    "/client/projects/{projectId}/agreement/versions/{version}/acceptance",
     async ({ params }) => {
       await delay();
-      const project = findProject(params.id);
+      const project = findProject(params.projectId);
       const agreement = project?.agreements.find((a) => a.version === Number(params.version));
-      if (!project || !agreement) return notFound("AGREEMENT_NOT_FOUND");
+      if (!project || !agreement) return fail(404, "AGREEMENT_NOT_FOUND");
       if (agreement.status !== "AWAITING_ACCEPTANCE" || agreement !== project.agreements[0]) {
-        return HttpResponse.json(
-          { error: { code: "AGREEMENT_NOT_AWAITING_ACCEPTANCE", message: "Not awaiting" } },
-          { status: 409 },
-        );
+        return fail(409, "AGREEMENT_NOT_AWAITING_ACCEPTANCE");
       }
       agreement.status = "ACCEPTED";
       agreement.acceptedAt = new Date().toISOString();
@@ -705,36 +708,33 @@ export const clientHandlers = [
     },
   ),
 
-  http.get("/api/client/projects/:id/progress", async ({ params }) => {
+  on.get("/client/projects/{projectId}/progress", async ({ params }) => {
     await delay();
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
     return HttpResponse.json(project.progress);
   }),
 
-  http.get("/api/client/projects/:id/messages", async ({ params }) => {
+  on.get("/client/projects/{projectId}/messages", async ({ params }) => {
     await delay();
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
-    return HttpResponse.json(project.messages.map(publicMessage));
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
+    // One page holds the whole demo conversation.
+    return HttpResponse.json({ items: project.messages.map(publicMessage), nextCursor: null });
   }),
 
-  http.post("/api/client/projects/:id/messages", async ({ params, request }) => {
+  on.post("/client/projects/{projectId}/messages", async ({ params, request }) => {
     await delay();
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
-    const { body } = (await request.json()) as { body: string };
-    if (body.includes("[fail]")) {
-      return HttpResponse.json(
-        { error: { code: "SERVICE_UNAVAILABLE", message: "Demo failure" } },
-        { status: 503 },
-      );
-    }
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
+    const { body } = await request.json();
+    if (body.includes("[fail]")) return fail(500, "INTERNAL_ERROR");
     const sent = {
       id: `m_${Date.now()}`,
       body: body.trim(),
       sentAt: new Date().toISOString(),
       senderName: state.profile.name,
+      senderRole: "CLIENT" as const,
       mine: true,
       read: true,
     };
@@ -742,71 +742,73 @@ export const clientHandlers = [
     return HttpResponse.json(publicMessage(sent), { status: 201 });
   }),
 
-  http.post("/api/client/projects/:id/messages/read", async ({ params }) => {
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
+  on.post("/client/projects/{projectId}/messages/read", async ({ params }) => {
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
     for (const m of project.messages) m.read = true;
     return HttpResponse.json({ ok: true });
   }),
 
-  http.get("/api/client/projects/:id/payments", async ({ params }) => {
+  on.get("/client/projects/{projectId}/payments", async ({ params }) => {
     await delay();
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
     const overview: PaymentsOverview = {
       totals: balanceOf(project),
       payments: paymentsOf(project).sort(byNewest((p) => p.receivedAt)),
+      nextCursor: null,
     };
     return HttpResponse.json(overview);
   }),
 
-  http.get("/api/client/payments", async () => {
+  on.get("/client/payments", async () => {
     await delay();
     const overview: PaymentsOverview = {
       totals: sumBalances(myProjects().map(balanceOf)),
       payments: myProjects()
         .flatMap(paymentsOf)
         .sort(byNewest((p) => p.receivedAt)),
+      nextCursor: null,
     };
     return HttpResponse.json(overview);
   }),
 
-  http.get("/api/client/receipts/:number", async ({ params }) => {
+  on.get("/client/receipts/{receiptNumber}", async ({ params }) => {
     await delay();
     for (const project of myProjects()) {
-      const receipt = receiptFor(project, String(params.number));
+      const receipt = receiptFor(project, params.receiptNumber);
       if (receipt) return HttpResponse.json(receipt);
     }
-    return notFound("RECEIPT_NOT_FOUND");
+    return fail(404, "RECEIPT_NOT_FOUND");
   }),
 
-  http.get("/api/client/projects/:id/documents", async ({ params }) => {
+  on.get("/client/projects/{projectId}/documents", async ({ params }) => {
     await delay();
-    const project = findProject(params.id);
-    if (!project) return notFound("PROJECT_NOT_FOUND");
+    const project = findProject(params.projectId);
+    if (!project) return fail(404, "PROJECT_NOT_FOUND");
     return HttpResponse.json(project.documents);
   }),
 
-  http.post("/api/client/documents/:id/link", async ({ params }) => {
+  on.post("/client/documents/{documentId}/link", async ({ params }) => {
     await delay();
     const doc = myProjects()
       .flatMap((p) => p.documents)
-      .find((d) => d.id === params.id);
-    if (!doc) return notFound("DOCUMENT_NOT_FOUND");
+      .find((d) => d.id === params.documentId);
+    if (!doc) return fail(404, "DOCUMENT_NOT_FOUND");
     // Stands in for a short-lived signed storage URL: a small text file you can open.
     const blob = new Blob([`INSTIWISE mock download\n\n${doc.name}\n`], { type: "text/plain" });
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
     return HttpResponse.json({ url: URL.createObjectURL(blob), expiresAt });
   }),
 
-  http.get("/api/client/profile", async () => {
+  on.get("/client/profile", async () => {
     await delay();
     return HttpResponse.json(state.profile);
   }),
 
-  http.patch("/api/client/profile", async ({ request }) => {
+  on.patch("/client/profile", async ({ request }) => {
     await delay();
-    const { name, phone } = (await request.json()) as { name: string; phone?: string };
+    const { name, phone } = await request.json();
     state.profile = { ...state.profile, name: name.trim(), phone: phone || undefined };
     return HttpResponse.json(state.profile);
   }),

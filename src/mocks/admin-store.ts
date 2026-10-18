@@ -1,5 +1,4 @@
-import type { AuditEntry, Settings } from "@/features/admin/api";
-import type { OperatorStatus } from "@/lib/status";
+import type { AdminOperator, AuditEntry, Settings } from "@/features/admin/api";
 import { seedAudit, seedClients, seedOperators, seedSettings, type MockClient } from "./staff-seed";
 
 /*
@@ -9,15 +8,8 @@ import { seedAudit, seedClients, seedOperators, seedSettings, type MockClient } 
 
 export const MOCK_ADMIN = "Rehema Said";
 
-export interface MockOperator {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  status: OperatorStatus;
-  registeredAt: string;
-  reason?: string;
-}
+/** An operator account; its clients come from the assignments. */
+export type MockOperator = Omit<AdminOperator, "clients">;
 
 interface StaffState {
   operators: MockOperator[];

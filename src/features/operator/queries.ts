@@ -25,7 +25,12 @@ export const useOperatorClient = (id: string, enabled = true) =>
   });
 
 export const useOperatorPayments = () =>
-  useQuery({ queryKey: operatorKeys.payments(), queryFn: operatorApi.payments });
+  useQuery({
+    queryKey: operatorKeys.payments(),
+    queryFn: () => operatorApi.payments(),
+    // The newest page of rows; older pages are not loaded yet.
+    select: (page) => page.items,
+  });
 
 export const useOperatorReceipt = (number: string) =>
   useQuery({ queryKey: operatorKeys.receipt(number), queryFn: () => operatorApi.receipt(number) });

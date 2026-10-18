@@ -1,10 +1,5 @@
-import { delay, http, HttpResponse } from "msw";
-import type {
-  ChangeRequest,
-  ChangeTerms,
-  OperatorProject,
-  ProposalBody,
-} from "@/features/changes/api";
+import { delay, HttpResponse } from "msw";
+import type { ChangeRequest, ChangeTerms, OperatorProject } from "@/features/changes/api";
 import {
   acceptedAgreement,
   MOCK_CLIENT_ID,
@@ -13,6 +8,7 @@ import {
   type MockProject,
 } from "./client";
 import { addAudit } from "./admin-store";
+import { fail, on } from "./contract";
 
 /*
  * Change-request rules, enforced here as the real server will (decided 2026-10-17):
@@ -44,10 +40,6 @@ export interface ChangeRecord {
 const OPERATOR = "Baraka Mushi";
 const ADMIN = "Rehema Said";
 const OPEN = new Set(["UNDER_REVIEW", "AWAITING_CLIENT_ACCEPTANCE"]);
-
-function fail(status: number, code: string) {
-  return HttpResponse.json({ error: { code, message: code } }, { status });
-}
 
 /** The record as the API returns it, with the differences computed. */
 function present(project: MockProject, record: ChangeRecord): ChangeRequest {
@@ -134,24 +126,24 @@ function applyChange(project: MockProject, record: ChangeRecord, now: string): n
 
 export const changeHandlers = [
   // ----- client -----
-  http.get("/api/client/projects/:id/change-requests", async ({ params }) => {
+  on.get("/client/projects/{projectId}/change-requests", async ({ params }) => {
     await delay();
-    const project = clientProjects().find((p) => p.id === params.id);
+    const project = clientProjects().find((p) => p.id === params.projectId);
     if (!project) return fail(404, "PROJECT_NOT_FOUND");
     return HttpResponse.json(
       project.changeRequests.filter(visibleToClient).map((record) => present(project, record)),
     );
   }),
 
-  http.post("/api/client/change-requests/:id/decision", async ({ params, request }) => {
+  on.post("/client/change-requests/{changeRequestId}/decision", async ({ params, request }) => {
     await delay();
-    const found = findChange(params.id, clientProjects());
+    const found = findChange(params.changeRequestId, clientProjects());
     if (!found || !visibleToClient(found.record)) return fail(404, "CHANGE_REQUEST_NOT_FOUND");
     const { project, record } = found;
     if (record.status !== "AWAITING_CLIENT_ACCEPTANCE") {
       return fail(409, "CHANGE_REQUEST_ALREADY_DECIDED");
     }
-    const body = (await request.json()) as { outcome: "ACCEPT" | "REJECT"; reason?: string };
+    const body = await request.json();
     const reason = body.reason?.trim();
     if (body.outcome === "REJECT" && !reason) return fail(422, "REASON_REQUIRED");
 
@@ -183,28 +175,28 @@ export const changeHandlers = [
   }),
 
   // ----- operator (assigned projects only) -----
-  http.get("/api/operator/projects", async () => {
+  on.get("/operator/projects", async () => {
     await delay();
     return HttpResponse.json(operatorProjects().map(operatorProject));
   }),
 
-  http.get("/api/operator/projects/:id", async ({ params }) => {
+  on.get("/operator/projects/{projectId}", async ({ params }) => {
     await delay();
-    const project = operatorProjects().find((p) => p.id === params.id);
+    const project = operatorProjects().find((p) => p.id === params.projectId);
     if (!project) return fail(404, "PROJECT_NOT_FOUND");
     return HttpResponse.json(operatorProject(project));
   }),
 
-  http.get("/api/operator/projects/:id/change-requests", async ({ params }) => {
+  on.get("/operator/projects/{projectId}/change-requests", async ({ params }) => {
     await delay();
-    const project = operatorProjects().find((p) => p.id === params.id);
+    const project = operatorProjects().find((p) => p.id === params.projectId);
     if (!project) return fail(404, "PROJECT_NOT_FOUND");
     return HttpResponse.json(project.changeRequests.map((record) => present(project, record)));
   }),
 
-  http.post("/api/operator/projects/:id/change-requests", async ({ params, request }) => {
+  on.post("/operator/projects/{projectId}/change-requests", async ({ params, request }) => {
     await delay();
-    const project = operatorProjects().find((p) => p.id === params.id);
+    const project = operatorProjects().find((p) => p.id === params.projectId);
     if (!project) return fail(404, "PROJECT_NOT_FOUND");
     const before = termsOf(project);
     if (!before) return fail(409, "AGREEMENT_NOT_ACCEPTED");
@@ -212,7 +204,7 @@ export const changeHandlers = [
       return fail(409, "CHANGE_REQUEST_ALREADY_OPEN");
     }
 
-    const body = (await request.json()) as ProposalBody;
+    const body = await request.json();
     const after: ChangeTerms = {
       scope: body.scope.map((item) => item.trim()).filter(Boolean),
       price: body.price,
@@ -243,7 +235,7 @@ export const changeHandlers = [
   }),
 
   // ----- admin -----
-  http.get("/api/admin/change-requests", async () => {
+  on.get("/admin/change-requests", async () => {
     await delay();
     const queue = mockProjects().flatMap((project) =>
       project.changeRequests
@@ -253,13 +245,13 @@ export const changeHandlers = [
     return HttpResponse.json(queue);
   }),
 
-  http.post("/api/admin/change-requests/:id/review", async ({ params, request }) => {
+  on.post("/admin/change-requests/{changeRequestId}/review", async ({ params, request }) => {
     await delay();
-    const found = findChange(params.id, mockProjects());
+    const found = findChange(params.changeRequestId, mockProjects());
     if (!found) return fail(404, "CHANGE_REQUEST_NOT_FOUND");
     const { project, record } = found;
     if (record.status !== "UNDER_REVIEW") return fail(409, "CHANGE_REQUEST_ALREADY_DECIDED");
-    const body = (await request.json()) as { outcome: "APPROVE" | "REJECT"; reason?: string };
+    const body = await request.json();
     const reason = body.reason?.trim();
     if (body.outcome === "REJECT" && !reason) return fail(422, "REASON_REQUIRED");
 

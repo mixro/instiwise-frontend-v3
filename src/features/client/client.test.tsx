@@ -1,10 +1,11 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { http, HttpResponse } from "msw";
+import { HttpResponse } from "msw";
 import { describe, expect, it, vi } from "vitest";
 import { formatTzs } from "@/lib/format";
 import { renderApp } from "@/test/render-app";
 import { server } from "@/test/server";
+import { fail, on } from "@/mocks/contract";
 
 // Amounts contain no-break spaces, which getByText would normalise away.
 const tzs = (amount: number) => formatTzs(amount, "en");
@@ -118,11 +119,8 @@ describe("project detail", () => {
 
   it("explains an agreement that can no longer be accepted", async () => {
     server.use(
-      http.post("/api/client/projects/:id/agreement/versions/:version/acceptance", () =>
-        HttpResponse.json(
-          { error: { code: "AGREEMENT_NOT_AWAITING_ACCEPTANCE", message: "x" } },
-          { status: 409 },
-        ),
+      on.post("/client/projects/{projectId}/agreement/versions/{version}/acceptance", () =>
+        fail(409, "AGREEMENT_NOT_AWAITING_ACCEPTANCE"),
       ),
     );
     await openProject(
@@ -172,13 +170,14 @@ describe("project detail", () => {
 
     // The next attempt goes through.
     server.use(
-      http.post("/api/client/projects/:id/messages", () =>
+      on.post("/client/projects/{projectId}/messages", () =>
         HttpResponse.json(
           {
             id: "m_ok",
             body: "Hello [fail]",
             sentAt: new Date().toISOString(),
             senderName: "Neema Mwakyusa",
+            senderRole: "CLIENT",
             mine: true,
           },
           { status: 201 },
@@ -216,11 +215,11 @@ describe("project detail", () => {
     );
 
     await userEvent.click(
-      await screen.findByRole("button", { name: "Download Presentation slides.pptx" }),
+      await screen.findByRole("button", { name: "Download Bill of materials.xlsx" }),
     );
     await waitFor(() => expect(click).toHaveBeenCalledOnce());
     const link = click.mock.instances[0] as unknown as HTMLAnchorElement;
-    expect(link.download).toBe("Presentation slides.pptx");
+    expect(link.download).toBe("Bill of materials.xlsx");
     expect(link.href).toBe("blob:mock");
   });
 

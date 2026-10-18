@@ -1,10 +1,5 @@
-import { delay, http, HttpResponse } from "msw";
-import type {
-  AuthUser,
-  Invitation,
-  RegistrationBody,
-  RegistrationResult,
-} from "@/features/auth/api";
+import { delay, HttpResponse } from "msw";
+import type { AuthUser, Invitation, RegistrationResult, Session } from "@/features/auth/api";
 import {
   DEMO_ACCOUNTS,
   DEMO_CODES,
@@ -13,6 +8,8 @@ import {
   type DemoAccount,
 } from "./demo-data";
 import { staffState } from "./admin-store";
+import { fail, on } from "./contract";
+import { NO_PERMISSIONS } from "./staff-seed";
 
 /*
  * Fake auth API. Keeps registrations in memory (lost on reload), so a new account
@@ -45,12 +42,22 @@ export function resetMockAuth(): void {
 
 resetMockAuth();
 
-function error(status: number, code: string, message: string) {
-  return HttpResponse.json({ error: { code, message } }, { status });
+/** Operators carry the permissions an admin granted them (contract AuthUser). */
+function toUser({ id, name, email, role }: StoredAccount): AuthUser {
+  if (role !== "OPERATOR") return { id, name, email, role };
+  const operator = staffState().operators.find((o) => o.email === email);
+  return { id, name, email, role, permissions: operator?.permissions ?? NO_PERMISSIONS };
 }
 
-function toUser({ id, name, email, role }: StoredAccount): AuthUser {
-  return { id, name, email, role };
+const ACCESS_TOKEN_MS = 15 * 60 * 1000;
+
+/** The mocks do not check tokens; the shape is the contract's. */
+function sessionFor(account: StoredAccount): Session {
+  return {
+    user: toUser(account),
+    accessToken: `mock-token-${account.id}`,
+    accessTokenExpiresAt: new Date(Date.now() + ACCESS_TOKEN_MS).toISOString(),
+  };
 }
 
 function findAccount(email: string): StoredAccount | undefined {
@@ -59,13 +66,13 @@ function findAccount(email: string): StoredAccount | undefined {
 }
 
 /** Looks a code up; returns the invitation or an error response. */
-function resolveInvitation(code: string): Invitation | Response {
+function resolveInvitation(code: string): Invitation | ReturnType<typeof fail> {
   const outcome = DEMO_CODES[code];
-  if (!outcome) return error(404, "INVITATION_NOT_FOUND", "No invitation with this code");
-  if (outcome === "INVITATION_EXPIRED") return error(410, outcome, "Invitation expired");
-  if (outcome === "INVITATION_REVOKED") return error(410, outcome, "Invitation revoked");
+  if (!outcome) return fail(404, "INVITATION_NOT_FOUND");
+  if (outcome === "INVITATION_EXPIRED") return fail(410, outcome);
+  if (outcome === "INVITATION_REVOKED") return fail(410, outcome);
   if (outcome === "INVITATION_ALREADY_USED" || usedCodes.has(code)) {
-    return error(409, "INVITATION_ALREADY_USED", "Invitation already used");
+    return fail(409, "INVITATION_ALREADY_USED");
   }
   const days = staffState().settings.invitationValidityDays;
   const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
@@ -73,45 +80,33 @@ function resolveInvitation(code: string): Invitation | Response {
 }
 
 export const authHandlers = [
-  http.post("/api/auth/login", async ({ request }) => {
+  on.post("/auth/login", async ({ request }) => {
     await delay();
-    const { email, password } = (await request.json()) as { email: string; password: string };
+    const { email, password } = await request.json();
     const account = findAccount(email);
 
-    if (account?.state === "RATE_LIMITED") {
-      return error(429, "RATE_LIMITED", "Too many attempts");
-    }
-    if (!account || account.password !== password) {
-      return error(401, "INVALID_CREDENTIALS", "Wrong email or password");
-    }
-    if (account.state === "PENDING_APPROVAL") {
-      return error(403, "ACCOUNT_PENDING_APPROVAL", "Operator not approved yet");
-    }
-    if (account.state === "REJECTED") {
-      return error(403, "ACCOUNT_REJECTED", "Operator not approved");
-    }
-    if (account.state === "SUSPENDED") {
-      return error(403, "ACCOUNT_SUSPENDED", "Account suspended");
-    }
-    return HttpResponse.json({ user: toUser(account) });
+    if (account?.state === "RATE_LIMITED") return fail(429, "RATE_LIMITED");
+    if (!account || account.password !== password) return fail(401, "INVALID_CREDENTIALS");
+    if (account.state === "PENDING_APPROVAL") return fail(403, "ACCOUNT_PENDING_APPROVAL");
+    if (account.state === "REJECTED") return fail(403, "ACCOUNT_REJECTED");
+    if (account.state === "SUSPENDED") return fail(403, "ACCOUNT_SUSPENDED");
+    return HttpResponse.json(sessionFor(account));
   }),
 
-  http.get("/api/invitations/:code", async ({ params }) => {
+  on.get("/invitations/{code}", async ({ params }) => {
     await delay();
-    const result = resolveInvitation(String(params.code));
+    const result = resolveInvitation(params.code);
     return result instanceof Response ? result : HttpResponse.json(result);
   }),
 
-  http.post("/api/invitations/:code/registrations", async ({ params, request }) => {
+  on.post("/invitations/{code}/registrations", async ({ params, request }) => {
     await delay();
-    const code = String(params.code);
+    const code = params.code;
     const invitation = resolveInvitation(code);
     if (invitation instanceof Response) return invitation;
 
-    const body = (await request.json()) as RegistrationBody;
-    if (findAccount(body.email)) {
-      return error(409, "EMAIL_TAKEN", "An account with this email exists");
-    }
+    const body = await request.json();
+    if (findAccount(body.email)) return fail(409, "EMAIL_TAKEN");
 
     const account: StoredAccount = {
       id: `usr_${accounts.length + 1}`,
@@ -132,6 +127,7 @@ export const authHandlers = [
         phone: body.phone ?? "",
         status: "PENDING_APPROVAL",
         registeredAt: new Date().toISOString(),
+        permissions: NO_PERMISSIONS,
       });
     } else {
       staffState().clients.push({
@@ -146,7 +142,7 @@ export const authHandlers = [
 
     const result: RegistrationResult =
       account.state === "ACTIVE"
-        ? { status: "ACTIVE", user: toUser(account) }
+        ? { status: "ACTIVE", ...sessionFor(account) }
         : { status: "PENDING_APPROVAL" };
     return HttpResponse.json(result, { status: 201 });
   }),

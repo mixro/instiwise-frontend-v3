@@ -1,64 +1,31 @@
+import type { Schema } from "@/lib/contract/types";
+
 /**
- * Status values shown with StatusBadge. Values match the backend enums (SCREAMING_SNAKE).
+ * Status values shown with StatusBadge. The types come from the contract
+ * (contracts/openapi.yaml), so every tone record below must name every value the
+ * API can send; the lists are built from those records, in their order.
  *
  * Project statuses: product brief section 8. Invitation statuses: section 6.4.
  * Payment statuses are only what is decided so far: staff record payments and
  * corrections are reversals. Verification statuses wait for brief open question 7.
  */
 
-export const PROJECT_STATUSES = [
-  "DRAFT",
-  "AWAITING_CLIENT_ACCEPTANCE",
-  "ACTIVE",
-  "CHANGE_REQUEST_PENDING",
-  "ON_HOLD",
-  "COMPLETED",
-  "CANCELLED",
-  "ARCHIVED",
-] as const;
-
+export type ProjectStatus = Schema<"ProjectStatus">;
+export type ChangeRequestStatus = Schema<"ChangeRequestStatus">;
+/** Agreement versions (brief section 9). Clients never receive DRAFT. */
+export type AgreementStatus = Schema<"AgreementStatus">;
 /**
  * A payment's state. Corrections never edit or delete it (brief 12.6, decided
  * 2026-10-17): a reversal or an adjustment is a new COR row linked to it, and the
  * original keeps its receipt number with this status.
  */
-export const PAYMENT_STATUSES = ["RECORDED", "REVERSED", "ADJUSTED"] as const;
-
+export type PaymentStatus = Schema<"PaymentStatus">;
 /** The kind of correction row (always linked to the payment it corrects). */
-export const CORRECTION_KINDS = ["REVERSAL", "ADJUSTMENT"] as const;
-
+export type CorrectionKind = Schema<"CorrectionKind">;
 /** Operator accounts: invited operators wait for an admin (brief 6.3). */
-export const OPERATOR_STATUSES = ["PENDING_APPROVAL", "ACTIVE", "SUSPENDED", "REJECTED"] as const;
-
-export const INVITATION_STATUSES = [
-  "PENDING",
-  "ACCEPTED",
-  "EXPIRED",
-  "REVOKED",
-  "REJECTED",
-] as const;
-
-/** Agreement versions (brief section 9): one awaits acceptance, accepted ones are kept, replaced ones are superseded. */
-export const AGREEMENT_STATUSES = ["AWAITING_ACCEPTANCE", "ACCEPTED", "SUPERSEDED"] as const;
-
-/**
- * Change requests (brief 10.5), as far as the decided flow uses them: an admin
- * reviews price/deadline changes, then the client accepts or rejects.
- */
-export const CHANGE_REQUEST_STATUSES = [
-  "UNDER_REVIEW",
-  "AWAITING_CLIENT_ACCEPTANCE",
-  "ACCEPTED",
-  "REJECTED",
-] as const;
-
-export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
-export type ChangeRequestStatus = (typeof CHANGE_REQUEST_STATUSES)[number];
-export type AgreementStatus = (typeof AGREEMENT_STATUSES)[number];
-export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
-export type CorrectionKind = (typeof CORRECTION_KINDS)[number];
-export type OperatorStatus = (typeof OPERATOR_STATUSES)[number];
-export type InvitationStatus = (typeof INVITATION_STATUSES)[number];
+export type OperatorStatus = Schema<"OperatorStatus">;
+/** Brief 6.4. */
+export type InvitationStatus = Schema<"InvitationStatus">;
 
 /** Colour family of a badge. The label always carries the meaning; tone only reinforces it. */
 export type StatusTone = "neutral" | "positive" | "warning" | "danger";
@@ -93,6 +60,7 @@ export const OPERATOR_STATUS_TONES: Record<OperatorStatus, StatusTone> = {
 };
 
 export const AGREEMENT_STATUS_TONES: Record<AgreementStatus, StatusTone> = {
+  DRAFT: "neutral",
   AWAITING_ACCEPTANCE: "warning",
   ACCEPTED: "positive",
   SUPERSEDED: "neutral",
@@ -112,3 +80,13 @@ export const INVITATION_STATUS_TONES: Record<InvitationStatus, StatusTone> = {
   REVOKED: "danger",
   REJECTED: "danger",
 };
+
+const keysOf = <K extends string>(record: Record<K, unknown>) => Object.keys(record) as K[];
+
+export const PROJECT_STATUSES = keysOf(PROJECT_STATUS_TONES);
+export const PAYMENT_STATUSES = keysOf(PAYMENT_STATUS_TONES);
+export const CORRECTION_KINDS = keysOf(CORRECTION_KIND_TONES);
+export const OPERATOR_STATUSES = keysOf(OPERATOR_STATUS_TONES);
+export const INVITATION_STATUSES = keysOf(INVITATION_STATUS_TONES);
+export const AGREEMENT_STATUSES = keysOf(AGREEMENT_STATUS_TONES);
+export const CHANGE_REQUEST_STATUSES = keysOf(CHANGE_REQUEST_STATUS_TONES);

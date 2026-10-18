@@ -1,12 +1,9 @@
 import {
   Download,
-  File,
-  FileArchive,
   FileImage,
+  FileSpreadsheet,
   FileText,
-  FileVideo,
   FolderOpen,
-  Presentation,
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -26,11 +23,8 @@ import { useDocuments } from "./queries";
 const ICONS: Record<DocumentKind, LucideIcon> = {
   pdf: FileText,
   word: FileText,
-  slides: Presentation,
+  spreadsheet: FileSpreadsheet,
   image: FileImage,
-  video: FileVideo,
-  archive: FileArchive,
-  other: File,
 };
 
 /** Asks the server for a short-lived signed link, then downloads from it. */

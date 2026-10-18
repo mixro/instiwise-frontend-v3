@@ -8,7 +8,7 @@ import { formatTzs } from "@/lib/format";
 import { DEMO_PASSWORD } from "@/mocks/demo-data";
 import { renderApp } from "@/test/render-app";
 import { server } from "@/test/server";
-import { adminApi } from "./api";
+import { adminApi, type AdminFinance, type AdminOverview, type AuditPage } from "./api";
 
 const tzs = (amount: number) => formatTzs(amount, "en");
 const ZERO = { agreedAmount: 0, paidAmount: 0, balance: 0, credit: 0 };
@@ -51,7 +51,7 @@ const LISTS = [
     path: "/admin/finance",
     heading: "Finance",
     endpoint: "/api/admin/finance",
-    empty: { totals: ZERO, entries: [] },
+    empty: { totals: ZERO, entries: [], nextCursor: null } satisfies AdminFinance,
     emptyText: "No payments recorded yet",
   },
   {
@@ -59,7 +59,7 @@ const LISTS = [
     path: "/admin/audit-logs",
     heading: "Audit logs",
     endpoint: "/api/admin/audit",
-    empty: { entries: [], actors: [] },
+    empty: { entries: [], actors: [], nextCursor: null } satisfies AuditPage,
     emptyText: "Nothing in the audit log yet",
   },
   {
@@ -87,7 +87,7 @@ const LISTS = [
       recordedThisMonth: { month: "2026-10", amount: 0, count: 0 },
       correctionsThisMonth: 0,
       recentActivity: [],
-    },
+    } satisfies AdminOverview,
     emptyText: "Nothing in the audit log yet",
   },
 ] as const;

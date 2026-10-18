@@ -39,6 +39,8 @@ export const useMessages = (id: string) =>
   useQuery({
     queryKey: clientKeys.messages(id),
     queryFn: () => clientApi.messages(id),
+    // The newest page of the conversation; older pages are not loaded yet.
+    select: (page) => page.items,
     refetchInterval: MESSAGE_POLL_MS,
   });
 

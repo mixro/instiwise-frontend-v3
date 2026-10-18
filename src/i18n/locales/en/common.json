@@ -275,6 +275,7 @@
       "REJECTED": "Rejected"
     },
     "agreement": {
+      "DRAFT": "Draft",
       "AWAITING_ACCEPTANCE": "Awaiting your acceptance",
       "ACCEPTED": "Accepted",
       "SUPERSEDED": "Replaced by a newer version"
@@ -943,7 +944,17 @@
       "CHANGE_ACCEPTED": "Change accepted by the client",
       "CHANGE_REJECTED": "Change rejected by the client",
       "AGREEMENT_ACCEPTED": "Agreement accepted",
-      "SETTINGS_UPDATED": "Settings updated"
+      "SETTINGS_UPDATED": "Settings updated",
+      "OPERATOR_PERMISSIONS_CHANGED": "Operator permissions changed",
+      "CLIENT_UPDATED": "Client details corrected",
+      "INVITATION_CREATED": "Invitation created",
+      "INVITATION_REVOKED": "Invitation revoked",
+      "PROJECT_CREATED": "Project created",
+      "AGREEMENT_SENT": "Agreement sent to the client",
+      "DOCUMENT_UPLOADED": "Document uploaded",
+      "DOCUMENT_VISIBILITY_CHANGED": "Document visibility changed",
+      "CONVERSATION_VIEWED": "Conversation read by an admin",
+      "PASSWORD_RESET": "Password reset"
     }
   },
   "settings": {

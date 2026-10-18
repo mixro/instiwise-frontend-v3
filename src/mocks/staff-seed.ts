@@ -15,6 +15,9 @@ export const MOCK_OPERATOR = "Baraka Mushi";
 const ZAWADI = "Zawadi Mollel";
 const ADMIN = "Rehema Said";
 
+/** Admin-granted operator permissions start off (decided 2026-10-18). */
+export const NO_PERMISSIONS = { canInviteClients: false, canCreateProjects: false } as const;
+
 export interface MockClient {
   id: string;
   name: string;
@@ -73,6 +76,7 @@ export function seedOperators(): MockOperator[] {
       phone: "+255754321987",
       status: "ACTIVE",
       registeredAt: "2026-07-02T08:00:00Z",
+      permissions: { canInviteClients: true, canCreateProjects: true },
     },
     {
       id: "op_zawadi",
@@ -81,6 +85,7 @@ export function seedOperators(): MockOperator[] {
       phone: "+255715600700",
       status: "ACTIVE",
       registeredAt: "2026-07-20T10:30:00Z",
+      permissions: NO_PERMISSIONS,
     },
     {
       id: "op_juma",
@@ -89,6 +94,7 @@ export function seedOperators(): MockOperator[] {
       phone: "+255622334455",
       status: "PENDING_APPROVAL",
       registeredAt: "2026-10-15T13:10:00Z",
+      permissions: NO_PERMISSIONS,
     },
     {
       id: "op_pendo",
@@ -97,6 +103,7 @@ export function seedOperators(): MockOperator[] {
       phone: "+255653120987",
       status: "PENDING_APPROVAL",
       registeredAt: "2026-10-16T18:45:00Z",
+      permissions: NO_PERMISSIONS,
     },
     {
       id: "op_faraji",
@@ -105,6 +112,7 @@ export function seedOperators(): MockOperator[] {
       phone: "+255786450012",
       status: "SUSPENDED",
       registeredAt: "2026-06-11T09:00:00Z",
+      permissions: NO_PERMISSIONS,
       reason: "Away on an industrial attachment until December.",
     },
   ];

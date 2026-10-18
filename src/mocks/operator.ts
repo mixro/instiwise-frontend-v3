@@ -1,4 +1,4 @@
-import { delay, http, HttpResponse } from "msw";
+import { delay, HttpResponse } from "msw";
 import type { Balance, PaymentMethod } from "@/features/client/api";
 import type {
   ClientDetail,
@@ -11,6 +11,7 @@ import type {
 } from "@/features/operator/api";
 import { addDays, localDate, paymentDateRange } from "@/lib/dates";
 import { addAudit, staffState } from "./admin-store";
+import { fail, on } from "./contract";
 import {
   balanceOf,
   mockProjects,
@@ -30,10 +31,6 @@ import { MOCK_OPERATOR, MOCK_OPERATOR_ID, type MockClient } from "./staff-seed";
 const METHODS: PaymentMethod[] = ["cash", "bank", "mobile", "other"];
 const NEEDS_REFERENCE: PaymentMethod[] = ["bank", "mobile"];
 const UPCOMING_DAYS = 30;
-
-function fail(status: number, code: string) {
-  return HttpResponse.json({ error: { code, message: code } }, { status });
-}
 
 const assignedClients = (): MockClient[] =>
   staffState().clients.filter((client) => client.operatorId === MOCK_OPERATOR_ID);
@@ -111,7 +108,7 @@ function clientSummary(client: MockClient): ClientSummary {
 }
 
 /** Server-side checks for a payment draft. Returns an error response or the project. */
-function checkDraft(draft: PaymentDraft): MockProject | Response {
+function checkDraft(draft: PaymentDraft): MockProject | ReturnType<typeof fail> {
   const project = assignedProjects().find((p) => p.id === draft.projectId);
   if (!project) return fail(404, "PROJECT_NOT_FOUND");
   if (!Number.isInteger(draft.amount) || draft.amount <= 0 || !METHODS.includes(draft.method)) {
@@ -144,7 +141,7 @@ function nextReceiptNumber(): string {
 }
 
 export const operatorHandlers = [
-  http.get("/api/operator/dashboard", async () => {
+  on.get("/operator/dashboard", async () => {
     await delay();
     const projects = assignedProjects();
     const today = localDate();
@@ -174,14 +171,14 @@ export const operatorHandlers = [
     return HttpResponse.json(dashboard);
   }),
 
-  http.get("/api/operator/clients", async () => {
+  on.get("/operator/clients", async () => {
     await delay();
     return HttpResponse.json(assignedClients().map(clientSummary));
   }),
 
-  http.get("/api/operator/clients/:id", async ({ params }) => {
+  on.get("/operator/clients/{clientId}", async ({ params }) => {
     await delay();
-    const client = assignedClients().find((c) => c.id === params.id);
+    const client = assignedClients().find((c) => c.id === params.clientId);
     if (!client) return fail(404, "CLIENT_NOT_FOUND");
     const projects = assignedProjects().filter((p) => p.clientId === client.id);
     const detail: ClientDetail = {
@@ -192,14 +189,15 @@ export const operatorHandlers = [
     return HttpResponse.json(detail);
   }),
 
-  http.get("/api/operator/payments", async () => {
+  on.get("/operator/payments", async () => {
     await delay();
-    return HttpResponse.json(staffPayments(assignedProjects()));
+    // One page holds every demo row.
+    return HttpResponse.json({ items: staffPayments(assignedProjects()), nextCursor: null });
   }),
 
-  http.post("/api/operator/payments/preview", async ({ request }) => {
+  on.post("/operator/payments/preview", async ({ request }) => {
     await delay();
-    const draft = (await request.json()) as PaymentDraft;
+    const draft = await request.json();
     const checked = checkDraft(draft);
     if (checked instanceof Response) return checked;
     const before = balanceOf(checked);
@@ -215,9 +213,9 @@ export const operatorHandlers = [
     return HttpResponse.json(preview);
   }),
 
-  http.post("/api/operator/payments", async ({ request }) => {
+  on.post("/operator/payments", async ({ request }) => {
     await delay();
-    const draft = (await request.json()) as PaymentDraft;
+    const draft = await request.json();
     const checked = checkDraft(draft);
     if (checked instanceof Response) return checked;
     const payment: MockPayment = {
@@ -240,13 +238,13 @@ export const operatorHandlers = [
       amount: payment.amount,
     });
     const recorded = staffPayments([checked]).find((p) => p.id === payment.id);
-    return HttpResponse.json(recorded, { status: 201 });
+    return recorded ? HttpResponse.json(recorded, { status: 201 }) : fail(500, "INTERNAL_ERROR");
   }),
 
-  http.get("/api/operator/receipts/:number", async ({ params }) => {
+  on.get("/operator/receipts/{receiptNumber}", async ({ params }) => {
     await delay();
     for (const project of assignedProjects()) {
-      const receipt = receiptFor(project, String(params.number));
+      const receipt = receiptFor(project, params.receiptNumber);
       if (receipt) return HttpResponse.json(receipt);
     }
     return fail(404, "RECEIPT_NOT_FOUND");
