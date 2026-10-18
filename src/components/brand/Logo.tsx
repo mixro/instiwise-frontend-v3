@@ -24,9 +24,9 @@ export function Mark({ size = 32, className }: { size?: number; className?: stri
  */
 export function Logo({ height = 32, className }: { height?: number; className?: string }) {
   return (
-    <span className={cn("inline-flex items-center text-foreground", className)}>
+    <span className={cn("inline-flex gap-1 items-center text-foreground", className)}>
       <Mark size={height} />
-      <Wordmark height={(height * 130) / 335.67} />
+      <Wordmark height={(height * 135) / 235.67} />
     </span>
   );
 }
