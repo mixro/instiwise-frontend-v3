@@ -89,7 +89,8 @@ describe("SidebarLayout", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Open menu" }));
     const drawer = within(screen.getByRole("dialog", { name: "Main navigation" }));
-    await userEvent.click(drawer.getByRole("link", { name: "Messages" }));
+    // The link's name also carries the unread count ("Messages 2 conversations with…").
+    await userEvent.click(drawer.getByRole("link", { name: /^Messages/ }));
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "Messages" })).toBeInTheDocument();

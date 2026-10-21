@@ -18,7 +18,7 @@ import { DemoHints } from "./demo-hints";
 import { loginSchema, type LoginValues } from "./schemas";
 
 export function LoginPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { fieldError, apiError } = useErrorText();
   const { signIn } = useSession();
   const navigate = useNavigate();
@@ -43,6 +43,8 @@ export function LoginPage() {
       const { user } = await login(values);
       // GuestOnly then moves them on (to where they were going, or their home).
       signIn({ role: user.role, name: user.name, permissions: user.permissions });
+      // The language saved with the account follows the user to every device.
+      void i18n.changeLanguage(user.preferredLanguage);
     } catch (error) {
       if (error instanceof ApiError && error.code === "ACCOUNT_PENDING_APPROVAL") {
         navigate("/pending-approval");

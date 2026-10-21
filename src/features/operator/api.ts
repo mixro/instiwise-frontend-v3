@@ -27,6 +27,9 @@ export type StaffPaymentPage = Schema<"StaffPaymentPage">;
 export type PaymentDraft = Schema<"PaymentDraft">;
 /** What recording would do, computed by the server before anything is saved. */
 export type PaymentPreview = Schema<"PaymentPreview">;
+/** The operator's own profile (decided 2026-10-21). */
+export type OperatorProfile = Schema<"OperatorProfile">;
+export type OperatorProfileUpdate = Schema<"OperatorProfileUpdate">;
 
 export const operatorApi = {
   dashboard: () => apiClient.GET("/operator/dashboard"),
@@ -39,4 +42,6 @@ export const operatorApi = {
   recordPayment: (draft: PaymentDraft) => apiClient.POST("/operator/payments", { body: draft }),
   receipt: (receiptNumber: string) =>
     apiClient.GET("/operator/receipts/{receiptNumber}", { path: { receiptNumber } }),
+  profile: () => apiClient.GET("/operator/profile"),
+  updateProfile: (body: OperatorProfileUpdate) => apiClient.PATCH("/operator/profile", { body }),
 };

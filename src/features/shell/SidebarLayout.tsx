@@ -12,6 +12,7 @@ import type { Role } from "@/lib/roles";
 import { Breadcrumb } from "./Breadcrumb";
 import { DemoBanner } from "./DemoBanner";
 import { DevToolbar } from "./DevToolbar";
+import { useOperatorUnread } from "@/features/messages/queries";
 import { SidebarNav } from "./SidebarNav";
 import { MAIN_CONTENT_ID, SkipLink } from "./SkipLink";
 import { UserMenu } from "./UserMenu";
@@ -36,6 +37,9 @@ export function SidebarLayout({ role }: { role: Exclude<Role, "CLIENT"> }) {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Operators only: an admin's inbox list is audited, so it is never fetched for a badge.
+  const unread = useOperatorUnread(role === "OPERATOR");
+  const badges = unread ? { "/operator/messages": unread } : undefined;
 
   function toggleCollapsed() {
     const next = !collapsed;
@@ -74,7 +78,7 @@ export function SidebarLayout({ role }: { role: Exclude<Role, "CLIENT"> }) {
             {collapsed ? <Mark size={32} /> : <Logo height={32} />}
           </Link>
         </div>
-        <SidebarNav role={role} collapsed={collapsed} />
+        <SidebarNav role={role} collapsed={collapsed} badges={badges} />
         <div className="border-t border-border p-2">
           <Button
             variant="ghost"
@@ -113,7 +117,12 @@ export function SidebarLayout({ role }: { role: Exclude<Role, "CLIENT"> }) {
               <div className="flex h-14 shrink-0 items-center border-b border-border px-4">
                 <Logo height={28} />
               </div>
-              <SidebarNav role={role} touch onNavigate={() => setDrawerOpen(false)} />
+              <SidebarNav
+                role={role}
+                touch
+                badges={badges}
+                onNavigate={() => setDrawerOpen(false)}
+              />
               <div className="flex flex-wrap gap-2 border-t border-border p-4">
                 <LanguageToggle />
                 <ThemeToggle />

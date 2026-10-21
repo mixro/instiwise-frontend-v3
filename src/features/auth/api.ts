@@ -29,6 +29,10 @@ export function isInvitationErrorCode(code: string): code is InvitationErrorCode
 
 export const login = (body: Schema<"LoginRequest">) => apiClient.POST("/auth/login", { body });
 
+/** Signed in: needs the current password; other devices are signed out (204). */
+export const changePassword = (body: Schema<"ChangePasswordRequest">) =>
+  apiClient.POST("/auth/password", { body });
+
 export const getInvitation = (code: string) =>
   apiClient.GET("/invitations/{code}", { path: { code } });
 

@@ -22,6 +22,9 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
+    // The same in every checkout: a local .env must not switch the tests into demo
+    // mode. Demo mode has its own tests (DemoMode.test.tsx), which set it themselves.
+    env: { VITE_USE_MOCKS: "false" },
     include: ["src/**/*.test.{ts,tsx}"],
     css: false,
   },

@@ -252,6 +252,27 @@ const VISITS: Visit[] = [
       await expect(page.getByRole("dialog")).toBeVisible();
     },
   },
+  // The operator's own profile, and its password form showing every inline error.
+  { name: "operator-profile", path: "/operator/profile", role: "OPERATOR" },
+  {
+    name: "operator-profile-errors",
+    path: "/operator/profile",
+    role: "OPERATOR",
+    prepare: async (page) => {
+      const form = page.locator("section", { has: page.locator("#password-heading") });
+      await form.locator("button[type=submit]").click();
+      await expect(form.locator("[aria-invalid=true]").first()).toBeVisible();
+    },
+  },
+  // Staff inbox (src/mocks/messages.ts): the list, then one conversation per role.
+  { name: "operator-inbox", path: "/operator/messages", role: "OPERATOR" },
+  {
+    name: "operator-conversation",
+    path: "/operator/messages/prj_irrigation",
+    role: "OPERATOR",
+  },
+  { name: "admin-inbox", path: "/admin/messages", role: "ADMIN" },
+  { name: "admin-conversation", path: "/admin/messages/prj_weather", role: "ADMIN" },
   // Invitations (src/mocks/invitations.ts): the form, then the link and code to share.
   {
     name: "operator-invite-form",

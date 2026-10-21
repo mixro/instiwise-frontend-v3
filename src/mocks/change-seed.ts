@@ -143,7 +143,26 @@ export function seedOtherClientProjects(): MockProject[] {
         },
       ],
       progress: [],
-      messages: [],
+      messages: [
+        {
+          id: "b1",
+          sentAt: "2026-10-16T08:10:00Z",
+          senderName: OPERATOR,
+          senderRole: "OPERATOR",
+          body: "Habari Saida, the gas sensor arrived. We start the enclosure this week.",
+          read: true,
+          readByOperator: true,
+        },
+        {
+          id: "b2",
+          sentAt: "2026-10-16T18:45:00Z",
+          senderName: "Saida Mfinanga",
+          senderRole: "CLIENT",
+          body: "Asante. Can the alarm also flash a light? The kitchen is noisy.",
+          read: true,
+          readByOperator: false,
+        },
+      ],
       payments: [],
       documents: [],
       changeRequests: [

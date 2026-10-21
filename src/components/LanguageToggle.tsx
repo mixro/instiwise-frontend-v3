@@ -1,8 +1,13 @@
 import { useTranslation } from "react-i18next";
-import { SUPPORTED_LANGUAGES } from "@/i18n/languages";
+import { SUPPORTED_LANGUAGES, type Language } from "@/i18n/languages";
 import { cn } from "@/lib/cn";
 
-export function LanguageToggle() {
+interface LanguageToggleProps {
+  /** After switching: e.g. save the choice to the account (profile pages). */
+  onChange?: (language: Language) => void;
+}
+
+export function LanguageToggle({ onChange }: LanguageToggleProps = {}) {
   const { t, i18n } = useTranslation();
   const active = i18n.resolvedLanguage;
 
@@ -21,7 +26,11 @@ export function LanguageToggle() {
           // The name contains the visible code ("sw"), as WCAG 2.5.3 requires.
           aria-label={`${t(`language.${language}`)}, ${language}`}
           title={t(`language.${language}`)}
-          onClick={() => void i18n.changeLanguage(language)}
+          onClick={() => {
+            if (language === active) return;
+            void i18n.changeLanguage(language);
+            onChange?.(language);
+          }}
           className={cn(
             "h-8 min-w-10 rounded-md px-2 text-xs font-medium uppercase transition-colors",
             active === language

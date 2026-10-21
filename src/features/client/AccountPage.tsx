@@ -6,15 +6,42 @@ import { PageHeader } from "@/components/PageHeader";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useErrorText } from "@/hooks/useErrorText";
 import { useSession } from "@/hooks/useSession";
+import { useToast } from "@/hooks/useToast";
+import type { Language } from "@/i18n/languages";
+import { clientApi } from "./api";
 import { ProfileForm } from "./ProfileForm";
-import { useProfile } from "./queries";
+import { useProfile, useRefreshClient } from "./queries";
 
 /** Profile, language, theme and sign-out. On phones this is where the toggles live. */
 export function AccountPage() {
   const { t } = useTranslation();
   const { signOut } = useSession();
+  const { apiError } = useErrorText();
+  const { toast } = useToast();
+  const refresh = useRefreshClient();
   const profile = useProfile();
+
+  // The language is saved with the account (decided 2026-10-21), so it follows
+  // the client to other devices. Name and phone are sent unchanged.
+  async function saveLanguage(language: Language) {
+    if (!profile.data) return;
+    try {
+      await clientApi.updateProfile({
+        name: profile.data.name,
+        phone: profile.data.phone,
+        preferredLanguage: language,
+      });
+      toast({
+        variant: "success",
+        title: t("language.saved", { language: t(`language.${language}`) }),
+      });
+      void refresh();
+    } catch (error) {
+      toast({ variant: "error", title: t("language.saveFailed"), description: apiError(error) });
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -45,8 +72,11 @@ export function AccountPage() {
           {t("shell.preferences")}
         </h2>
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <span className="text-sm text-muted">{t("language.label")}</span>
-          <LanguageToggle />
+          <span className="text-sm text-muted">
+            {t("language.label")}
+            <span className="block text-xs">{t("language.hint")}</span>
+          </span>
+          <LanguageToggle onChange={(language) => void saveLanguage(language)} />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <span className="text-sm text-muted">{t("theme.label")}</span>

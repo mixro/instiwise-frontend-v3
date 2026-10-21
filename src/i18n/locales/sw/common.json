@@ -12,7 +12,10 @@
   "language": {
     "label": "Lugha",
     "en": "English",
-    "sw": "Kiswahili"
+    "sw": "Kiswahili",
+    "saved": "Lugha imehifadhiwa. INSTIWISE itafunguka kwa {{language}} ukiingia kwenye kifaa chochote.",
+    "saveFailed": "Lugha imebadilika hapa, lakini haikuweza kuhifadhiwa kwenye akaunti yako.",
+    "hint": "Inahifadhiwa na akaunti yako, kwa hiyo inakufuata kwenye vifaa vingine."
   },
   "ui": {
     "close": "Funga",
@@ -456,7 +459,10 @@
     "dateRange": "Tarehe ya mwisho iko kabla ya tarehe ya kuanzia.",
     "invitationDays": "Weka idadi kamili ya siku kuanzia 1 hadi 30.",
     "issuerNameRequired": "Weka jina linalochapishwa kwenye risiti.",
-    "addressRequired": "Weka anwani inayochapishwa kwenye risiti."
+    "addressRequired": "Weka anwani inayochapishwa kwenye risiti.",
+    "currentPasswordRequired": "Weka nenosiri lako la sasa.",
+    "passwordsDiffer": "Manenosiri mapya mawili hayafanani.",
+    "passwordSame": "Chagua nenosiri jipya tofauti na la sasa."
   },
   "apiErrors": {
     "INVALID_CREDENTIALS": "Barua pepe au nenosiri si sahihi.",
@@ -480,7 +486,8 @@
     "OPERATOR_NOT_PENDING": "Mhudumu huyu ameshaidhinishwa au kukataliwa. Ukurasa sasa unaonyesha matokeo.",
     "OPERATOR_STATUS_CHANGED": "Hali ya mhudumu huyu imebadilika. Ukurasa sasa unaionyesha.",
     "PAYMENT_ALREADY_REVERSED": "Malipo haya yameshabatilishwa.",
-    "ADJUSTMENT_BELOW_ZERO": "Hilo lingeshusha malipo chini ya sifuri. Yabatilishe badala yake."
+    "ADJUSTMENT_BELOW_ZERO": "Hilo lingeshusha malipo chini ya sifuri. Yabatilishe badala yake.",
+    "CURRENT_PASSWORD_WRONG": "Nenosiri la sasa si sahihi."
   },
   "client": {
     "home": {
@@ -778,6 +785,46 @@
       "done": "Malipo yamerekodiwa. Risiti {{number}} iko tayari, na mteja anaweza kuiona sasa.",
       "another": "Rekodi malipo mengine",
       "backToRecords": "Rudi kwenye rekodi za malipo"
+    },
+    "profile": {
+      "subtitle": "Taarifa zako, unachoruhusiwa kufanya, na nenosiri lako.",
+      "details": "Taarifa zako",
+      "emailHint": "Hivi ndivyo unavyoingia. Muulize msimamizi kama inahitaji kubadilishwa.",
+      "role": "Jukumu",
+      "access": "Ufikiaji wako",
+      "status": "Hali",
+      "registered": "Alijisajili",
+      "assignedClients": "Wateja uliokabidhiwa",
+      "clientCount_one": "Mteja {{count}}",
+      "clientCount_other": "Wateja {{count}}",
+      "permissionsTitle": "Unachoruhusiwa kufanya",
+      "permissionsIntro": "Msimamizi ndiye anaamua haya. Muulize msimamizi kama unahitaji mabadiliko.",
+      "allowed": "Inaruhusiwa",
+      "notAllowed": "Hairuhusiwi",
+      "always": {
+        "title": "Kufanya kazi na wateja uliokabidhiwa",
+        "body": "Unaona na kufanyia kazi miradi, malipo, ujumbe na nyaraka za wateja uliokabidhiwa, na si mtu mwingine."
+      },
+      "permissions": {
+        "canInviteClients": {
+          "title": "Anaweza kualika wateja",
+          "body": "Tuma viungo na misimbo ya mwaliko. Wateja wanaojisajili kwa mwaliko wako wanakabidhiwa kwako."
+        },
+        "canCreateProjects": {
+          "title": "Anaweza kutengeneza miradi",
+          "body": "Tengeneza miradi ya wateja uliokabidhiwa na uandae toleo la kwanza la makubaliano yao."
+        }
+      },
+      "password": {
+        "title": "Badilisha nenosiri",
+        "note": "Baada ya kubadilisha, vifaa vyako vingine vitatolewa. Hiki kitabaki kimeingia.",
+        "current": "Nenosiri la sasa",
+        "new": "Nenosiri jipya",
+        "confirm": "Rudia nenosiri jipya",
+        "submit": "Badilisha nenosiri",
+        "submitting": "Inabadilisha…",
+        "done": "Nenosiri limebadilishwa. Vifaa vyako vingine vimetolewa."
+      }
     }
   },
   "admin": {
@@ -954,7 +1001,9 @@
       "DOCUMENT_UPLOADED": "Hati imepakiwa",
       "DOCUMENT_VISIBILITY_CHANGED": "Mwonekano wa hati umebadilishwa",
       "CONVERSATION_VIEWED": "Mazungumzo yamesomwa na msimamizi",
-      "PASSWORD_RESET": "Nenosiri limewekwa upya"
+      "PASSWORD_RESET": "Nenosiri limewekwa upya",
+      "CONVERSATION_LIST_VIEWED": "Orodha ya mazungumzo imesomwa na msimamizi",
+      "PASSWORD_CHANGED": "Nenosiri limebadilishwa"
     }
   },
   "settings": {
@@ -1058,5 +1107,52 @@
       "confirm": "Batilisha mwaliko",
       "done": "Mwaliko {{code}} umebatilishwa"
     }
+  },
+  "inbox": {
+    "subtitle": {
+      "OPERATOR": "Mazungumzo na wateja wako, moja kwa kila mradi.",
+      "ADMIN": "Mazungumzo ya kila mradi, kusoma tu. Kufungua ukurasa huu au mazungumzo kunarekodiwa kwenye kumbukumbu za ukaguzi."
+    },
+    "listLabel": "Mazungumzo",
+    "search": "Tafuta mazungumzo",
+    "searchHint": "Jina la mteja, mradi au namba ya kumbukumbu",
+    "searchButton": "Tafuta",
+    "clearSearch": "Futa utafutaji",
+    "show": "Onyesha",
+    "filterAll": "Yote",
+    "filterUnread": "Hayajasomwa",
+    "operatorLabel": "Mhudumu: {{name}}",
+    "noOperator": "Bado hakuna mhudumu",
+    "noMessages": "Bado hakuna ujumbe",
+    "youPrefix": "Wewe: ",
+    "unread_one": "{{count}} haujasomwa",
+    "unread_other": "{{count}} haijasomwa",
+    "waiting_one": "{{count}} unasubiri",
+    "waiting_other": "{{count}} inasubiri",
+    "empty": {
+      "OPERATOR": "Bado hakuna mazungumzo",
+      "ADMIN": "Bado hakuna mazungumzo"
+    },
+    "emptyBody": {
+      "OPERATOR": "Kila mradi wa wateja uliokabidhiwa una mazungumzo hapa.",
+      "ADMIN": "Kila mradi una mazungumzo hapa."
+    },
+    "noMatches": "Hakuna mazungumzo yanayolingana",
+    "noUnread": "Hakuna kisichosomwa. Uko sawa.",
+    "choose": "Chagua mazungumzo",
+    "chooseBody": "Chagua mteja upande wa kushoto kusoma ujumbe.",
+    "back": "Mazungumzo yote",
+    "openClient": "Fungua mteja",
+    "threadEmpty": "Bado hakuna ujumbe katika mradi huu",
+    "threadEmptyBody": {
+      "OPERATOR": "Andika ujumbe wa kwanza; mteja ataona kwenye mradi wake.",
+      "ADMIN": "Bado hakuna aliyeandika katika mradi huu."
+    },
+    "audited": "Ufikiaji wako unarekodiwa",
+    "auditedBody": "Wasimamizi wanasoma mazungumzo bila kujibu. Kila unapofungua kisanduku au mazungumzo, inaandikwa kwenye kumbukumbu za ukaguzi.",
+    "readOnly": "Kusoma tu: wasimamizi hawawezi kujibu. Mhudumu ndiye anamjibu mteja.",
+    "refresh": "Onyesha upya",
+    "navUnread_one": "Mazungumzo {{count}} yenye ujumbe ambao haujasomwa",
+    "navUnread_other": "Mazungumzo {{count}} yenye ujumbe ambao haujasomwa"
   }
 }

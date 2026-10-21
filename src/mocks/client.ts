@@ -13,10 +13,12 @@ import type {
   Profile,
   Receipt,
 } from "@/features/client/api";
+import type { Role } from "@/lib/roles";
 import type { ProjectStatus } from "@/lib/status";
 import type { ChangeRecord } from "./changes";
 import { seedChangeRequests, seedOtherClientProjects } from "./change-seed";
 import { addAudit } from "./admin-store";
+import { accountLanguage, setAccountLanguage } from "./auth";
 import { fail, on } from "./contract";
 import { seedUnassignedProjects } from "./staff-seed";
 
@@ -32,7 +34,6 @@ import { seedUnassignedProjects } from "./staff-seed";
 
 const CLIENT = "Neema Mwakyusa";
 const OPERATOR = { name: "Baraka Mushi", phone: "+255754321987" };
-const ADMIN = "Rehema Said";
 
 export interface MockProject {
   id: string;
@@ -49,10 +50,32 @@ export interface MockProject {
   deadline: string;
   agreements: AgreementVersion[];
   progress: ProgressUpdate[];
-  messages: (Message & { read: boolean })[];
+  messages: MockMessage[];
   payments: MockPayment[];
   documents: ProjectDocument[];
   changeRequests: ChangeRecord[];
+}
+
+/**
+ * A stored message. Whether it is "mine" depends on who reads it, so it is worked
+ * out per viewer (toMessage). `read`: read by the client; `readByOperator`: read
+ * by the operator. A message one side sends is unread for the other side.
+ */
+export interface MockMessage extends Omit<Message, "mine"> {
+  read: boolean;
+  readByOperator: boolean;
+}
+
+/** A stored message as the API returns it to this viewer. Admins never write, so nothing is "mine". */
+export function toMessage(m: MockMessage, viewer: Role): Message {
+  return {
+    id: m.id,
+    body: m.body,
+    sentAt: m.sentAt,
+    senderName: m.senderName,
+    senderRole: m.senderRole,
+    mine: viewer !== "ADMIN" && m.senderRole === viewer,
+  };
 }
 
 /**
@@ -70,7 +93,10 @@ type SeedProject = Omit<MockProject, "clientId" | "clientName" | "operatorName" 
 /** The signed-in mock client. Client endpoints only ever return this client's projects. */
 export const MOCK_CLIENT_ID = "cli_neema";
 
-function seedNeema(): { projects: SeedProject[]; profile: Profile } {
+/** The language lives with the account (mocks/auth.ts); the rest of the profile here. */
+type StoredProfile = Omit<Profile, "preferredLanguage">;
+
+function seedNeema(): { projects: SeedProject[]; profile: StoredProfile } {
   return {
     profile: { name: CLIENT, email: "neema@example.com", phone: "+255713456789" },
     projects: [
@@ -194,6 +220,7 @@ function seedNeema(): { projects: SeedProject[]; profile: Profile } {
             CLIENT,
             "Great. I have sent the second payment by bank.",
             true,
+            false,
           ),
           message(
             "m5",
@@ -401,7 +428,7 @@ function seedNeema(): { projects: SeedProject[]; profile: Profile } {
           message(
             "a1",
             "2026-10-14T10:05:00Z",
-            ADMIN,
+            OPERATOR.name,
             "Karibu Neema. The agreement is ready for you to review on the Agreement tab.",
             false,
           ),
@@ -413,17 +440,25 @@ function seedNeema(): { projects: SeedProject[]; profile: Profile } {
   };
 }
 
-function message(id: string, sentAt: string, senderName: string, body: string, read: boolean) {
-  const mine = senderName === CLIENT;
+/** `read`: by the client; `readByOperator`: by the operator (for the client's own messages). */
+function message(
+  id: string,
+  sentAt: string,
+  senderName: string,
+  body: string,
+  read: boolean,
+  readByOperator = true,
+): MockMessage {
+  const fromClient = senderName === CLIENT;
   return {
     id,
     sentAt,
     senderName,
-    senderRole: mine ? "CLIENT" : "OPERATOR",
+    senderRole: fromClient ? "CLIENT" : "OPERATOR",
     body,
-    mine,
-    read,
-  } as const;
+    read: fromClient || read,
+    readByOperator: !fromClient || readByOperator,
+  };
 }
 
 function payment(
@@ -448,7 +483,7 @@ function document(
   return { id, name, kind, sizeBytes, category, uploadedAt };
 }
 
-function seed(): { projects: MockProject[]; profile: Profile } {
+function seed(): { projects: MockProject[]; profile: StoredProfile } {
   const { projects, profile } = seedNeema();
   return {
     profile,
@@ -527,7 +562,7 @@ function summaryOf(project: MockProject): ProjectSummary {
     title: project.title,
     status: project.status,
     deadline: project.deadline,
-    unreadMessages: project.messages.filter((m) => !m.mine && !m.read).length,
+    unreadMessages: project.messages.filter((m) => m.senderRole !== "CLIENT" && !m.read).length,
     changesAwaitingDecision: project.changeRequests.filter(
       (change) => change.status === "AWAITING_CLIENT_ACCEPTANCE",
     ).length,
@@ -606,14 +641,16 @@ export function receiptFor(project: MockProject, receiptNumber: string): Receipt
   };
 }
 
-/** A stored message without the server-side read flag. */
-function publicMessage({ id, body, sentAt, senderName, senderRole, mine }: Message): Message {
-  return { id, body, sentAt, senderName, senderRole, mine };
-}
+const publicMessage = (m: MockMessage) => toMessage(m, "CLIENT");
 
 function findProject(id: unknown): MockProject | undefined {
   return myProjects().find((project) => project.id === id);
 }
+
+const profileOut = (): Profile => ({
+  ...state.profile,
+  preferredLanguage: accountLanguage(state.profile.email),
+});
 
 export const clientHandlers = [
   on.get("/client/home", async () => {
@@ -729,14 +766,15 @@ export const clientHandlers = [
     if (!project) return fail(404, "PROJECT_NOT_FOUND");
     const { body } = await request.json();
     if (body.includes("[fail]")) return fail(500, "INTERNAL_ERROR");
-    const sent = {
+    const sent: MockMessage = {
       id: `m_${Date.now()}`,
       body: body.trim(),
       sentAt: new Date().toISOString(),
       senderName: state.profile.name,
-      senderRole: "CLIENT" as const,
-      mine: true,
+      senderRole: "CLIENT",
       read: true,
+      // Waits for the operator.
+      readByOperator: false,
     };
     project.messages.push(sent);
     return HttpResponse.json(publicMessage(sent), { status: 201 });
@@ -803,13 +841,14 @@ export const clientHandlers = [
 
   on.get("/client/profile", async () => {
     await delay();
-    return HttpResponse.json(state.profile);
+    return HttpResponse.json(profileOut());
   }),
 
   on.patch("/client/profile", async ({ request }) => {
     await delay();
-    const { name, phone } = await request.json();
+    const { name, phone, preferredLanguage } = await request.json();
     state.profile = { ...state.profile, name: name.trim(), phone: phone || undefined };
-    return HttpResponse.json(state.profile);
+    if (preferredLanguage) setAccountLanguage(state.profile.email, preferredLanguage);
+    return HttpResponse.json(profileOut());
   }),
 ];

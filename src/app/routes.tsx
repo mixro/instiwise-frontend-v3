@@ -37,6 +37,8 @@ import { OperatorReceiptPage } from "@/features/operator/OperatorReceiptPage";
 import { PaymentRecordsPage } from "@/features/operator/PaymentRecordsPage";
 import { RecordPaymentPage } from "@/features/operator/RecordPaymentPage";
 import { OperatorProjectsPage } from "@/features/operator/OperatorProjectsPage";
+import { InboxPage } from "@/features/messages/InboxPage";
+import { OperatorProfilePage } from "@/features/operator/OperatorProfilePage";
 import { PlaceholderPage } from "@/features/shell/PlaceholderPage";
 import { RequireRole } from "@/features/shell/RequireRole";
 import { RoleHomeRedirect } from "@/features/shell/RoleHomeRedirect";
@@ -165,8 +167,11 @@ export const routes: RouteObject[] = [
       "/operator/clients": <OperatorClientsPage />,
       "/operator/projects": <OperatorProjectsPage />,
       "/operator/payments": <PaymentRecordsPage />,
+      "/operator/messages": <InboxPage role="OPERATOR" />,
+      "/operator/profile": <OperatorProfilePage />,
     },
     [
+      { path: "messages/:projectId", element: <InboxPage role="OPERATOR" /> },
       { path: "clients/:clientId", element: <OperatorClientPage /> },
       { path: "projects/:projectId/changes", element: <OperatorChangesPage /> },
       { path: "payments/new", element: <RecordPaymentPage /> },
@@ -183,8 +188,12 @@ export const routes: RouteObject[] = [
       "/admin/finance": <AdminFinancePage />,
       "/admin/audit-logs": <AdminAuditPage />,
       "/admin/settings": <AdminSettingsPage />,
+      "/admin/messages": <InboxPage role="ADMIN" />,
     },
-    [{ path: "projects/changes", element: <ChangeReviewPage /> }],
+    [
+      { path: "projects/changes", element: <ChangeReviewPage /> },
+      { path: "messages/:projectId", element: <InboxPage role="ADMIN" /> },
+    ],
   ),
   { path: "/no-access", element: <NoAccessPage /> },
   ...devRoutes,

@@ -9,7 +9,11 @@ export const operatorKeys = {
   client: (id: string) => [...operatorKeys.all, "client", id] as const,
   payments: () => [...operatorKeys.all, "payments"] as const,
   receipt: (number: string) => [...operatorKeys.all, "receipt", number] as const,
+  profile: () => [...operatorKeys.all, "profile"] as const,
 };
+
+export const useOperatorProfile = () =>
+  useQuery({ queryKey: operatorKeys.profile(), queryFn: () => operatorApi.profile() });
 
 export const useOperatorDashboard = () =>
   useQuery({ queryKey: operatorKeys.dashboard(), queryFn: operatorApi.dashboard });

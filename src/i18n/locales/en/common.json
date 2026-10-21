@@ -12,7 +12,10 @@
   "language": {
     "label": "Language",
     "en": "English",
-    "sw": "Kiswahili"
+    "sw": "Kiswahili",
+    "saved": "Language saved. INSTIWISE opens in {{language}} when you sign in on any device.",
+    "saveFailed": "The language changed here, but it could not be saved to your account.",
+    "hint": "Saved with your account, so it follows you to other devices."
   },
   "ui": {
     "close": "Close",
@@ -456,7 +459,10 @@
     "dateRange": "The end date is before the start date.",
     "invitationDays": "Enter a whole number of days from 1 to 30.",
     "issuerNameRequired": "Enter the name printed on receipts.",
-    "addressRequired": "Enter the address printed on receipts."
+    "addressRequired": "Enter the address printed on receipts.",
+    "currentPasswordRequired": "Enter your current password.",
+    "passwordsDiffer": "The two new passwords are not the same.",
+    "passwordSame": "Choose a new password that is different from the current one."
   },
   "apiErrors": {
     "INVALID_CREDENTIALS": "The email address or password is wrong.",
@@ -480,7 +486,8 @@
     "OPERATOR_NOT_PENDING": "This operator was already approved or turned down. The page now shows the result.",
     "OPERATOR_STATUS_CHANGED": "This operator's status changed in the meantime. The page now shows it.",
     "PAYMENT_ALREADY_REVERSED": "This payment was already reversed.",
-    "ADJUSTMENT_BELOW_ZERO": "That would take the payment below zero. Reverse it instead."
+    "ADJUSTMENT_BELOW_ZERO": "That would take the payment below zero. Reverse it instead.",
+    "CURRENT_PASSWORD_WRONG": "The current password is not correct."
   },
   "client": {
     "home": {
@@ -778,6 +785,46 @@
       "done": "Payment recorded. Receipt {{number}} is ready, and the client can see it now.",
       "another": "Record another payment",
       "backToRecords": "Back to payment records"
+    },
+    "profile": {
+      "subtitle": "Your details, what you are allowed to do, and your password.",
+      "details": "Your details",
+      "emailHint": "This is how you sign in. Ask an admin if it needs to change.",
+      "role": "Role",
+      "access": "Your access",
+      "status": "Status",
+      "registered": "Registered",
+      "assignedClients": "Assigned clients",
+      "clientCount_one": "{{count}} client",
+      "clientCount_other": "{{count}} clients",
+      "permissionsTitle": "What you may do",
+      "permissionsIntro": "An admin decides these. Ask an admin if you need a change.",
+      "allowed": "Allowed",
+      "notAllowed": "Not allowed",
+      "always": {
+        "title": "Work with your assigned clients",
+        "body": "You see and work on the projects, payments, messages and files of the clients assigned to you, and nobody else."
+      },
+      "permissions": {
+        "canInviteClients": {
+          "title": "May invite clients",
+          "body": "Send invitation links and codes. Clients who register with yours are assigned to you."
+        },
+        "canCreateProjects": {
+          "title": "May create projects",
+          "body": "Create projects for your assigned clients and draft the first version of their agreement."
+        }
+      },
+      "password": {
+        "title": "Change password",
+        "note": "After the change, your other devices are signed out. This one stays signed in.",
+        "current": "Current password",
+        "new": "New password",
+        "confirm": "Repeat the new password",
+        "submit": "Change password",
+        "submitting": "Changing…",
+        "done": "Password changed. Your other devices were signed out."
+      }
     }
   },
   "admin": {
@@ -954,7 +1001,9 @@
       "DOCUMENT_UPLOADED": "Document uploaded",
       "DOCUMENT_VISIBILITY_CHANGED": "Document visibility changed",
       "CONVERSATION_VIEWED": "Conversation read by an admin",
-      "PASSWORD_RESET": "Password reset"
+      "PASSWORD_RESET": "Password reset",
+      "CONVERSATION_LIST_VIEWED": "Conversation list viewed by an admin",
+      "PASSWORD_CHANGED": "Password changed"
     }
   },
   "settings": {
@@ -1058,5 +1107,52 @@
       "confirm": "Revoke invitation",
       "done": "Invitation {{code}} revoked"
     }
+  },
+  "inbox": {
+    "subtitle": {
+      "OPERATOR": "Conversations with your clients, one for each project.",
+      "ADMIN": "Every project conversation, read-only. Opening this page or a conversation is recorded in the audit log."
+    },
+    "listLabel": "Conversations",
+    "search": "Search conversations",
+    "searchHint": "Client name, project or reference",
+    "searchButton": "Search",
+    "clearSearch": "Clear search",
+    "show": "Show",
+    "filterAll": "All",
+    "filterUnread": "Unread",
+    "operatorLabel": "Operator: {{name}}",
+    "noOperator": "No operator yet",
+    "noMessages": "No messages yet",
+    "youPrefix": "You: ",
+    "unread_one": "{{count}} unread",
+    "unread_other": "{{count}} unread",
+    "waiting_one": "{{count}} waiting",
+    "waiting_other": "{{count}} waiting",
+    "empty": {
+      "OPERATOR": "No conversations yet",
+      "ADMIN": "No conversations yet"
+    },
+    "emptyBody": {
+      "OPERATOR": "Each project of your assigned clients has a conversation here.",
+      "ADMIN": "Each project has a conversation here."
+    },
+    "noMatches": "No conversations match",
+    "noUnread": "Nothing unread. You are up to date.",
+    "choose": "Choose a conversation",
+    "chooseBody": "Pick a client on the left to read the messages.",
+    "back": "All conversations",
+    "openClient": "Open client",
+    "threadEmpty": "No messages in this project yet",
+    "threadEmptyBody": {
+      "OPERATOR": "Write the first message; the client sees it on their project.",
+      "ADMIN": "Nobody has written in this project yet."
+    },
+    "audited": "Your access is recorded",
+    "auditedBody": "Admins read conversations without replying. Each time you open the inbox or a conversation, it is written to the audit log.",
+    "readOnly": "Read-only: admins cannot reply. The operator answers the client.",
+    "refresh": "Refresh",
+    "navUnread_one": "{{count}} conversation with unread messages",
+    "navUnread_other": "{{count}} conversations with unread messages"
   }
 }

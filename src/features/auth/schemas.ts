@@ -29,7 +29,7 @@ const email = z
   .max(254, "validation.emailInvalid")
   .pipe(z.email("validation.emailInvalid"));
 
-const newPassword = z
+export const newPassword = z
   .string()
   .min(1, "validation.passwordRequired")
   .min(PASSWORD_MIN_LENGTH, "validation.passwordTooShort")
@@ -37,7 +37,7 @@ const newPassword = z
   .regex(/\p{L}/u, "validation.passwordNeedsLetter")
   .regex(/\d/, "validation.passwordNeedsNumber");
 
-const requiredPhone = z
+export const requiredPhone = z
   .string()
   .trim()
   .min(1, "validation.phoneRequired")
@@ -79,7 +79,29 @@ export const operatorRegistrationSchema = z.object({
   password: newPassword,
 });
 
+// Run each rule even while other fields still have errors, so all show at once.
+const always = { when: () => true };
+
+/** Changing the password while signed in (decided 2026-10-21). */
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "validation.currentPasswordRequired"),
+    newPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((values) => values.confirmPassword === values.newPassword, {
+    message: "validation.passwordsDiffer",
+    path: ["confirmPassword"],
+    ...always,
+  })
+  .refine((values) => !values.currentPassword || values.newPassword !== values.currentPassword, {
+    message: "validation.passwordSame",
+    path: ["newPassword"],
+    ...always,
+  });
+
 export type LoginValues = z.infer<typeof loginSchema>;
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
 export type InvitationEntryValues = z.infer<typeof invitationEntrySchema>;
 export type ClientRegistrationValues = z.infer<typeof clientRegistrationSchema>;
 export type OperatorRegistrationValues = z.infer<typeof operatorRegistrationSchema>;

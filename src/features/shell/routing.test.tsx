@@ -29,9 +29,10 @@ describe("routing and role guards", () => {
   });
 
   it("opens a role's own pages", async () => {
-    renderApp("/admin/messages", "ADMIN");
-    expect(await screen.findByRole("heading", { level: 1, name: "Messages" })).toBeVisible();
-    expect(screen.getByText("This screen is not built yet")).toBeInTheDocument();
+    // Every operator and admin nav item has its screen now; none is a placeholder.
+    renderApp("/operator/profile", "OPERATOR");
+    expect(await screen.findByRole("heading", { level: 1, name: "Profile" })).toBeVisible();
+    expect(screen.queryByText("This screen is not built yet")).not.toBeInTheDocument();
   });
 
   it("sends signed-out visitors to sign-in", async () => {

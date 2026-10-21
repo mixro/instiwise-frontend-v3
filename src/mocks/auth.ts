@@ -1,5 +1,6 @@
 import { delay, HttpResponse } from "msw";
 import type { AuthUser, Invitation, RegistrationResult, Session } from "@/features/auth/api";
+import type { Language } from "@/i18n/languages";
 import {
   DEMO_ACCOUNTS,
   DEMO_CODES,
@@ -20,10 +21,19 @@ import { NO_PERMISSIONS } from "./staff-seed";
 interface StoredAccount extends DemoAccount {
   id: string;
   password: string;
+  /** Saved with the account (decided 2026-10-21): sign-in switches to it. */
+  preferredLanguage: Language;
 }
 
 let accounts: StoredAccount[] = [];
 let usedCodes = new Set<string>();
+/**
+ * The mocks do not check tokens yet (phase 4), so "the signed-in user" for
+ * POST /auth/password is whoever signed in last in this tab, or the demo
+ * operator when the role switcher was used instead of the sign-in form.
+ */
+let lastSignedIn: string | null = null;
+const DEMO_OPERATOR_EMAIL = "baraka@example.com";
 
 /** Back to the demo data. Tests call this between cases. */
 /** Admin decisions about an operator reach sign-in (approved, suspended, rejected). */
@@ -37,18 +47,45 @@ export function resetMockAuth(): void {
     ...account,
     id: `usr_demo_${index + 1}`,
     password: DEMO_PASSWORD,
+    preferredLanguage: "en" as Language,
   }));
   usedCodes = new Set();
+  lastSignedIn = null;
+}
+
+/** The account's saved language (the client and operator profiles read and write it here). */
+export function accountLanguage(email: string): Language {
+  return findAccount(email)?.preferredLanguage ?? "en";
+}
+
+export function setAccountLanguage(email: string, language: Language): void {
+  const account = findAccount(email);
+  if (account) account.preferredLanguage = language;
+}
+
+/** A profile name change also shows at the next sign-in. */
+export function renameAccount(email: string, name: string): void {
+  const account = findAccount(email);
+  if (account) account.name = name;
 }
 
 resetMockAuth();
 
 /** Operators carry the permissions an admin granted them (contract AuthUser). */
-function toUser({ id, name, email, role }: StoredAccount): AuthUser {
-  if (role !== "OPERATOR") return { id, name, email, role };
+function toUser({ id, name, email, role, preferredLanguage }: StoredAccount): AuthUser {
+  if (role !== "OPERATOR") return { id, name, email, role, preferredLanguage };
   const operator = staffState().operators.find((o) => o.email === email);
-  return { id, name, email, role, permissions: operator?.permissions ?? NO_PERMISSIONS };
+  return {
+    id,
+    name,
+    email,
+    role,
+    preferredLanguage,
+    permissions: operator?.permissions ?? NO_PERMISSIONS,
+  };
 }
+
+const PASSWORD_RULE = /^(?=.*[A-Za-z])(?=.*\d).{8,128}$/;
 
 const ACCESS_TOKEN_MS = 15 * 60 * 1000;
 
@@ -94,7 +131,28 @@ export const authHandlers = [
     if (account.state === "PENDING_APPROVAL") return fail(403, "ACCOUNT_PENDING_APPROVAL");
     if (account.state === "REJECTED") return fail(403, "ACCOUNT_REJECTED");
     if (account.state === "SUSPENDED") return fail(403, "ACCOUNT_SUSPENDED");
+    lastSignedIn = account.email;
     return HttpResponse.json(sessionFor(account));
+  }),
+
+  on.post("/auth/password", async ({ request }) => {
+    await delay();
+    const account = findAccount(lastSignedIn ?? DEMO_OPERATOR_EMAIL);
+    if (!account) return fail(401, "UNAUTHENTICATED");
+    const { currentPassword, newPassword } = await request.json();
+    if (currentPassword !== account.password) return fail(422, "CURRENT_PASSWORD_WRONG");
+    if (!PASSWORD_RULE.test(newPassword) || newPassword === currentPassword) {
+      return fail(422, "VALIDATION_FAILED");
+    }
+    account.password = newPassword;
+    // The real server also revokes every other refresh token of the account.
+    addAudit({
+      actor: account.name,
+      actorRole: account.role,
+      action: "PASSWORD_CHANGED",
+      target: account.name,
+    });
+    return new HttpResponse(null, { status: 204 });
   }),
 
   on.get("/invitations/{code}", async ({ params }) => {
@@ -119,8 +177,10 @@ export const authHandlers = [
       role: invitation.role,
       state: invitation.role === "OPERATOR" ? "PENDING_APPROVAL" : "ACTIVE",
       password: body.password,
+      preferredLanguage: "en",
     };
     accounts.push(account);
+    if (account.state === "ACTIVE") lastSignedIn = account.email;
     // A staff invitation is used once; a client invited by an operator (or for one)
     // is assigned to that operator straight away.
     const assignedTo = acceptStaffInvitation(code, account.name, account.email);

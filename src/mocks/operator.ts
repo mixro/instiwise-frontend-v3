@@ -10,7 +10,9 @@ import type {
   StaffProject,
 } from "@/features/operator/api";
 import { addDays, localDate, paymentDateRange } from "@/lib/dates";
-import { addAudit, staffState } from "./admin-store";
+import type { OperatorProfile } from "@/features/operator/api";
+import { addAudit, operatorById, staffState } from "./admin-store";
+import { accountLanguage, renameAccount, setAccountLanguage } from "./auth";
 import { fail, on } from "./contract";
 import {
   balanceOf,
@@ -35,7 +37,7 @@ const UPCOMING_DAYS = 30;
 const assignedClients = (): MockClient[] =>
   staffState().clients.filter((client) => client.operatorId === MOCK_OPERATOR_ID);
 
-function assignedProjects(): MockProject[] {
+export function assignedProjects(): MockProject[] {
   const ids = new Set(assignedClients().map((client) => client.id));
   return mockProjects().filter((project) => ids.has(project.clientId));
 }
@@ -140,7 +142,58 @@ function nextReceiptNumber(): string {
   return `RC-2026-${String(highest + 1).padStart(4, "0")}`;
 }
 
+const PHONE = /^\+255[1-9]\d{8}$/;
+
+/** The mock operator's own profile: their details, and a count of their clients only. */
+function operatorProfile(): OperatorProfile | undefined {
+  const operator = operatorById(MOCK_OPERATOR_ID);
+  if (!operator) return undefined;
+  return {
+    name: operator.name,
+    email: operator.email,
+    phone: operator.phone,
+    preferredLanguage: accountLanguage(operator.email),
+    status: operator.status,
+    registeredAt: operator.registeredAt,
+    assignedClientCount: assignedClients().length,
+    permissions: operator.permissions,
+  };
+}
+
 export const operatorHandlers = [
+  on.get("/operator/profile", async () => {
+    await delay();
+    const profile = operatorProfile();
+    return profile ? HttpResponse.json(profile) : fail(403, "FORBIDDEN");
+  }),
+
+  on.patch("/operator/profile", async ({ request }) => {
+    await delay();
+    const operator = operatorById(MOCK_OPERATOR_ID);
+    if (!operator) return fail(403, "FORBIDDEN");
+    const body = await request.json();
+    const name = body.name?.trim();
+    // Only name, phone and language; anything else (email, permissions…) is not accepted.
+    const allowed = ["name", "phone", "preferredLanguage"];
+    if (
+      Object.keys(body).length === 0 ||
+      Object.keys(body).some((key) => !allowed.includes(key)) ||
+      (body.name !== undefined && (!name || name.length < 2 || name.length > 100)) ||
+      (body.phone !== undefined && !PHONE.test(body.phone)) ||
+      (body.preferredLanguage !== undefined && !["en", "sw"].includes(body.preferredLanguage))
+    ) {
+      return fail(422, "VALIDATION_FAILED");
+    }
+    if (name) {
+      operator.name = name;
+      renameAccount(operator.email, name);
+    }
+    if (body.phone) operator.phone = body.phone;
+    if (body.preferredLanguage) setAccountLanguage(operator.email, body.preferredLanguage);
+    const profile = operatorProfile();
+    return profile ? HttpResponse.json(profile) : fail(403, "FORBIDDEN");
+  }),
+
   on.get("/operator/dashboard", async () => {
     await delay();
     const projects = assignedProjects();

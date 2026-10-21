@@ -13,9 +13,11 @@ interface SidebarNavProps {
   onNavigate?: () => void;
   /** Taller rows for the phone drawer. */
   touch?: boolean;
+  /** Counts shown next to items, by path (e.g. unread conversations). */
+  badges?: Partial<Record<string, number>>;
 }
 
-export function SidebarNav({ role, collapsed, onNavigate, touch }: SidebarNavProps) {
+export function SidebarNav({ role, collapsed, onNavigate, touch, badges }: SidebarNavProps) {
   const { t } = useTranslation();
 
   return (
@@ -23,12 +25,14 @@ export function SidebarNav({ role, collapsed, onNavigate, touch }: SidebarNavPro
       <ul className="flex flex-col gap-1">
         {NAVIGATION[role].map(({ to, label, icon: Icon, ...item }) => {
           const text = t(label);
+          const count = badges?.[to] ?? 0;
+          const countText = count > 0 ? t("inbox.navUnread", { count }) : "";
           const link = (
             <NavLink
               to={to}
               end={"end" in item}
               onClick={onNavigate}
-              aria-label={collapsed ? text : undefined}
+              aria-label={collapsed ? [text, countText].filter(Boolean).join(", ") : undefined}
               className={({ isActive }) =>
                 cn(
                   "flex items-center gap-3 rounded-md px-3 text-sm font-medium transition-colors",
@@ -40,8 +44,22 @@ export function SidebarNav({ role, collapsed, onNavigate, touch }: SidebarNavPro
                 )
               }
             >
-              <Icon className="size-4 shrink-0" aria-hidden="true" />
+              <span className="relative shrink-0">
+                <Icon className="size-4" aria-hidden="true" />
+                {collapsed && count > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-1 -right-1 size-2 rounded-full bg-brand-text"
+                  />
+                )}
+              </span>
               {!collapsed && <span className="truncate">{text}</span>}
+              {!collapsed && count > 0 && (
+                <span className="ml-auto rounded-full bg-brand-text px-2 py-0.5 text-xs font-semibold text-surface">
+                  <span aria-hidden="true">{count}</span>
+                  <span className="sr-only">{countText}</span>
+                </span>
+              )}
             </NavLink>
           );
 

@@ -82,6 +82,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change the signed-in user's password
+         * @description Needs the current password. Every other session of the account is
+         *     signed out (its refresh tokens are revoked); this one stays signed in.
+         *     Audited (PASSWORD_CHANGED). Decided 2026-10-21.
+         */
+        post: operations["changePassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/me": {
         parameters: {
             query?: never;
@@ -801,6 +823,55 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/operator/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The signed-in operator's own profile
+         * @description Their own details, status and what an admin allowed them to do, plus
+         *     how many clients are assigned to them (a count only). Decided 2026-10-21.
+         */
+        get: operations["getOperatorProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Change name, phone or preferred language
+         * @description Send only what changes. Email, status, permissions and the client count
+         *     cannot be changed here (an admin corrects email; permissions are granted
+         *     by an admin).
+         */
+        patch: operations["updateOperatorProfile"];
+        trace?: never;
+    };
+    "/operator/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The inbox, one conversation per project of an assigned client
+         * @description Assigned clients only (ADR 0002). Newest activity first. unreadTotal
+         *     counts conversations with unread client messages over every page and
+         *     ignoring the filters (for the navigation badge). Decided 2026-10-21.
+         */
+        get: operations["listOperatorConversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/operator/projects/{projectId}/messages": {
         parameters: {
             query?: never;
@@ -1311,6 +1382,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Every project's conversation, with previews (every call is audited)
+         * @description Previews are message content, so every call writes
+         *     CONVERSATION_LIST_VIEWED to the audit log. unreadCount and unreadTotal
+         *     are the operator's unread client messages: a client waiting for an
+         *     answer. Admins cannot reply, and reading never marks anything read.
+         *     Decided 2026-10-21.
+         */
+        get: operations["listAdminConversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/projects/{projectId}/messages": {
         parameters: {
             query?: never;
@@ -1548,12 +1643,12 @@ export interface components {
          */
         DocumentKind: "pdf" | "word" | "spreadsheet" | "image";
         /** @enum {string} */
-        AuditAction: "PAYMENT_RECORDED" | "PAYMENT_REVERSED" | "PAYMENT_ADJUSTED" | "OPERATOR_APPROVED" | "OPERATOR_REJECTED" | "OPERATOR_SUSPENDED" | "OPERATOR_REACTIVATED" | "CLIENT_ASSIGNED" | "CHANGE_APPROVED" | "CHANGE_NOT_APPROVED" | "CHANGE_ACCEPTED" | "CHANGE_REJECTED" | "AGREEMENT_ACCEPTED" | "SETTINGS_UPDATED" | "CLIENT_UPDATED" | "OPERATOR_PERMISSIONS_CHANGED" | "INVITATION_CREATED" | "INVITATION_REVOKED" | "PROJECT_CREATED" | "AGREEMENT_SENT" | "DOCUMENT_UPLOADED" | "DOCUMENT_VISIBILITY_CHANGED" | "CONVERSATION_VIEWED" | "PASSWORD_RESET";
+        AuditAction: "PAYMENT_RECORDED" | "PAYMENT_REVERSED" | "PAYMENT_ADJUSTED" | "OPERATOR_APPROVED" | "OPERATOR_REJECTED" | "OPERATOR_SUSPENDED" | "OPERATOR_REACTIVATED" | "CLIENT_ASSIGNED" | "CHANGE_APPROVED" | "CHANGE_NOT_APPROVED" | "CHANGE_ACCEPTED" | "CHANGE_REJECTED" | "AGREEMENT_ACCEPTED" | "SETTINGS_UPDATED" | "CLIENT_UPDATED" | "OPERATOR_PERMISSIONS_CHANGED" | "INVITATION_CREATED" | "INVITATION_REVOKED" | "PROJECT_CREATED" | "AGREEMENT_SENT" | "DOCUMENT_UPLOADED" | "DOCUMENT_VISIBILITY_CHANGED" | "CONVERSATION_VIEWED" | "CONVERSATION_LIST_VIEWED" | "PASSWORD_CHANGED" | "PASSWORD_RESET";
         /**
          * @description Every code the API returns. The frontend has a translation for each.
          * @enum {string}
          */
-        ErrorCode: "UNAUTHENTICATED" | "FORBIDDEN" | "VALIDATION_FAILED" | "RATE_LIMITED" | "INTERNAL_ERROR" | "INVALID_CREDENTIALS" | "ACCOUNT_PENDING_APPROVAL" | "ACCOUNT_REJECTED" | "ACCOUNT_SUSPENDED" | "EMAIL_TAKEN" | "INVITATION_NOT_FOUND" | "INVITATION_EXPIRED" | "INVITATION_REVOKED" | "INVITATION_ALREADY_USED" | "PROJECT_NOT_FOUND" | "CLIENT_NOT_FOUND" | "OPERATOR_NOT_FOUND" | "PAYMENT_NOT_FOUND" | "RECEIPT_NOT_FOUND" | "DOCUMENT_NOT_FOUND" | "AGREEMENT_NOT_FOUND" | "CHANGE_REQUEST_NOT_FOUND" | "AGREEMENT_NOT_AWAITING_ACCEPTANCE" | "AGREEMENT_NOT_ACCEPTED" | "CHANGE_REQUEST_ALREADY_DECIDED" | "CHANGE_REQUEST_ALREADY_OPEN" | "CHANGE_REQUEST_NO_CHANGES" | "REASON_REQUIRED" | "PAYMENT_REFERENCE_REQUIRED" | "PAYMENT_DATE_OUT_OF_RANGE" | "PAYMENT_ALREADY_REVERSED" | "ADJUSTMENT_BELOW_ZERO" | "OPERATOR_HAS_CLIENTS" | "OPERATOR_NOT_ACTIVE" | "OPERATOR_NOT_PENDING" | "OPERATOR_STATUS_CHANGED" | "PERMISSION_REQUIRED" | "RESET_TOKEN_INVALID" | "RESET_TOKEN_EXPIRED" | "INVITATION_NOT_ACTIVE" | "AGREEMENT_NOT_DRAFT" | "FILE_TOO_LARGE" | "FILE_TYPE_NOT_ALLOWED";
+        ErrorCode: "UNAUTHENTICATED" | "FORBIDDEN" | "VALIDATION_FAILED" | "RATE_LIMITED" | "INTERNAL_ERROR" | "INVALID_CREDENTIALS" | "ACCOUNT_PENDING_APPROVAL" | "ACCOUNT_REJECTED" | "ACCOUNT_SUSPENDED" | "EMAIL_TAKEN" | "INVITATION_NOT_FOUND" | "INVITATION_EXPIRED" | "INVITATION_REVOKED" | "INVITATION_ALREADY_USED" | "PROJECT_NOT_FOUND" | "CLIENT_NOT_FOUND" | "OPERATOR_NOT_FOUND" | "PAYMENT_NOT_FOUND" | "RECEIPT_NOT_FOUND" | "DOCUMENT_NOT_FOUND" | "AGREEMENT_NOT_FOUND" | "CHANGE_REQUEST_NOT_FOUND" | "AGREEMENT_NOT_AWAITING_ACCEPTANCE" | "AGREEMENT_NOT_ACCEPTED" | "CHANGE_REQUEST_ALREADY_DECIDED" | "CHANGE_REQUEST_ALREADY_OPEN" | "CHANGE_REQUEST_NO_CHANGES" | "REASON_REQUIRED" | "PAYMENT_REFERENCE_REQUIRED" | "PAYMENT_DATE_OUT_OF_RANGE" | "PAYMENT_ALREADY_REVERSED" | "ADJUSTMENT_BELOW_ZERO" | "OPERATOR_HAS_CLIENTS" | "OPERATOR_NOT_ACTIVE" | "OPERATOR_NOT_PENDING" | "OPERATOR_STATUS_CHANGED" | "PERMISSION_REQUIRED" | "RESET_TOKEN_INVALID" | "RESET_TOKEN_EXPIRED" | "INVITATION_NOT_ACTIVE" | "AGREEMENT_NOT_DRAFT" | "FILE_TOO_LARGE" | "FILE_TYPE_NOT_ALLOWED" | "CURRENT_PASSWORD_WRONG";
         Health: {
             /** @enum {string} */
             status: "ok";
@@ -1586,6 +1681,7 @@ export interface components {
             role: components["schemas"]["Role"];
             /** @description Operators only, so the screens can offer what is allowed */
             permissions?: components["schemas"]["OperatorPermissions"];
+            preferredLanguage: components["schemas"]["Language"];
         };
         /**
          * @description The access token lives 15 minutes; send it as a Bearer token. The
@@ -1793,11 +1889,42 @@ export interface components {
             name: string;
             email: components["schemas"]["Email"];
             phone?: components["schemas"]["Phone"];
+            preferredLanguage: components["schemas"]["Language"];
         };
-        /** @description Omit phone to remove it */
+        /** @description Omit phone to remove it. Omit preferredLanguage to keep it. */
         ProfileUpdate: {
             name: components["schemas"]["PersonName"];
             phone?: components["schemas"]["Phone"];
+            preferredLanguage?: components["schemas"]["Language"];
+        };
+        /**
+         * @description The user's language (ADR 0004). Saved with the account, so signing in
+         *     on any device switches to it. Decided 2026-10-21.
+         * @enum {string}
+         */
+        Language: "en" | "sw";
+        OperatorProfile: {
+            name: string;
+            /** @description Read-only here; an admin corrects it */
+            email: components["schemas"]["Email"];
+            phone: components["schemas"]["Phone"];
+            preferredLanguage: components["schemas"]["Language"];
+            status: components["schemas"]["OperatorStatus"];
+            registeredAt: components["schemas"]["DateTime"];
+            /** @description A count only; nothing about any client */
+            assignedClientCount: number;
+            permissions: components["schemas"]["OperatorPermissions"];
+        };
+        /** @description Only what changes. Operators keep a phone number (required at registration). */
+        OperatorProfileUpdate: {
+            name?: components["schemas"]["PersonName"];
+            phone?: components["schemas"]["Phone"];
+            preferredLanguage?: components["schemas"]["Language"];
+        };
+        ChangePasswordRequest: {
+            currentPassword: string;
+            /** @description At least one letter and one number, different from the current one */
+            newPassword: string;
         };
         ChangeTerms: {
             scope: string[];
@@ -2015,6 +2142,34 @@ export interface components {
         };
         /** @description Pass as ?cursor= for the next page; null on the last page */
         NextCursor: string | null;
+        /** @description One project's conversation in an inbox */
+        ConversationSummary: {
+            projectId: components["schemas"]["Id"];
+            projectReference: string;
+            projectTitle: string;
+            clientId: components["schemas"]["Id"];
+            clientName: string;
+            clientPhone?: components["schemas"]["Phone"];
+            /** @description Admin list only; null when the client has no operator */
+            operatorName?: string | null;
+            /** @description null when nobody has written yet */
+            lastMessage: null | {
+                /** @description The start of the message, plain text */
+                preview: string;
+                sentAt: components["schemas"]["DateTime"];
+                senderName: string;
+                senderRole: components["schemas"]["Role"];
+            };
+            /** @description Client messages the operator has not read */
+            unreadCount: number;
+        };
+        ConversationPage: {
+            /** @description Newest activity first */
+            items: components["schemas"]["ConversationSummary"][];
+            nextCursor: components["schemas"]["NextCursor"];
+            /** @description Conversations with unread client messages, over every page, ignoring filters */
+            unreadTotal: number;
+        };
         MessagePage: {
             /** @description Oldest first within the page */
             items: components["schemas"]["Message"][];
@@ -2325,6 +2480,24 @@ export interface components {
                 "application/json": components["schemas"]["ErrorResponse"];
             };
         };
+        /** @description The operator's profile */
+        OperatorProfileResult: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["OperatorProfile"];
+            };
+        };
+        /** @description A page of conversations */
+        ConversationPageResult: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ConversationPage"];
+            };
+        };
         /** @description Invitations, newest first */
         StaffInvitationList: {
             headers: {
@@ -2510,6 +2683,40 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["Unauthenticated"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description Changed; other devices are signed out */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description CURRENT_PASSWORD_WRONG or VALIDATION_FAILED */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            429: components["responses"]["RateLimited"];
             500: components["responses"]["ServerError"];
         };
     };
@@ -3801,6 +4008,65 @@ export interface operations {
             500: components["responses"]["ServerError"];
         };
     };
+    getOperatorProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: components["responses"]["OperatorProfileResult"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    updateOperatorProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OperatorProfileUpdate"];
+            };
+        };
+        responses: {
+            200: components["responses"]["OperatorProfileResult"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    listOperatorConversations: {
+        parameters: {
+            query?: {
+                /** @description true for conversations with messages the operator has not read */
+                unread?: boolean;
+                /** @description Part of a client name, project title or project reference */
+                q?: string;
+                /** @description The nextCursor of the previous page; omit for the first page */
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: components["responses"]["ConversationPageResult"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
     listOperatorMessages: {
         parameters: {
             query?: {
@@ -4592,6 +4858,32 @@ export interface operations {
             401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    listAdminConversations: {
+        parameters: {
+            query?: {
+                /** @description true for conversations with messages the operator has not read */
+                unread?: boolean;
+                /** @description Part of a client name, project title or project reference */
+                q?: string;
+                /** @description Only projects of clients assigned to this operator */
+                operatorId?: components["schemas"]["Id"];
+                /** @description The nextCursor of the previous page; omit for the first page */
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: components["responses"]["ConversationPageResult"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
             422: components["responses"]["ValidationFailed"];
             500: components["responses"]["ServerError"];
         };
