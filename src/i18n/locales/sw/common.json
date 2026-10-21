@@ -269,7 +269,7 @@
     },
     "invitation": {
       "PENDING": "Inasubiri",
-      "ACCEPTED": "Imekubaliwa",
+      "ACCEPTED": "Imetumika",
       "EXPIRED": "Muda umeisha",
       "REVOKED": "Imebatilishwa",
       "REJECTED": "Imekataliwa"
@@ -976,6 +976,87 @@
     "banner": {
       "title": "Data ya maonyesho.",
       "body": "Kila kitu hapa ni cha kubuni na kinarudi mwanzo ukipakia ukurasa upya."
+    }
+  },
+  "invitations": {
+    "invite": "Alika mteja",
+    "inviteAdmin": "Tuma mwaliko",
+    "mine": {
+      "title": "Mialiko yangu",
+      "body": "Mialiko uliyotuma. Kila mmoja unatumika mara moja; inayosubiri inaweza kubatilishwa.",
+      "empty": "Bado hujamwalika mtu yeyote",
+      "emptyBody": "Mwalike mteja upate kiungo na msimbo wa kutuma kwa WhatsApp au SMS."
+    },
+    "all": {
+      "title": "Mialiko",
+      "body": "Kila mwaliko, kutoka kwa kila msimamizi na mhudumu.",
+      "empty": "Bado hakuna mialiko",
+      "emptyBody": "Mialiko unayotuma wewe au wahudumu itaonekana hapa.",
+      "noMatches": "Hakuna mialiko inayolingana na vichujio hivi"
+    },
+    "filters": {
+      "title": "Chuja mialiko",
+      "status": "Hali",
+      "allStatuses": "Hali zote",
+      "inviter": "Aliyealika",
+      "everyone": "Wote"
+    },
+    "columns": {
+      "who": "Kwa",
+      "code": "Msimbo",
+      "status": "Hali",
+      "expires": "Unaisha",
+      "inviter": "Aliyealika",
+      "actions": "Vitendo"
+    },
+    "noLabel": "Hakuna jina",
+    "roleTag": {
+      "CLIENT": "Mteja",
+      "OPERATOR": "Mhudumu"
+    },
+    "usedBy": "Umetumiwa na {{name}}",
+    "revokedBy": "Umebatilishwa na {{name}}",
+    "assignedTo": "Atakabidhiwa {{name}}",
+    "form": {
+      "titleClient": "Alika mteja",
+      "titleAdmin": "Tuma mwaliko",
+      "description": "Utapata kiungo na msimbo wa kutuma. Unatumika mara moja na muda wake unaisha baada ya idadi ya siku iliyowekwa.",
+      "label": "Ni kwa ajili ya nani?",
+      "labelHint": "Jina la kutambua mwaliko, kwa mfano Mwanaidi Juma. Wafanyakazi pekee ndio wanaliona.",
+      "role": "Alika kama",
+      "operator": "Mhudumu wa mteja huyu",
+      "operatorNone": "Bado hakuna mhudumu",
+      "assignedToYou": "Akijisajili, mteja atakabidhiwa kwako: utaona miradi, malipo na ujumbe wake.",
+      "assignedToOperator": "Akijisajili, mteja atakabidhiwa kwa {{name}}.",
+      "notAssigned": "Mteja ataanza bila mhudumu. Mkabidhi mhudumu kwenye ukurasa huu baada ya kujisajili.",
+      "operatorNote": "Mhudumu mpya atajisajili kwa namba yake ya simu na hataweza kuingia hadi msimamizi amwidhinishe.",
+      "privacy": "Mwaliko unaonyesha tu aliyealika na jukumu. Hakuna kuhusu miradi au fedha kinachoonyeshwa kabla ya kuingia.",
+      "create": "Tengeneza mwaliko"
+    },
+    "share": {
+      "title": "Mwaliko uko tayari",
+      "titleAgain": "Shiriki mwaliko {{code}}",
+      "body": "Tuma kiungo, au msimbo kama anapendelea kuuandika. Unatumika mara moja na muda wake unaisha tarehe {{date}}.",
+      "link": "Kiungo cha mwaliko",
+      "code": "Msimbo wa mwaliko",
+      "copyLink": "Nakili kiungo",
+      "copyCode": "Nakili msimbo",
+      "copiedLink": "Kiungo kimenakiliwa",
+      "copiedCode": "Msimbo umenakiliwa",
+      "copyFailed": "Imeshindikana kunakili. Chagua maandishi kisha unakili mwenyewe.",
+      "whatsapp": "Shiriki kwa WhatsApp",
+      "whatsappNote": "Inafungua WhatsApp uchague mtu. Hakuna kinachosemwa huko kinachohifadhiwa kwenye INSTIWISE.",
+      "newTab": "(inafunguka kwenye kichupo kipya)",
+      "message": "{{inviter}} amekualika kwenye INSTIWISE. Jisajili hapa: {{link}} (au weka msimbo {{code}}). Muda wa mwaliko unaisha tarehe {{date}}.",
+      "done": "Nimemaliza",
+      "again": "Shiriki"
+    },
+    "revoke": {
+      "action": "Batilisha",
+      "title": "Batilisha mwaliko {{code}}?",
+      "body": "Kiungo na msimbo vitaacha kufanya kazi mara moja. Unaweza kutuma mwaliko mpya baadaye.",
+      "confirm": "Batilisha mwaliko",
+      "done": "Mwaliko {{code}} umebatilishwa"
     }
   }
 }

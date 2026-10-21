@@ -42,7 +42,7 @@ export function LoginPage() {
     try {
       const { user } = await login(values);
       // GuestOnly then moves them on (to where they were going, or their home).
-      signIn({ role: user.role, name: user.name });
+      signIn({ role: user.role, name: user.name, permissions: user.permissions });
     } catch (error) {
       if (error instanceof ApiError && error.code === "ACCOUNT_PENDING_APPROVAL") {
         navigate("/pending-approval");

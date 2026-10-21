@@ -269,7 +269,7 @@
     },
     "invitation": {
       "PENDING": "Pending",
-      "ACCEPTED": "Accepted",
+      "ACCEPTED": "Used",
       "EXPIRED": "Expired",
       "REVOKED": "Revoked",
       "REJECTED": "Rejected"
@@ -976,6 +976,87 @@
     "banner": {
       "title": "Demo data.",
       "body": "Everything here is fictional and resets when you refresh the page."
+    }
+  },
+  "invitations": {
+    "invite": "Invite client",
+    "inviteAdmin": "Send invitation",
+    "mine": {
+      "title": "My invitations",
+      "body": "Invitations you sent. Each one works once; pending ones can be revoked.",
+      "empty": "You have not invited anyone yet",
+      "emptyBody": "Invite a client to get a link and a code you can send on WhatsApp or SMS."
+    },
+    "all": {
+      "title": "Invitations",
+      "body": "Every invitation, from every admin and operator.",
+      "empty": "No invitations yet",
+      "emptyBody": "Invitations you or the operators send appear here.",
+      "noMatches": "No invitations match these filters"
+    },
+    "filters": {
+      "title": "Filter invitations",
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "inviter": "Invited by",
+      "everyone": "Everyone"
+    },
+    "columns": {
+      "who": "For",
+      "code": "Code",
+      "status": "Status",
+      "expires": "Expires",
+      "inviter": "Invited by",
+      "actions": "Actions"
+    },
+    "noLabel": "No name given",
+    "roleTag": {
+      "CLIENT": "Client",
+      "OPERATOR": "Operator"
+    },
+    "usedBy": "Used by {{name}}",
+    "revokedBy": "Revoked by {{name}}",
+    "assignedTo": "Assigned to {{name}}",
+    "form": {
+      "titleClient": "Invite a client",
+      "titleAdmin": "Send an invitation",
+      "description": "You get a link and a code to send. It works once and expires after a set number of days.",
+      "label": "Who is it for?",
+      "labelHint": "A name to recognise the invitation by, for example Mwanaidi Juma. Only staff see it.",
+      "role": "Invite as",
+      "operator": "Operator for this client",
+      "operatorNone": "No operator yet",
+      "assignedToYou": "When they register, the client is assigned to you: you will see their projects, payments and messages.",
+      "assignedToOperator": "When they register, the client is assigned to {{name}}.",
+      "notAssigned": "The client starts without an operator. Assign one on this page after they register.",
+      "operatorNote": "The new operator registers with their phone number and cannot sign in until an admin approves them.",
+      "privacy": "The invitation only says who invited them and the role. Nothing about projects or money is shown before they sign in.",
+      "create": "Create invitation"
+    },
+    "share": {
+      "title": "Invitation ready",
+      "titleAgain": "Share invitation {{code}}",
+      "body": "Send the link, or the code if they prefer to type it. It works once and expires on {{date}}.",
+      "link": "Invitation link",
+      "code": "Invitation code",
+      "copyLink": "Copy link",
+      "copyCode": "Copy code",
+      "copiedLink": "Link copied",
+      "copiedCode": "Code copied",
+      "copyFailed": "Could not copy. Select the text and copy it yourself.",
+      "whatsapp": "Share on WhatsApp",
+      "whatsappNote": "Opens WhatsApp to pick the contact. Nothing said there is saved in INSTIWISE.",
+      "newTab": "(opens in a new tab)",
+      "message": "{{inviter}} invited you to INSTIWISE. Register here: {{link}} (or enter the code {{code}}). The invitation expires on {{date}}.",
+      "done": "Done",
+      "again": "Share"
+    },
+    "revoke": {
+      "action": "Revoke",
+      "title": "Revoke invitation {{code}}?",
+      "body": "The link and the code stop working at once. You can send a new invitation later.",
+      "confirm": "Revoke invitation",
+      "done": "Invitation {{code}} revoked"
     }
   }
 }

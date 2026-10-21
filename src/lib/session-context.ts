@@ -1,9 +1,18 @@
 import { createContext } from "react";
+import type { Schema } from "./contract/types";
 import type { Role } from "./roles";
+
+export type OperatorPermissions = Schema<"OperatorPermissions">;
 
 export interface SessionUser {
   name: string;
   role: Role;
+  /**
+   * Operators only, from the sign-in answer (contract AuthUser): what an admin
+   * allowed them to do beyond their assigned work. Only decides what the screens
+   * offer; the server checks it again on every call.
+   */
+  permissions?: OperatorPermissions;
 }
 
 export interface SessionContextValue {

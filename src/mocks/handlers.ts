@@ -4,6 +4,7 @@ import { authHandlers } from "./auth";
 import { changeHandlers } from "./changes";
 import { clientHandlers } from "./client";
 import { on } from "./contract";
+import { invitationHandlers } from "./invitations";
 import { operatorHandlers } from "./operator";
 
 /**
@@ -20,4 +21,5 @@ export const handlers = [
   ...changeHandlers,
   ...operatorHandlers,
   ...adminHandlers,
+  ...invitationHandlers,
 ];

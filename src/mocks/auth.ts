@@ -7,8 +7,9 @@ import {
   DEMO_PASSWORD,
   type DemoAccount,
 } from "./demo-data";
-import { staffState } from "./admin-store";
+import { addAudit, staffState } from "./admin-store";
 import { fail, on } from "./contract";
+import { acceptStaffInvitation, resolveStaffInvitation } from "./invitations";
 import { NO_PERMISSIONS } from "./staff-seed";
 
 /*
@@ -67,6 +68,9 @@ function findAccount(email: string): StoredAccount | undefined {
 
 /** Looks a code up; returns the invitation or an error response. */
 function resolveInvitation(code: string): Invitation | ReturnType<typeof fail> {
+  // Invitations created by staff on the invitation screens (and their seed).
+  const staff = resolveStaffInvitation(code);
+  if (staff) return staff;
   const outcome = DEMO_CODES[code];
   if (!outcome) return fail(404, "INVITATION_NOT_FOUND");
   if (outcome === "INVITATION_EXPIRED") return fail(410, outcome);
@@ -117,8 +121,11 @@ export const authHandlers = [
       password: body.password,
     };
     accounts.push(account);
+    // A staff invitation is used once; a client invited by an operator (or for one)
+    // is assigned to that operator straight away.
+    const assignedTo = acceptStaffInvitation(code, account.name, account.email);
     // Admin screens see the new person: an operator waiting for approval, or a
-    // client not yet assigned to an operator.
+    // client, assigned or not yet.
     if (account.role === "OPERATOR") {
       staffState().operators.push({
         id: `op_${account.id}`,
@@ -135,8 +142,17 @@ export const authHandlers = [
         name: account.name,
         email: account.email,
         phone: body.phone,
-        operatorId: null,
+        operatorId: assignedTo?.id ?? null,
       });
+      if (assignedTo) {
+        addAudit({
+          actor: account.name,
+          actorRole: "CLIENT",
+          action: "CLIENT_ASSIGNED",
+          target: account.name,
+          to: assignedTo.name,
+        });
+      }
     }
     usedCodes.add(code);
 

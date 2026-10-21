@@ -1,9 +1,12 @@
+import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DataTable, type DataTableColumn } from "@/components/DataTable";
 import { MoneyCell } from "@/components/MoneyCell";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/Button";
+import { AdminInvitations } from "@/features/invitations/AdminInvitations";
+import { InviteDialog } from "@/features/invitations/InviteDialog";
 import { useErrorText } from "@/hooks/useErrorText";
 import { formatTzPhone } from "@/lib/phone";
 import type { AdminClient } from "./api";
@@ -17,6 +20,7 @@ export function AdminClientsPage() {
   const clients = useAdminClients();
   const operators = useAdminOperators();
   const [assigning, setAssigning] = useState<AdminClient | null>(null);
+  const [inviting, setInviting] = useState(false);
 
   const activeOperators = (operators.data ?? []).filter((o) => o.status === "ACTIVE");
 
@@ -79,7 +83,16 @@ export function AdminClientsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t("nav.admin.clients")} description={t("admin.clients.subtitle")} />
+      <PageHeader
+        title={t("nav.admin.clients")}
+        description={t("admin.clients.subtitle")}
+        actions={
+          <Button variant="primary" onClick={() => setInviting(true)}>
+            <UserPlus className="size-4" aria-hidden="true" />
+            {t("invitations.inviteAdmin")}
+          </Button>
+        }
+      />
       <DataTable
         caption={t("nav.admin.clients")}
         columns={columns}
@@ -90,6 +103,13 @@ export function AdminClientsPage() {
         onRetry={() => void clients.refetch()}
         defaultSort={{ columnId: "name", direction: "asc" }}
         empty={{ title: t("admin.clients.empty"), description: t("admin.clients.emptyBody") }}
+      />
+      <AdminInvitations />
+      <InviteDialog
+        open={inviting}
+        onOpenChange={setInviting}
+        mode="admin"
+        operators={activeOperators.map(({ id, name }) => ({ id, name }))}
       />
       {assigning && (
         <AssignDialog

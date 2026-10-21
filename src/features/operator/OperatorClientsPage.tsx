@@ -1,17 +1,28 @@
+import { UserPlus } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { DataTable, type DataTableColumn } from "@/components/DataTable";
 import { ErrorState } from "@/components/ErrorState";
 import { MoneyCell } from "@/components/MoneyCell";
 import { PageHeader } from "@/components/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { InviteDialog } from "@/features/invitations/InviteDialog";
+import { OperatorInvitations } from "@/features/invitations/OperatorInvitations";
+import { useMayInviteClients } from "@/features/invitations/useMayInvite";
 import { formatTzPhone } from "@/lib/phone";
 import type { ClientSummary } from "./api";
 import { useOperatorClients } from "./queries";
 
-/** Clients assigned to the signed-in operator, and nobody else. */
+/**
+ * Clients assigned to the signed-in operator, and nobody else. Operators an admin
+ * allowed to invite also get "Invite client" and their own invitations here.
+ */
 export function OperatorClientsPage() {
   const { t } = useTranslation();
   const clients = useOperatorClients();
+  const mayInvite = useMayInviteClients();
+  const [inviting, setInviting] = useState(false);
 
   const columns: DataTableColumn<ClientSummary>[] = [
     {
@@ -51,7 +62,18 @@ export function OperatorClientsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t("nav.operator.clients")} description={t("operator.clients.subtitle")} />
+      <PageHeader
+        title={t("nav.operator.clients")}
+        description={t("operator.clients.subtitle")}
+        actions={
+          mayInvite && (
+            <Button variant="primary" onClick={() => setInviting(true)}>
+              <UserPlus className="size-4" aria-hidden="true" />
+              {t("invitations.invite")}
+            </Button>
+          )
+        }
+      />
       {clients.isError ? (
         <ErrorState error={clients.error} onRetry={() => void clients.refetch()} />
       ) : (
@@ -64,6 +86,12 @@ export function OperatorClientsPage() {
           defaultSort={{ columnId: "name", direction: "asc" }}
           empty={{ title: t("operator.clients.empty") }}
         />
+      )}
+      {mayInvite && (
+        <>
+          <OperatorInvitations />
+          <InviteDialog open={inviting} onOpenChange={setInviting} mode="operator" />
+        </>
       )}
     </div>
   );

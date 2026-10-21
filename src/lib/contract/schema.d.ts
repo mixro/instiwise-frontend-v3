@@ -939,6 +939,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/operator/invitations/{code}/revocation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Revoke one of this operator's own pending invitations
+         * @description Only invitations this operator created; anyone else's answers 404, as if
+         *     it did not exist. Audited (INVITATION_REVOKED). Decided 2026-10-21.
+         */
+        post: operations["revokeOperatorInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/overview": {
         parameters: {
             query?: never;
@@ -2044,7 +2065,13 @@ export interface components {
                 name: string;
             };
             createdAt: components["schemas"]["DateTime"];
-            createdBy: string;
+            /** @description Who created the invitation (an admin or an operator) */
+            inviter: {
+                id: components["schemas"]["Id"];
+                name: string;
+                /** @enum {string} */
+                role: "ADMIN" | "OPERATOR";
+            };
             expiresAt: components["schemas"]["DateTime"];
             acceptedAt?: components["schemas"]["DateTime"];
             acceptedBy?: string;
@@ -4005,6 +4032,42 @@ export interface operations {
             500: components["responses"]["ServerError"];
         };
     };
+    revokeOperatorInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Eight letters/digits as XXXX-XXXX (the frontend normalises links and typing) */
+                code: components["parameters"]["InvitationCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: components["requestBodies"]["OptionalReason"];
+        responses: {
+            200: components["responses"]["StaffInvitationResult"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ForbiddenOrPermission"];
+            /** @description INVITATION_NOT_FOUND (also for invitations created by someone else) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description INVITATION_NOT_ACTIVE (not PENDING, so already accepted, expired, revoked or rejected) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
     getAdminOverview: {
         parameters: {
             query?: never;
@@ -4674,6 +4737,8 @@ export interface operations {
         parameters: {
             query?: {
                 status?: components["schemas"]["InvitationStatus"];
+                /** @description Only invitations created by this admin or operator (StaffInvitation.inviter.id) */
+                inviterId?: components["schemas"]["Id"];
             };
             header?: never;
             path?: never;

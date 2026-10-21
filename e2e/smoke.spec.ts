@@ -252,6 +252,43 @@ const VISITS: Visit[] = [
       await expect(page.getByRole("dialog")).toBeVisible();
     },
   },
+  // Invitations (src/mocks/invitations.ts): the form, then the link and code to share.
+  {
+    name: "operator-invite-form",
+    path: "/operator/clients",
+    role: "OPERATOR",
+    prepare: async (page, language) => {
+      await page
+        .getByRole("button", { name: language === "en" ? "Invite client" : "Alika mteja" })
+        .click();
+      await expect(page.getByRole("dialog").locator("form")).toBeVisible();
+    },
+  },
+  {
+    name: "operator-invite-share",
+    path: "/operator/clients",
+    role: "OPERATOR",
+    prepare: async (page, language) => {
+      await page
+        .getByRole("button", { name: language === "en" ? "Invite client" : "Alika mteja" })
+        .click();
+      const dialog = page.getByRole("dialog");
+      await dialog.locator("input").first().fill("Mwanaisha Omari");
+      await dialog.locator("form button[type=submit]").click();
+      await expect(dialog.locator("input[readonly]")).toHaveCount(2);
+    },
+  },
+  {
+    name: "admin-invite-form",
+    path: "/admin/clients",
+    role: "ADMIN",
+    prepare: async (page, language) => {
+      await page
+        .getByRole("button", { name: language === "en" ? "Send invitation" : "Tuma mwaliko" })
+        .click();
+      await expect(page.getByRole("dialog").locator("form")).toBeVisible();
+    },
+  },
   { name: "admin-overview", path: "/admin", role: "ADMIN" },
   {
     name: "admin-sidebar-collapsed",

@@ -1,5 +1,6 @@
 import type { AuditEntry, Settings } from "@/features/admin/api";
 import type { MockOperator } from "./admin-store";
+import type { StaffInvitation } from "@/features/invitations/api";
 import type { MockProject } from "./client";
 
 /*
@@ -358,6 +359,125 @@ export function seedUnassignedProjects(): MockProject[] {
           reason: "Duplicate: the same M-Pesa payment was also recorded as RC-2026-0045.",
         },
       ],
+    },
+  ];
+}
+
+// ----- invitations -----
+
+/** The mock admin (Rehema Said) as an inviter. */
+export const MOCK_ADMIN_ID = "adm_rehema";
+
+/** A stored invitation. Its status is worked out when it is read (mocks/invitations.ts). */
+export interface MockInvitation extends Omit<StaffInvitation, "status" | "link"> {
+  /** The operator who registered with it was then turned down by an admin. */
+  rejected?: boolean;
+  /** Who registered with it (internal, to find the invitation again). */
+  acceptedEmail?: string;
+}
+
+const DAY = 24 * 60 * 60 * 1000;
+const daysFromNow = (days: number) => new Date(Date.now() + days * DAY).toISOString();
+
+const BARAKA_INVITER = { id: MOCK_OPERATOR_ID, name: MOCK_OPERATOR, role: "OPERATOR" } as const;
+const ZAWADI_INVITER = { id: "op_zawadi", name: ZAWADI, role: "OPERATOR" } as const;
+const ADMIN_INVITER = { id: MOCK_ADMIN_ID, name: ADMIN, role: "ADMIN" } as const;
+const TO_BARAKA = { id: MOCK_OPERATOR_ID, name: MOCK_OPERATOR };
+
+/**
+ * One invitation in every state, from three people. Pending and expired dates
+ * are relative to now so they stay in that state. Zawadi's must never reach
+ * Baraka's screens.
+ */
+export function seedInvitations(): MockInvitation[] {
+  return [
+    {
+      code: "MWJ4-7HQA",
+      role: "CLIENT",
+      label: "Mwanaidi Juma",
+      operator: TO_BARAKA,
+      inviter: BARAKA_INVITER,
+      createdAt: daysFromNow(-1),
+      expiresAt: daysFromNow(6),
+    },
+    {
+      code: "SAI5-2MFN",
+      role: "CLIENT",
+      label: "Saida Mfinanga",
+      operator: TO_BARAKA,
+      inviter: BARAKA_INVITER,
+      createdAt: "2026-08-01T07:30:00Z",
+      expiresAt: "2026-08-08T07:30:00Z",
+      acceptedAt: "2026-08-02T16:05:00Z",
+      acceptedBy: "Saida Mfinanga",
+    },
+    {
+      code: "PTR3-9MSW",
+      role: "CLIENT",
+      label: "Peter Massawe",
+      operator: TO_BARAKA,
+      inviter: BARAKA_INVITER,
+      createdAt: daysFromNow(-12),
+      expiresAt: daysFromNow(-5),
+    },
+    {
+      code: "KSM8-4WRG",
+      role: "CLIENT",
+      label: "Kassim Ally",
+      operator: TO_BARAKA,
+      inviter: BARAKA_INVITER,
+      createdAt: daysFromNow(-3),
+      expiresAt: daysFromNow(4),
+      revokedAt: daysFromNow(-3),
+      revokedBy: MOCK_OPERATOR,
+      reason: "Sent to the wrong phone number.",
+    },
+    {
+      code: "ALH6-3HSN",
+      role: "CLIENT",
+      label: "Ally Hassan",
+      operator: { id: ZAWADI_INVITER.id, name: ZAWADI },
+      inviter: ZAWADI_INVITER,
+      createdAt: daysFromNow(-2),
+      expiresAt: daysFromNow(5),
+    },
+    {
+      code: "ZSH2-6KTB",
+      role: "CLIENT",
+      label: "Zuhura Shabani",
+      inviter: ADMIN_INVITER,
+      createdAt: daysFromNow(-1),
+      expiresAt: daysFromNow(6),
+    },
+    {
+      code: "FND2-8NDG",
+      role: "OPERATOR",
+      label: "Fatuma Ndege",
+      inviter: ADMIN_INVITER,
+      createdAt: daysFromNow(-2),
+      expiresAt: daysFromNow(5),
+    },
+    {
+      code: "JMK7-5KSM",
+      role: "OPERATOR",
+      label: "Juma Kassim",
+      inviter: ADMIN_INVITER,
+      createdAt: "2026-10-14T09:00:00Z",
+      expiresAt: "2026-10-21T09:00:00Z",
+      acceptedAt: "2026-10-15T13:10:00Z",
+      acceptedBy: "Juma Kassim",
+      acceptedEmail: "juma@example.com",
+    },
+    {
+      code: "MSK4-6KMB",
+      role: "OPERATOR",
+      label: "Musa Komba",
+      inviter: ADMIN_INVITER,
+      createdAt: "2026-09-02T10:00:00Z",
+      expiresAt: "2026-09-09T10:00:00Z",
+      acceptedAt: "2026-09-03T08:20:00Z",
+      acceptedBy: "Musa Komba",
+      rejected: true,
     },
   ];
 }

@@ -13,6 +13,7 @@ import { normalizeTzPhone } from "@/lib/phone";
 import { addAudit, MOCK_ADMIN, operatorById, staffState, type MockOperator } from "./admin-store";
 import { setMockAccountState } from "./auth";
 import { fail, on } from "./contract";
+import { markInvitationRejected } from "./invitations";
 import { balanceOf, mockProjects, type MockPayment, type MockProject } from "./client";
 import { clientNameOf, recordedThisMonth, staffPayments, sumBalances } from "./operator";
 import type { MockClient } from "./staff-seed";
@@ -199,6 +200,7 @@ function operatorAction(operatorId: string, action: OperatorAction, reason: stri
   operator.status = rule.to;
   operator.reason = rule.needsReason ? reason : undefined;
   setMockAccountState(operator.email, rule.to);
+  if (action === "reject") markInvitationRejected(operator.email);
   addAudit({
     actor: MOCK_ADMIN,
     actorRole: "ADMIN",

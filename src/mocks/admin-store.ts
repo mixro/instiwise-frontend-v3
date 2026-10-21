@@ -1,5 +1,13 @@
 import type { AdminOperator, AuditEntry, Settings } from "@/features/admin/api";
-import { seedAudit, seedClients, seedOperators, seedSettings, type MockClient } from "./staff-seed";
+import {
+  seedAudit,
+  seedClients,
+  seedInvitations,
+  seedOperators,
+  seedSettings,
+  type MockClient,
+  type MockInvitation,
+} from "./staff-seed";
 
 /*
  * Who works with whom, the audit log and the settings, shared by every mock
@@ -16,6 +24,7 @@ interface StaffState {
   clients: MockClient[];
   audit: AuditEntry[];
   settings: Settings;
+  invitations: MockInvitation[];
 }
 
 function seed(): StaffState {
@@ -24,6 +33,7 @@ function seed(): StaffState {
     clients: seedClients(),
     audit: seedAudit(),
     settings: seedSettings(),
+    invitations: seedInvitations(),
   };
 }
 

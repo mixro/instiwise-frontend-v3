@@ -5,6 +5,7 @@ import {
   MOCK_ROLE_STORAGE_KEY,
   MOCK_SIGNED_OUT,
   SessionContext,
+  type OperatorPermissions,
   type SessionContextValue,
   type SessionUser,
 } from "@/lib/session-context";
@@ -17,8 +18,29 @@ const DEMO_PEOPLE: Record<Role, string> = {
   ADMIN: "Rehema Said",
 };
 
+// What the demo operator (Baraka Mushi) is allowed, as seeded in mocks/staff-seed.ts.
+const DEMO_OPERATOR_PERMISSIONS: OperatorPermissions = {
+  canInviteClients: true,
+  canCreateProjects: true,
+};
+
 function mockNames(): Record<Role, string> | null {
   return DEMO_TOOLS ? DEMO_PEOPLE : null;
+}
+
+/** The demo person for a bare role (role switcher, e2e and unit tests). */
+function mockUser(role: Role, names: Record<Role, string>): SessionUser {
+  return role === "OPERATOR"
+    ? { role, name: names[role], permissions: DEMO_OPERATOR_PERMISSIONS }
+    : { role, name: names[role] };
+}
+
+function readPermissions(value: unknown): OperatorPermissions | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const { canInviteClients, canCreateProjects } = value as Partial<OperatorPermissions>;
+  return typeof canInviteClients === "boolean" && typeof canCreateProjects === "boolean"
+    ? { canInviteClients, canCreateProjects }
+    : undefined;
 }
 
 /**
@@ -32,11 +54,14 @@ function readStoredSession(): SessionUser | null {
   try {
     const stored = localStorage.getItem(MOCK_ROLE_STORAGE_KEY);
     if (stored === MOCK_SIGNED_OUT) return null;
-    if (isRole(stored)) return { role: stored, name: names[stored] };
+    if (isRole(stored)) return mockUser(stored, names);
     if (stored) {
       const parsed = JSON.parse(stored) as Partial<SessionUser>;
       if (isRole(parsed.role) && typeof parsed.name === "string") {
-        return { role: parsed.role, name: parsed.name };
+        const permissions = readPermissions(parsed.permissions);
+        return permissions
+          ? { role: parsed.role, name: parsed.name, permissions }
+          : { role: parsed.role, name: parsed.name };
       }
     }
   } catch {
@@ -83,7 +108,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         signOut();
         return;
       }
-      setUser({ role, name: names[role] });
+      setUser(mockUser(role, names));
       storeSession(role);
     },
     [signOut],
