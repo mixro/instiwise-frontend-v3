@@ -26,6 +26,8 @@ export type CorrectionKind = Schema<"CorrectionKind">;
 export type OperatorStatus = Schema<"OperatorStatus">;
 /** Brief 6.4. */
 export type InvitationStatus = Schema<"InvitationStatus">;
+/** Expenses (decided 2026-10-25): an admin decides PENDING ones; corrections are new rows. */
+export type ExpenseStatus = Schema<"ExpenseStatus">;
 
 /** Colour family of a badge. The label always carries the meaning; tone only reinforces it. */
 export type StatusTone = "neutral" | "positive" | "warning" | "danger";
@@ -81,6 +83,15 @@ export const INVITATION_STATUS_TONES: Record<InvitationStatus, StatusTone> = {
   REJECTED: "danger",
 };
 
+export const EXPENSE_STATUS_TONES: Record<ExpenseStatus, StatusTone> = {
+  PENDING: "warning",
+  APPROVED: "positive",
+  REJECTED: "danger",
+  WITHDRAWN: "neutral",
+  REVERSED: "danger",
+  ADJUSTED: "warning",
+};
+
 const keysOf = <K extends string>(record: Record<K, unknown>) => Object.keys(record) as K[];
 
 export const PROJECT_STATUSES = keysOf(PROJECT_STATUS_TONES);
@@ -90,3 +101,4 @@ export const OPERATOR_STATUSES = keysOf(OPERATOR_STATUS_TONES);
 export const INVITATION_STATUSES = keysOf(INVITATION_STATUS_TONES);
 export const AGREEMENT_STATUSES = keysOf(AGREEMENT_STATUS_TONES);
 export const CHANGE_REQUEST_STATUSES = keysOf(CHANGE_REQUEST_STATUS_TONES);
+export const EXPENSE_STATUSES = keysOf(EXPENSE_STATUS_TONES);

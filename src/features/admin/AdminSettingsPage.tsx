@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Textarea } from "@/components/ui/Textarea";
+import { ExpenseCategoriesSettings } from "@/features/expenses/ExpenseCategoriesSettings";
 import { useErrorText } from "@/hooks/useErrorText";
 import { useToast } from "@/hooks/useToast";
 import { formatTzPhone, normalizeTzPhone } from "@/lib/phone";
@@ -177,6 +178,7 @@ export function AdminSettingsPage() {
         <ErrorState error={settings.error} onRetry={() => void settings.refetch()} />
       )}
       {settings.data && <SettingsForm settings={settings.data} />}
+      <ExpenseCategoriesSettings />
     </div>
   );
 }

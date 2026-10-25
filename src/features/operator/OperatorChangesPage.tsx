@@ -13,6 +13,7 @@ import { NotFound } from "@/features/shell/NotFound";
 import { useLanguage } from "@/hooks/useLanguage";
 import { ApiError } from "@/lib/api";
 import { formatDate, formatTzs } from "@/lib/format";
+import { termKey, termText } from "@/lib/terms";
 import { ProposeChangeForm } from "./ProposeChangeForm";
 
 /** One assigned project: its accepted terms, a proposal form, and every change so far. */
@@ -68,7 +69,7 @@ export function OperatorChangesPage() {
                 </dl>
                 <ul className="list-disc space-y-1 pl-5">
                   {terms.scope.map((item) => (
-                    <li key={item}>{item}</li>
+                    <li key={termKey(item)}>{termText(item, language)}</li>
                   ))}
                 </ul>
               </div>

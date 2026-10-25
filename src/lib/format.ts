@@ -75,3 +75,32 @@ export function formatMonth(month: string, language: Language): string {
     timeZone: "UTC",
   }).format(new Date(Date.UTC(year ?? 1970, (number ?? 1) - 1, 15)));
 }
+
+/**
+ * Shillings shortened for tight chart labels only ("12.4M", "350K"; Swahili
+ * "elfu 350"). Never for an amount someone reads as exact: use formatTzs.
+ */
+export function formatTzsCompact(amount: number, language: Language): string {
+  return new Intl.NumberFormat(LOCALES[language], {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(amount);
+}
+
+/** A share the server sends in basis points (2350) as a percentage: "23.5%". */
+export function formatBasisPoints(basisPoints: number, language: Language): string {
+  return new Intl.NumberFormat(LOCALES[language], {
+    style: "percent",
+    maximumFractionDigits: 1,
+  }).format(basisPoints / 10_000);
+}
+
+/** "2026-10" as "Oct" / "Okt", or "Oct 2026" with the year. */
+export function formatMonthShort(month: string, language: Language, withYear = false): string {
+  const [year, number] = month.split("-").map(Number);
+  return new Intl.DateTimeFormat(LOCALES[language], {
+    month: "short",
+    year: withYear ? "numeric" : undefined,
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(year ?? 1970, (number ?? 1) - 1, 15)));
+}

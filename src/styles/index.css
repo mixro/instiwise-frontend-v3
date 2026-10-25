@@ -54,6 +54,10 @@
   --color-danger-fg: var(--danger-fg);
 
   --color-ring: var(--ring);
+
+  --color-chart-collected: var(--chart-collected);
+  --color-chart-expenses: var(--chart-expenses);
+  --color-chart-profit: var(--chart-profit);
 }
 
 @layer base {

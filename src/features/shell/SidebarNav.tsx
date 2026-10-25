@@ -13,8 +13,8 @@ interface SidebarNavProps {
   onNavigate?: () => void;
   /** Taller rows for the phone drawer. */
   touch?: boolean;
-  /** Counts shown next to items, by path (e.g. unread conversations). */
-  badges?: Partial<Record<string, number>>;
+  /** Counts shown next to items, by path, with what they mean for screen readers. */
+  badges?: Partial<Record<string, { count: number; label: string }>>;
 }
 
 export function SidebarNav({ role, collapsed, onNavigate, touch, badges }: SidebarNavProps) {
@@ -25,8 +25,8 @@ export function SidebarNav({ role, collapsed, onNavigate, touch, badges }: Sideb
       <ul className="flex flex-col gap-1">
         {NAVIGATION[role].map(({ to, label, icon: Icon, ...item }) => {
           const text = t(label);
-          const count = badges?.[to] ?? 0;
-          const countText = count > 0 ? t("inbox.navUnread", { count }) : "";
+          const count = badges?.[to]?.count ?? 0;
+          const countText = count > 0 ? (badges?.[to]?.label ?? "") : "";
           const link = (
             <NavLink
               to={to}

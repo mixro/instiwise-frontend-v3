@@ -7,7 +7,7 @@ import { useSession } from "@/hooks/useSession";
 import { StandalonePage } from "./StandalonePage";
 
 /**
- * The page to send people to when the server answers 403 (for example an
+ * Where people land in another role's area, or when the server answers 403 (an
  * operator opening an unassigned client). Signed-out visitors are offered sign-in.
  */
 export function NoAccessPage() {

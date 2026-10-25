@@ -41,6 +41,7 @@ export const on = {
   post: route("post"),
   put: route("put"),
   patch: route("patch"),
+  delete: route("delete"),
 };
 
 /** An error answer in the contract's ErrorResponse shape, with a contract error code. */

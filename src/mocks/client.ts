@@ -20,6 +20,7 @@ import { seedChangeRequests, seedOtherClientProjects } from "./change-seed";
 import { addAudit } from "./admin-store";
 import { accountLanguage, setAccountLanguage } from "./auth";
 import { fail, on } from "./contract";
+import { terms } from "./terms";
 import { seedUnassignedProjects } from "./staff-seed";
 
 /*
@@ -125,18 +126,21 @@ function seedNeema(): { projects: SeedProject[]; profile: StoredProfile } {
             acceptedBy: CLIENT,
             price: 1_850_000,
             deadline: "2026-11-28",
-            scope: [
+            scope: terms(
               "Design and build the controller on an ESP32 board",
               "Four capacitive soil-moisture sensors, one per bed",
               "Ultrasonic tank level sensor with SMS alerts through a GSM module",
               "Project report and wiring diagram",
-            ],
-            exclusions: ["Plumbing and solenoid valve installation on the farm", "Airtime for SMS"],
-            paymentTerms: [
+            ),
+            exclusions: terms(
+              "Plumbing and solenoid valve installation on the farm",
+              "Airtime for SMS",
+            ),
+            paymentTerms: terms(
               "Deposit of TSh 600,000 before components are bought",
               "TSh 500,000 after the prototype demonstration",
               "The balance on delivery of the final report",
-            ],
+            ),
           },
           {
             version: 1,
@@ -146,16 +150,16 @@ function seedNeema(): { projects: SeedProject[]; profile: StoredProfile } {
             acceptedBy: CLIENT,
             price: 1_600_000,
             deadline: "2026-11-14",
-            scope: [
+            scope: terms(
               "Design and build the controller on an ESP32 board",
               "Four capacitive soil-moisture sensors, one per bed",
               "Project report and wiring diagram",
-            ],
-            exclusions: ["Plumbing and solenoid valve installation on the farm"],
-            paymentTerms: [
+            ),
+            exclusions: terms("Plumbing and solenoid valve installation on the farm"),
+            paymentTerms: terms(
               "Deposit of TSh 600,000 before components are bought",
               "The balance on delivery of the final report",
-            ],
+            ),
           },
         ],
         progress: [
@@ -298,13 +302,13 @@ function seedNeema(): { projects: SeedProject[]; profile: StoredProfile } {
             acceptedBy: CLIENT,
             price: 650_000,
             deadline: "2026-08-15",
-            scope: [
+            scope: terms(
               "Write the final report (five chapters)",
               "Prepare the presentation",
               "Build a scale model",
-            ],
-            exclusions: ["Printing and binding"],
-            paymentTerms: ["Half before writing starts", "Half on delivery"],
+            ),
+            exclusions: terms("Printing and binding"),
+            paymentTerms: terms("Half before writing starts", "Half on delivery"),
           },
         ],
         progress: [
@@ -410,17 +414,17 @@ function seedNeema(): { projects: SeedProject[]; profile: StoredProfile } {
             createdAt: "2026-10-14T10:00:00Z",
             price: 980_000,
             deadline: "2026-12-12",
-            scope: [
+            scope: terms(
               "RFID reader on an Arduino with a real-time clock",
               "50 RFID cards",
               "Simple web page listing each day's arrivals",
               "Project report",
-            ],
-            exclusions: ["Internet connection at the school", "More than 50 cards"],
-            paymentTerms: [
+            ),
+            exclusions: terms("Internet connection at the school", "More than 50 cards"),
+            paymentTerms: terms(
               "Deposit of TSh 400,000 after you accept this agreement",
               "The balance on delivery",
-            ],
+            ),
           },
         ],
         progress: [],
@@ -514,8 +518,14 @@ export function mockClientName(): string {
 }
 
 /** Projects of the signed-in mock client only, as the server scopes them. */
+/**
+ * The signed-in client's projects. A DRAFT project does not exist for the client
+ * until staff send its agreement (decided 2026-10-25): no list, no 404 hint.
+ */
 function myProjects(): MockProject[] {
-  return state.projects.filter((project) => project.clientId === MOCK_CLIENT_ID);
+  return state.projects.filter(
+    (project) => project.clientId === MOCK_CLIENT_ID && project.status !== "DRAFT",
+  );
 }
 
 /** Back to the seed data. Tests call this between cases. */
@@ -718,7 +728,10 @@ export const clientHandlers = [
     await delay();
     const project = findProject(params.projectId);
     if (!project) return fail(404, "PROJECT_NOT_FOUND");
-    return HttpResponse.json({ versions: project.agreements });
+    // Draft versions are staff-only.
+    return HttpResponse.json({
+      versions: project.agreements.filter((version) => version.status !== "DRAFT"),
+    });
   }),
 
   on.post(

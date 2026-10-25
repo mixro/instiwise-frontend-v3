@@ -33,6 +33,18 @@ const fillLogin = async (page: Page, email: string, password: string) => {
   await page.locator("form button[type=submit]").click();
 };
 
+/** The months of the mock expense seed (src/mocks/expense-seed.ts). */
+const SEED_RANGE = "period=custom&from=2026-05-01&to=2026-10-25";
+
+/** Switches every chart on the page to its table. */
+const showChartsAsTables = async (page: Page, language: Language) => {
+  const name = language === "sw" ? "Onyesha kama jedwali" : "Show as table";
+  const toggles = page.getByRole("button", { name });
+  await expect(toggles.first()).toBeVisible();
+  for (const toggle of await toggles.all()) await toggle.click();
+  await expect(page.locator("main [aria-pressed=false]")).toHaveCount(0);
+};
+
 const VISITS: Visit[] = [
   // The client journey (phase 2.2), answered by src/mocks/client.ts.
   { name: "client-home", path: "/client", role: "CLIENT" },
@@ -251,6 +263,111 @@ const VISITS: Visit[] = [
         .click();
       await expect(page.getByRole("dialog")).toBeVisible();
     },
+  },
+  // Expenses (src/mocks/expenses.ts): operator entries, admin approval and corrections.
+  { name: "operator-finance", path: "/operator/finance", role: "OPERATOR" },
+  {
+    name: "operator-expense-errors",
+    path: "/operator/finance/expenses/new",
+    role: "OPERATOR",
+    prepare: async (page) => {
+      await page.locator("main form button[type=submit]").click();
+      await expect(page.locator("main [aria-invalid=true]").first()).toBeVisible();
+    },
+  },
+  {
+    name: "operator-expense-confirm",
+    path: "/operator/finance/expenses/new",
+    role: "OPERATOR",
+    prepare: async (page) => {
+      await page.locator("main input[value=FIXED]").check();
+      await page.locator("main input[inputmode=numeric]").fill("20000");
+      // With a fixed cost there is no project: category, then payment method.
+      await page.locator("main form [role=combobox]").nth(0).click();
+      await page.getByRole("option").first().click();
+      await page.locator("main input[name=description]").fill("Airtime for client calls");
+      await page.locator("main form [role=combobox]").nth(1).click();
+      await page.getByRole("option").first().click();
+      await page.locator("main form button[type=submit]").click();
+      await expect(page.locator("main #expense-confirm")).toBeVisible();
+    },
+  },
+  { name: "admin-finance-expenses", path: "/admin/finance?tab=expenses", role: "ADMIN" },
+  {
+    name: "admin-expense-reject",
+    path: "/admin/finance?tab=expenses&status=PENDING",
+    role: "ADMIN",
+    // :visible: the phone shows cards, the desktop a table, both are in the page.
+    prepare: async (page, language) => {
+      const reject = language === "sw" ? "Kataa" : "Reject";
+      await page.locator("main button:visible", { hasText: reject }).first().click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+    },
+  },
+  {
+    name: "admin-expense-history",
+    path: "/admin/finance?tab=expenses&status=REVERSED",
+    role: "ADMIN",
+    prepare: async (page) => {
+      await page.locator("main button:visible", { hasText: /EXP-/ }).first().click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+    },
+  },
+  { name: "admin-expense-new", path: "/admin/finance/expenses/new", role: "ADMIN" },
+  // Finance analytics (decided 2026-10-25). A fixed range, so the seed's months always show.
+  {
+    name: "admin-finance-analytics",
+    path: `/admin/finance?tab=analytics&${SEED_RANGE}`,
+    role: "ADMIN",
+    // Keyboard: focus the trend chart and step to a month, so its tooltip is checked too.
+    prepare: async (page) => {
+      await page.locator("main svg.recharts-surface").first().focus();
+      await page.keyboard.press("ArrowRight");
+      await expect(page.locator(".recharts-tooltip-wrapper").first()).toBeVisible();
+    },
+  },
+  {
+    name: "admin-finance-analytics-tables",
+    path: `/admin/finance?tab=analytics&${SEED_RANGE}`,
+    role: "ADMIN",
+    prepare: showChartsAsTables,
+  },
+  {
+    name: "admin-finance-analytics-empty",
+    path: "/admin/finance?tab=analytics&period=custom&from=2025-01-01&to=2025-01-31",
+    role: "ADMIN",
+  },
+  {
+    name: "operator-finance-reports",
+    path: `/operator/finance?tab=reports&${SEED_RANGE}`,
+    role: "OPERATOR",
+  },
+  {
+    name: "operator-finance-reports-tables",
+    path: `/operator/finance?tab=reports&${SEED_RANGE}`,
+    role: "OPERATOR",
+    prepare: showChartsAsTables,
+  },
+  // New projects with a draft agreement v1 (src/mocks/projects.ts).
+  {
+    name: "operator-project-new-errors",
+    path: "/operator/projects/new",
+    role: "OPERATOR",
+    prepare: async (page) => {
+      await page.locator("main form button[type=submit]").click();
+      await expect(page.locator("main [aria-invalid=true]").first()).toBeVisible();
+    },
+  },
+  {
+    name: "operator-project-draft",
+    path: "/operator/projects/prj_stove/agreement",
+    role: "OPERATOR",
+  },
+  { name: "admin-project-new", path: "/admin/projects/new", role: "ADMIN" },
+  {
+    name: "admin-project-sent",
+    path: "/admin/projects/prj_attendance/agreement",
+    role: "ADMIN",
   },
   // The operator's own profile, and its password form showing every inline error.
   { name: "operator-profile", path: "/operator/profile", role: "OPERATOR" },

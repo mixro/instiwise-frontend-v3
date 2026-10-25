@@ -298,6 +298,14 @@
       "ACTIVE": "Active",
       "SUSPENDED": "Suspended",
       "REJECTED": "Not approved"
+    },
+    "expense": {
+      "PENDING": "Awaiting approval",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "WITHDRAWN": "Withdrawn",
+      "REVERSED": "Reversed",
+      "ADJUSTED": "Adjusted"
     }
   },
   "roles": {
@@ -318,7 +326,8 @@
       "projects": "My projects",
       "messages": "Messages",
       "payments": "Payment records",
-      "profile": "Profile"
+      "profile": "Profile",
+      "finance": "Finance"
     },
     "admin": {
       "overview": "Overview",
@@ -462,7 +471,16 @@
     "addressRequired": "Enter the address printed on receipts.",
     "currentPasswordRequired": "Enter your current password.",
     "passwordsDiffer": "The two new passwords are not the same.",
-    "passwordSame": "Choose a new password that is different from the current one."
+    "passwordSame": "Choose a new password that is different from the current one.",
+    "termBothLanguages": "Write this item in both English and Swahili.",
+    "projectTitleRequired": "Give the project a title of at least 3 characters.",
+    "categoryRequired": "Enter the type of work, for example Prototype.",
+    "deadlineBeforeStart": "The deadline must be on or after the start date.",
+    "dateInFuture": "The date cannot be in the future.",
+    "expenseCategoryRequired": "Choose a category.",
+    "expenseDescriptionRequired": "Say what it was for, in at least 3 characters.",
+    "expenseMethodRequired": "Choose how it was paid.",
+    "categoryNameRequired": "Enter a name of 2 to 40 characters."
   },
   "apiErrors": {
     "INVALID_CREDENTIALS": "The email address or password is wrong.",
@@ -487,7 +505,21 @@
     "OPERATOR_STATUS_CHANGED": "This operator's status changed in the meantime. The page now shows it.",
     "PAYMENT_ALREADY_REVERSED": "This payment was already reversed.",
     "ADJUSTMENT_BELOW_ZERO": "That would take the payment below zero. Reverse it instead.",
-    "CURRENT_PASSWORD_WRONG": "The current password is not correct."
+    "CURRENT_PASSWORD_WRONG": "The current password is not correct.",
+    "PROJECT_NOT_DRAFT": "This project was already sent to the client and can no longer be edited.",
+    "AGREEMENT_NOT_DRAFT": "This agreement version was already sent. Later changes need a change request.",
+    "CLIENT_NOT_FOUND": "That client is not one of your clients.",
+    "PERMISSION_REQUIRED": "An admin has not allowed you to do this.",
+    "EXPENSE_NOT_FOUND": "That expense was not found.",
+    "EXPENSE_NOT_PENDING": "This expense is no longer waiting for a decision.",
+    "EXPENSE_NOT_APPROVED": "Only an approved expense can be corrected.",
+    "EXPENSE_ALREADY_REVERSED": "This expense has already been reversed.",
+    "EXPENSE_PROJECT_REQUIRED": "Choose the project this cost belongs to.",
+    "EXPENSE_PROJECT_NOT_ALLOWED": "A fixed cost does not belong to a project.",
+    "CATEGORY_NOT_FOUND": "That category was not found.",
+    "CATEGORY_INACTIVE": "That category is no longer in use. Choose another one.",
+    "CATEGORY_IN_USE": "Expenses use this category, so it cannot be deleted. Deactivate it instead.",
+    "CATEGORY_NAME_TAKEN": "A category with this name already exists."
   },
   "client": {
     "home": {
@@ -1003,7 +1035,15 @@
       "CONVERSATION_VIEWED": "Conversation read by an admin",
       "PASSWORD_RESET": "Password reset",
       "CONVERSATION_LIST_VIEWED": "Conversation list viewed by an admin",
-      "PASSWORD_CHANGED": "Password changed"
+      "PASSWORD_CHANGED": "Password changed",
+      "PROJECT_UPDATED": "Draft project edited",
+      "EXPENSE_SUBMITTED": "Expense submitted",
+      "EXPENSE_APPROVED": "Expense approved",
+      "EXPENSE_REJECTED": "Expense rejected",
+      "EXPENSE_WITHDRAWN": "Expense withdrawn",
+      "EXPENSE_REVERSED": "Expense reversed",
+      "EXPENSE_ADJUSTED": "Expense adjusted",
+      "EXPENSE_CATEGORY_CHANGED": "Expense category changed"
     }
   },
   "settings": {
@@ -1154,5 +1194,306 @@
     "refresh": "Refresh",
     "navUnread_one": "{{count}} conversation with unread messages",
     "navUnread_other": "{{count}} conversations with unread messages"
+  },
+  "terms": {
+    "hint": "Write every item in English and in Swahili. The client reads it in their own language.",
+    "itemLabel": "{{list}}: item {{number}} ({{language}})",
+    "remove": "Remove item {{number}} from “{{list}}”",
+    "add": "Add an item to “{{list}}”"
+  },
+  "projects": {
+    "new": "New project",
+    "newTitle": "New project",
+    "newSubtitle": "Create the project and the first version of its agreement. The client sees nothing until you send it.",
+    "backToList": "All projects",
+    "notAllowed": "You cannot create projects",
+    "notAllowedBody": "An admin decides who may create projects. Ask an admin if you need to.",
+    "createNote": "The project and its agreement are saved as a draft. You can change and preview them before sending.",
+    "create": "Create draft",
+    "creating": "Creating…",
+    "created": "Draft {{reference}} created",
+    "form": {
+      "projectGroup": "Project",
+      "title": "Project title",
+      "category": "Type of work",
+      "categoryHint": "For example Prototype, Book / report or Software.",
+      "description": "Description",
+      "descriptionHint": "What the client asked for, in a sentence or two.",
+      "deliverables": "Deliverables",
+      "deliverablesHint": "What the client receives at the end.",
+      "deliverable": "Deliverable {{number}}",
+      "removeDeliverable": "Remove deliverable {{number}}",
+      "addDeliverable": "Add a deliverable",
+      "startDate": "Start date",
+      "agreementGroup": "Agreement, version 1",
+      "agreementIntro": "The terms the client accepts. Write every item in English and Swahili; the client reads them in their own language.",
+      "price": "Price (TZS)",
+      "priceHint": "Whole shillings, for example 1,850,000.",
+      "deadline": "Deadline",
+      "client": "Client",
+      "clientSearch": "Search clients by name or email",
+      "noClients": "No client matches."
+    },
+    "preview": {
+      "title": "Preview: what the client will see",
+      "body": "Shows what is saved. Save your changes to update it.",
+      "languages": "Preview language",
+      "deliverables": "Deliverables"
+    },
+    "saveDraft": "Save draft",
+    "saving": "Saving…",
+    "draftSaved": "Draft saved",
+    "sendTitle": "Send to the client",
+    "sendBody": "{{name}} can then read the project and accept the agreement. After sending, this version can no longer be edited; later changes need a change request.",
+    "saveFirst": "Save your changes before sending.",
+    "send": "Send to client",
+    "confirmTitle": "Send agreement version {{version}} to {{name}}?",
+    "confirmBody": "The client sees the project and the agreement in English and Swahili and can accept it. This version can no longer be edited after sending.",
+    "sent": "Sent to {{name}}",
+    "sentNotice": "Sent to {{name}}. This version can no longer be edited; later changes need a change request.",
+    "readOnlyDraft": "This project is still a draft. Only staff an admin allowed to create projects can edit it."
+  },
+  "expenses": {
+    "tabs": {
+      "payments": "Payments",
+      "expenses": "Expenses",
+      "mine": "My expenses"
+    },
+    "subtitleOperator": "Costs you paid for INSTIWISE work. An admin approves each one before it counts in any total.",
+    "adminIntro": "Expenses are never edited or deleted. Approved ones are corrected with a reversal or an adjustment row (EXPC-…), like payments.",
+    "add": "Add expense",
+    "columns": {
+      "reference": "Reference",
+      "date": "Date paid",
+      "kind": "Type",
+      "category": "Category",
+      "project": "Project",
+      "amount": "Amount",
+      "status": "Status",
+      "enteredBy": "Entered by",
+      "actions": "Actions"
+    },
+    "kind": {
+      "FIXED": "Fixed",
+      "VARIABLE": "Variable"
+    },
+    "kindHint": {
+      "FIXED": "A company cost such as rent or internet. It belongs to no project.",
+      "VARIABLE": "A cost of one project, such as materials or transport."
+    },
+    "companyCost": "Company cost",
+    "waiting_one": "{{count}} expense waiting for approval ({{amount}})",
+    "waiting_other": "{{count}} expenses waiting for approval ({{amount}})",
+    "noneWaiting": "Nothing is waiting for approval.",
+    "empty": {
+      "mine": "You have not added any expenses",
+      "mineBody": "Add the costs you paid, with the receipt number if you have one. An admin approves each one.",
+      "all": "No expenses yet",
+      "allBody": "Expenses that admins add or operators submit appear here.",
+      "noMatches": "No expenses match these filters"
+    },
+    "showMore": "Show more",
+    "filters": {
+      "title": "Filter expenses",
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "kind": "Type",
+      "allKinds": "All types",
+      "category": "Category",
+      "allCategories": "All categories",
+      "project": "Project",
+      "allProjects": "All projects",
+      "from": "Paid from",
+      "to": "Paid until",
+      "clear": "Clear filters"
+    },
+    "rejectedBecause": "Reason: {{reason}}",
+    "corrects": "corrects {{reference}}",
+    "approve": "Approve",
+    "approveTitle": "Approve {{reference}}?",
+    "approveBody": "{{amount}} for “{{description}}”, entered by {{name}}. Once approved it counts in every total and can only be corrected, never edited.",
+    "approved": "{{reference}} approved",
+    "reject": "Reject",
+    "rejectTitle": "Reject {{reference}}?",
+    "rejectBody": "It stays on record with your reason, and the person who entered it sees why. They can submit a corrected one.",
+    "rejectReason": "Reason for rejecting",
+    "rejected": "{{reference}} rejected",
+    "withdraw": "Withdraw",
+    "withdrawTitle": "Withdraw {{reference}}?",
+    "withdrawBody": "An admin will not review it. It stays on your list, marked Withdrawn.",
+    "withdrawn": "{{reference}} withdrawn",
+    "reverseBody": "A correction row (EXPC-…) cancels what is left of {{reference}}. {{reference}} stays on record, marked Reversed.",
+    "reversed": "{{reference}} reversed by {{correction}}",
+    "adjustDirection": "The expense was recorded",
+    "history": {
+      "title": "History of {{reference}}",
+      "body": "As first entered, then every correction, oldest first. Nothing here is ever edited.",
+      "enteredBy": "Entered by {{name}} on {{date}}",
+      "decidedBy": "Decided by {{name}} on {{date}}",
+      "notLoaded": "{{reference}}: show more rows in the list to see it"
+    },
+    "form": {
+      "title": "Add expense",
+      "step1": "Step 1 of 2: details",
+      "step2": "Step 2 of 2: check and submit",
+      "noteOperator": "An admin must approve this expense before it counts in any total.",
+      "noteAdmin": "Expenses you add as an admin are approved at once and count straight away.",
+      "paidOn": "Date paid",
+      "paidOnHint": "Today or earlier.",
+      "amount": "Amount (TZS)",
+      "kind": "Type of cost",
+      "category": "Category",
+      "chooseCategory": "Choose a category",
+      "description": "What was it for?",
+      "vendor": "Paid to",
+      "vendorHint": "Shop, company or person.",
+      "method": "Payment method",
+      "chooseMethod": "Choose how it was paid",
+      "reference": "Receipt or transaction number",
+      "project": "Project",
+      "chooseProject": "Choose a project",
+      "projectHintOperator": "Only projects of your clients are listed.",
+      "review": "Review",
+      "edit": "Change details",
+      "submitOperator": "Submit for approval",
+      "submitAdmin": "Add and approve",
+      "confirmTitle": "Check this expense of {{amount}}",
+      "submitted": "{{reference}} submitted. An admin will review it.",
+      "added": "{{reference}} added and approved",
+      "back": "Back to expenses"
+    },
+    "categories": {
+      "title": "Expense categories",
+      "body": "The list people choose from when adding an expense. A category in use cannot be deleted: deactivate it to stop new entries.",
+      "list": "Categories",
+      "name": "New category",
+      "add": "Add category",
+      "added": "{{name}} added",
+      "rename": "Rename",
+      "renameTitle": "Rename {{name}}",
+      "newName": "New name",
+      "save": "Save",
+      "renamed": "Renamed to {{name}}",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "deactivated": "{{name}} deactivated",
+      "activated": "{{name}} activated",
+      "delete": "Delete",
+      "deleteTitle": "Delete {{name}}?",
+      "deleteBody": "No expense uses it. This cannot be undone.",
+      "deleted": "{{name}} deleted",
+      "inUse_one": "Used by {{count}} expense",
+      "inUse_other": "Used by {{count}} expenses",
+      "unused": "Not used yet",
+      "active": "Active",
+      "inactive": "Inactive",
+      "cannotDelete": "In use, so it cannot be deleted. Deactivate it instead."
+    },
+    "overviewPending_one": "{{count}} expense waiting for approval",
+    "overviewPending_other": "{{count}} expenses waiting for approval",
+    "navPending_one": "{{count}} expense waiting for approval",
+    "navPending_other": "{{count}} expenses waiting for approval"
+  },
+  "analytics": {
+    "tabs": {
+      "analytics": "Analytics",
+      "reports": "Reports"
+    },
+    "scope": {
+      "ADMIN": "Whole company: every project and every approved expense, fixed and variable.",
+      "OPERATOR": "Includes your assigned clients only: their projects' payments and approved variable costs. Fixed costs and company totals are not shown."
+    },
+    "profitRule": {
+      "ADMIN": "Profit = payments collected minus approved expenses.",
+      "OPERATOR": "Profit = payments collected minus approved variable expenses."
+    },
+    "cashBasis": "Each payment and expense counts on the day it was received or paid. Pending, rejected, withdrawn and reversed expenses are not counted.",
+    "period": {
+      "label": "Period",
+      "month": "This month",
+      "lastMonth": "Last month",
+      "quarter": "This quarter",
+      "year": "This year",
+      "custom": "Custom range",
+      "from": "From",
+      "to": "Until",
+      "showing": "Showing {{from}} to {{to}}",
+      "invalid": "The start date must be on or before the end date.",
+      "missing": "Choose both dates."
+    },
+    "tiles": {
+      "heading": "Totals for the period",
+      "collected": "Collected",
+      "collectedRule": "Payments received in the period, net of corrections",
+      "agreed": "Agreed contract value",
+      "agreedRule": "As of today, for the same projects",
+      "outstanding": "Outstanding balances",
+      "outstandingRule": "Still to collect, as of today",
+      "fixed": "Fixed expenses",
+      "fixedRule": "Approved company costs paid in the period",
+      "variable": "Variable expenses",
+      "variableRule": "Approved project costs paid in the period",
+      "profit": "Profit",
+      "profitRule": {
+        "ADMIN": "Collected minus fixed and variable expenses",
+        "OPERATOR": "Collected minus variable expenses"
+      },
+      "margin": "Margin",
+      "marginRule": "Profit as a share of collected",
+      "marginNone": "Nothing collected in this period",
+      "awaiting": "Awaiting approval",
+      "awaitingRule_one": "{{count}} expense paid in the period, not counted until approved",
+      "awaitingRule_other": "{{count}} expenses paid in the period, not counted until approved",
+      "awaitingLink": "See pending expenses"
+    },
+    "series": {
+      "month": "Month",
+      "collected": "Collected",
+      "expenses": "Expenses",
+      "variableExpenses": "Variable expenses",
+      "fixedExpenses": "Fixed expenses",
+      "profit": "Profit"
+    },
+    "chart": {
+      "showTable": "Show as table",
+      "keyboard": "Focus the chart and use the arrow keys to read each value."
+    },
+    "trend": {
+      "title": "Monthly trend",
+      "description": "Collected, expenses and profit per month"
+    },
+    "category": {
+      "title": "Expenses by category",
+      "titleOperator": "Variable expenses by category",
+      "description": "Approved expenses paid in the period",
+      "name": "Category",
+      "amount": "Amount",
+      "empty": "No approved expenses in this period."
+    },
+    "projects": {
+      "title": "Profit per project",
+      "note": {
+        "ADMIN": "Variable expenses only: fixed costs belong to the whole company and are not split across projects.",
+        "OPERATOR": "Your assigned clients' projects, with their approved variable expenses."
+      },
+      "project": "Project",
+      "client": "Client",
+      "agreed": "Agreed",
+      "collected": "Collected",
+      "outstanding": "Outstanding",
+      "expenses": "Variable expenses",
+      "profit": "Profit",
+      "margin": "Margin",
+      "search": "Find a project or client",
+      "show": "Show",
+      "all": "All projects",
+      "active": "With money in this period",
+      "loss": "Making a loss",
+      "empty": "No projects match these filters."
+    },
+    "empty": {
+      "title": "Nothing collected or spent in this period",
+      "body": "Choose another period, or record payments and expenses first."
+    }
   }
 }

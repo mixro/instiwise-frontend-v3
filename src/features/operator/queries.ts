@@ -18,8 +18,8 @@ export const useOperatorProfile = () =>
 export const useOperatorDashboard = () =>
   useQuery({ queryKey: operatorKeys.dashboard(), queryFn: operatorApi.dashboard });
 
-export const useOperatorClients = () =>
-  useQuery({ queryKey: operatorKeys.clients(), queryFn: operatorApi.clients });
+export const useOperatorClients = (enabled = true) =>
+  useQuery({ queryKey: operatorKeys.clients(), queryFn: () => operatorApi.clients(), enabled });
 
 export const useOperatorClient = (id: string, enabled = true) =>
   useQuery({

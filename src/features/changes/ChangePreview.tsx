@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/hooks/useLanguage";
 import { formatDate, formatTzs } from "@/lib/format";
+import { termKey, termText, type Term } from "@/lib/terms";
 import type { ChangeRequest } from "./api";
 
 function BeforeAfter({
@@ -45,9 +46,10 @@ function ScopeList({
 }: {
   icon: ReactNode;
   label: string;
-  items: string[];
+  items: Term[];
   removed?: boolean;
 }) {
+  const language = useLanguage();
   if (items.length === 0) return null;
   return (
     <div className="space-y-1">
@@ -57,8 +59,8 @@ function ScopeList({
       </p>
       <ul className="space-y-1 pl-6 text-sm">
         {items.map((item) => (
-          <li key={item} className={removed ? "text-muted line-through" : undefined}>
-            {item}
+          <li key={termKey(item)} className={removed ? "text-muted line-through" : undefined}>
+            {termText(item, language)}
           </li>
         ))}
       </ul>
@@ -132,7 +134,7 @@ export function ChangePreview({ change }: { change: ChangeRequest }) {
             </summary>
             <ul className="list-disc space-y-1 pt-2 pl-5">
               {scopeChanges.unchanged.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={termKey(item)}>{termText(item, language)}</li>
               ))}
             </ul>
           </details>

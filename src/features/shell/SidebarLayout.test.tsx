@@ -10,6 +10,7 @@ const OPERATOR_NAV = [
   "My projects",
   "Messages",
   "Payment records",
+  "Finance",
   "Profile",
 ];
 

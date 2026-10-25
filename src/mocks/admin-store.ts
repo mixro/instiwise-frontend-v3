@@ -8,6 +8,12 @@ import {
   type MockClient,
   type MockInvitation,
 } from "./staff-seed";
+import {
+  seedExpenseCategories,
+  seedExpenses,
+  type MockExpense,
+  type MockExpenseCategory,
+} from "./expense-seed";
 
 /*
  * Who works with whom, the audit log and the settings, shared by every mock
@@ -25,6 +31,8 @@ interface StaffState {
   audit: AuditEntry[];
   settings: Settings;
   invitations: MockInvitation[];
+  expenses: MockExpense[];
+  expenseCategories: MockExpenseCategory[];
 }
 
 function seed(): StaffState {
@@ -34,6 +42,8 @@ function seed(): StaffState {
     audit: seedAudit(),
     settings: seedSettings(),
     invitations: seedInvitations(),
+    expenses: seedExpenses(),
+    expenseCategories: seedExpenseCategories(),
   };
 }
 

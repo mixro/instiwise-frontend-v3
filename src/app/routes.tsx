@@ -37,8 +37,12 @@ import { OperatorReceiptPage } from "@/features/operator/OperatorReceiptPage";
 import { PaymentRecordsPage } from "@/features/operator/PaymentRecordsPage";
 import { RecordPaymentPage } from "@/features/operator/RecordPaymentPage";
 import { OperatorProjectsPage } from "@/features/operator/OperatorProjectsPage";
+import { ExpenseFormPage } from "@/features/expenses/ExpenseFormPage";
+import { OperatorFinancePage } from "@/features/expenses/OperatorFinancePage";
 import { InboxPage } from "@/features/messages/InboxPage";
 import { OperatorProfilePage } from "@/features/operator/OperatorProfilePage";
+import { NewProjectPage } from "@/features/projects/NewProjectPage";
+import { ProjectAgreementPage } from "@/features/projects/ProjectAgreementPage";
 import { PlaceholderPage } from "@/features/shell/PlaceholderPage";
 import { RequireRole } from "@/features/shell/RequireRole";
 import { RoleHomeRedirect } from "@/features/shell/RoleHomeRedirect";
@@ -169,9 +173,13 @@ export const routes: RouteObject[] = [
       "/operator/payments": <PaymentRecordsPage />,
       "/operator/messages": <InboxPage role="OPERATOR" />,
       "/operator/profile": <OperatorProfilePage />,
+      "/operator/finance": <OperatorFinancePage />,
     },
     [
       { path: "messages/:projectId", element: <InboxPage role="OPERATOR" /> },
+      { path: "projects/new", element: <NewProjectPage role="OPERATOR" /> },
+      { path: "finance/expenses/new", element: <ExpenseFormPage role="OPERATOR" /> },
+      { path: "projects/:projectId/agreement", element: <ProjectAgreementPage role="OPERATOR" /> },
       { path: "clients/:clientId", element: <OperatorClientPage /> },
       { path: "projects/:projectId/changes", element: <OperatorChangesPage /> },
       { path: "payments/new", element: <RecordPaymentPage /> },
@@ -193,6 +201,9 @@ export const routes: RouteObject[] = [
     [
       { path: "projects/changes", element: <ChangeReviewPage /> },
       { path: "messages/:projectId", element: <InboxPage role="ADMIN" /> },
+      { path: "projects/new", element: <NewProjectPage role="ADMIN" /> },
+      { path: "finance/expenses/new", element: <ExpenseFormPage role="ADMIN" /> },
+      { path: "projects/:projectId/agreement", element: <ProjectAgreementPage role="ADMIN" /> },
     ],
   ),
   { path: "/no-access", element: <NoAccessPage /> },

@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatDateTime, formatFileSize, formatTzs } from "./format";
+import {
+  formatBasisPoints,
+  formatDate,
+  formatDateTime,
+  formatFileSize,
+  formatMonthShort,
+  formatTzs,
+  formatTzsCompact,
+} from "./format";
 
 describe("formatTzs", () => {
   it("formats whole shillings in English and Swahili", () => {
@@ -46,5 +54,26 @@ describe("formatFileSize", () => {
     expect(formatFileSize(4_200_000, "en")).toMatch(/4\.2\s?MB/);
     expect(formatFileSize(46_000_000, "en")).toMatch(/46\s?MB/);
     expect(formatFileSize(4_200_000, "sw")).toMatch(/MB\s?4\.2/);
+  });
+});
+
+describe("chart and margin formats", () => {
+  it("shortens amounts for chart labels in both languages", () => {
+    expect(formatTzsCompact(12_400_000, "en")).toBe("12.4M");
+    expect(formatTzsCompact(-470_000, "en")).toBe("-470K");
+    expect(formatTzsCompact(350_000, "sw")).toMatch(/^elfu\s350$/);
+    expect(formatTzsCompact(0, "en")).toBe("0");
+  });
+
+  it("shows basis points as a percentage", () => {
+    expect(formatBasisPoints(2350, "en")).toBe("23.5%");
+    expect(formatBasisPoints(-1250, "en")).toBe("-12.5%");
+    expect(formatBasisPoints(10_000, "sw")).toBe("100%");
+  });
+
+  it("names months briefly", () => {
+    expect(formatMonthShort("2026-10", "en")).toBe("Oct");
+    expect(formatMonthShort("2026-10", "sw")).toBe("Okt");
+    expect(formatMonthShort("2026-01", "en", true)).toMatch(/^Jan\s2026$/);
   });
 });

@@ -9,6 +9,7 @@ import {
 } from "./client";
 import { addAudit } from "./admin-store";
 import { fail, on } from "./contract";
+import type { Term } from "./terms";
 
 /*
  * Change-request rules, enforced here as the real server will (decided 2026-10-17):
@@ -41,10 +42,13 @@ const OPERATOR = "Baraka Mushi";
 const ADMIN = "Rehema Said";
 const OPEN = new Set(["UNDER_REVIEW", "AWAITING_CLIENT_ACCEPTANCE"]);
 
+/** Two terms are the same when both language copies match (decided 2026-10-25). */
+const termKey = (term: Term) => `${term.en}\u0000${term.sw}`;
+
 /** The record as the API returns it, with the differences computed. */
 function present(project: MockProject, record: ChangeRecord): ChangeRequest {
-  const before = new Set(record.before.scope);
-  const after = new Set(record.after.scope);
+  const before = new Set(record.before.scope.map(termKey));
+  const after = new Set(record.after.scope.map(termKey));
   return {
     ...record,
     projectId: project.id,
@@ -52,9 +56,9 @@ function present(project: MockProject, record: ChangeRecord): ChangeRequest {
     projectReference: project.reference,
     clientName: project.clientName,
     scopeChanges: {
-      added: record.after.scope.filter((item) => !before.has(item)),
-      removed: record.before.scope.filter((item) => !after.has(item)),
-      unchanged: record.after.scope.filter((item) => before.has(item)),
+      added: record.after.scope.filter((item) => !before.has(termKey(item))),
+      removed: record.before.scope.filter((item) => !after.has(termKey(item))),
+      unchanged: record.after.scope.filter((item) => before.has(termKey(item))),
     },
     priceDifference: record.after.price - record.before.price,
   };
@@ -68,7 +72,8 @@ function findChange(id: unknown, inProjects: MockProject[]) {
   return undefined;
 }
 
-const clientProjects = () => mockProjects().filter((p) => p.clientId === MOCK_CLIENT_ID);
+const clientProjects = () =>
+  mockProjects().filter((p) => p.clientId === MOCK_CLIENT_ID && p.status !== "DRAFT");
 const operatorProjects = () => mockProjects().filter((p) => p.operatorName === OPERATOR);
 
 /** What the client may see: nothing the admin has not let through. */
@@ -83,12 +88,19 @@ function termsOf(project: MockProject): ChangeTerms | undefined {
     : undefined;
 }
 
-function operatorProject(project: MockProject): OperatorProject {
+/** A project as staff see it (also used by the project screens' mocks). */
+export function operatorProject(project: MockProject): OperatorProject {
   return {
     id: project.id,
     reference: project.reference,
     title: project.title,
+    status: project.status,
+    clientId: project.clientId,
     clientName: project.clientName,
+    category: project.category,
+    description: project.description,
+    deliverables: project.deliverables,
+    startDate: project.startDate,
     terms: termsOf(project),
     openChange: project.changeRequests.some((change) => OPEN.has(change.status)),
   };
@@ -99,8 +111,8 @@ function nextNumber(): string {
   return `CR-2026-${String(count + 1).padStart(4, "0")}`;
 }
 
-function sameScope(a: string[], b: string[]): boolean {
-  return a.length === b.length && a.every((item, index) => item === b[index]);
+function sameScope(a: Term[], b: Term[]): boolean {
+  return a.length === b.length && a.every((item, index) => termKey(item) === termKey(b[index]!));
 }
 
 /** Client acceptance: the next agreement version, accepted, superseding the current one. */
@@ -205,12 +217,15 @@ export const changeHandlers = [
     }
 
     const body = await request.json();
-    const after: ChangeTerms = {
-      scope: body.scope.map((item) => item.trim()).filter(Boolean),
-      price: body.price,
-      deadline: body.deadline,
-    };
-    if (!Number.isInteger(after.price) || after.price < 0 || after.scope.length === 0) {
+    const scope = body.scope.map((item) => ({ en: item.en.trim(), sw: item.sw.trim() }));
+    const after: ChangeTerms = { scope, price: body.price, deadline: body.deadline };
+    // Every term in both languages (ADR 0004).
+    if (
+      !Number.isInteger(after.price) ||
+      after.price < 0 ||
+      scope.length === 0 ||
+      scope.some((item) => !item.en || !item.sw)
+    ) {
       return fail(422, "VALIDATION_FAILED");
     }
     const moneyOrDate = after.price !== before.price || after.deadline !== before.deadline;

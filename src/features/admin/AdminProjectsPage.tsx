@@ -1,10 +1,11 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, FolderPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { DataTable, type DataTableColumn } from "@/components/DataTable";
 import { MoneyCell } from "@/components/MoneyCell";
 import { PageHeader } from "@/components/PageHeader";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Button } from "@/components/ui/Button";
 import { useAdminQueue } from "@/features/changes/queries";
 import { useErrorText } from "@/hooks/useErrorText";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -26,7 +27,16 @@ export function AdminProjectsPage() {
       header: t("client.payments.project"),
       cell: (project) => (
         <span>
-          <span className="block font-medium">{project.title}</span>
+          {project.status === "DRAFT" || project.status === "AWAITING_CLIENT_ACCEPTANCE" ? (
+            <Link
+              to={`/admin/projects/${project.id}/agreement`}
+              className="block font-medium text-brand-text underline underline-offset-4 hover:no-underline"
+            >
+              {project.title}
+            </Link>
+          ) : (
+            <span className="block font-medium">{project.title}</span>
+          )}
           <span className="block text-xs text-muted">{project.reference}</span>
         </span>
       ),
@@ -79,7 +89,18 @@ export function AdminProjectsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t("nav.admin.projects")} description={t("admin.projects.subtitle")} />
+      <PageHeader
+        title={t("nav.admin.projects")}
+        description={t("admin.projects.subtitle")}
+        actions={
+          <Button asChild variant="primary">
+            <Link to="/admin/projects/new">
+              <FolderPlus className="size-4" aria-hidden="true" />
+              {t("projects.new")}
+            </Link>
+          </Button>
+        }
+      />
       <Link
         to="/admin/projects/changes"
         className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4 hover:bg-surface-muted"

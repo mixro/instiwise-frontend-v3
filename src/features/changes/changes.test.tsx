@@ -145,13 +145,22 @@ describe("operator: proposing a change", () => {
       screen.getByLabelText("Why the change is needed"),
       "Your supervisor asked for a one-page summary.",
     );
-    await userEvent.click(screen.getByRole("button", { name: "Add an item" }));
-    await userEvent.type(screen.getByLabelText("Scope item 4"), "One-page executive summary");
+    await userEvent.click(screen.getByRole("button", { name: "Add an item to “Scope”" }));
+    await userEvent.type(
+      screen.getByLabelText("Scope: item 4 (English)"),
+      "One-page executive summary",
+    );
+    // Every term in both languages (ADR 0004): the Swahili copy is still missing.
+    await userEvent.click(screen.getByRole("button", { name: "Send proposal" }));
+    const swahili = screen.getByLabelText("Scope: item 4 (Kiswahili)");
+    expect(swahili).toHaveAccessibleDescription("Write this item in both English and Swahili.");
+    await userEvent.type(swahili, "Muhtasari wa ukurasa mmoja");
     await userEvent.click(screen.getByRole("button", { name: "Send proposal" }));
 
     expect(await screen.findByText("CR-2026-0005 sent to the client")).toBeInTheDocument();
     expect(await screen.findByText("Waiting for client decision")).toBeInTheDocument();
-  });
+    // Types a whole item in two languages key by key: slow when the suite runs in parallel.
+  }, 15_000);
 
   it("sends a price change to an admin first", async () => {
     renderApp("/operator/projects/prj_solar/changes", "OPERATOR");

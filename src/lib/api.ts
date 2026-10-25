@@ -141,6 +141,7 @@ export const apiClient = {
   POST: method("post"),
   PUT: method("put"),
   PATCH: method("patch"),
+  DELETE: method("delete"),
 };
 
 export const getHealth = () => apiClient.GET("/health");

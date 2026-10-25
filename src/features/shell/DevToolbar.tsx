@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FlaskConical } from "lucide-react";
-import { useId } from "react";
+import { startTransition, useId } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
@@ -44,8 +44,12 @@ export function DevToolbar() {
         <Select
           value={user?.role ?? MOCK_SIGNED_OUT}
           onValueChange={(value) => {
-            setMockRole(isRole(value) ? value : null);
-            navigate("/");
+            // One transition (the router's navigate is one), so the new role and
+            // the new address arrive together: never the old page with the new role.
+            startTransition(() => {
+              setMockRole(isRole(value) ? value : null);
+              navigate("/");
+            });
           }}
         >
           <SelectTrigger

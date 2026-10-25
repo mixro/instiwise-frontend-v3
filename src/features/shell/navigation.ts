@@ -47,6 +47,7 @@ export const NAVIGATION = {
     { to: "/operator/projects", label: "nav.operator.projects", icon: FolderKanban },
     { to: "/operator/messages", label: "nav.operator.messages", icon: MessageSquare },
     { to: "/operator/payments", label: "nav.operator.payments", icon: Receipt },
+    { to: "/operator/finance", label: "nav.operator.finance", icon: Wallet },
     { to: "/operator/profile", label: "nav.operator.profile", icon: UserRound },
   ],
   ADMIN: [
@@ -66,8 +67,8 @@ export type NavLabelKey = NavItem["label"];
 
 /** The user-menu shortcut for staff roles (their own profile or settings page). */
 export const USER_MENU_LINK: Partial<Record<Role, NavItem>> = {
-  OPERATOR: NAVIGATION.OPERATOR[5],
-  ADMIN: NAVIGATION.ADMIN[7],
+  OPERATOR: NAVIGATION.OPERATOR.find((item) => item.to === "/operator/profile"),
+  ADMIN: NAVIGATION.ADMIN.find((item) => item.to === "/admin/settings"),
 };
 
 /** The nav item a path belongs to (the most specific match), if any. */

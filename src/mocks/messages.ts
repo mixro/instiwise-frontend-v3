@@ -70,7 +70,10 @@ function readFilters(url: string) {
 function page(projects: MockProject[], url: string, forAdmin: boolean) {
   const filters = readFilters(url);
   if (!filters) return null;
-  const all = projects.map((project) => summary(project, forAdmin));
+  // A draft has no conversation: the client cannot see the project until it is sent.
+  const all = projects
+    .filter((project) => project.status !== "DRAFT")
+    .map((project) => summary(project, forAdmin));
   const items = all
     .filter((c) => !filters.unread || c.unreadCount > 0)
     .filter(

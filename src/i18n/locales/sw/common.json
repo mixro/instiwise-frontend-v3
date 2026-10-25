@@ -298,6 +298,14 @@
       "ACTIVE": "Hai",
       "SUSPENDED": "Amesimamishwa",
       "REJECTED": "Hakuidhinishwa"
+    },
+    "expense": {
+      "PENDING": "Inasubiri idhini",
+      "APPROVED": "Imeidhinishwa",
+      "REJECTED": "Imekataliwa",
+      "WITHDRAWN": "Imeondolewa",
+      "REVERSED": "Imebatilishwa",
+      "ADJUSTED": "Imerekebishwa"
     }
   },
   "roles": {
@@ -318,7 +326,8 @@
       "projects": "Miradi yangu",
       "messages": "Ujumbe",
       "payments": "Rekodi za malipo",
-      "profile": "Wasifu"
+      "profile": "Wasifu",
+      "finance": "Fedha"
     },
     "admin": {
       "overview": "Muhtasari",
@@ -462,7 +471,16 @@
     "addressRequired": "Weka anwani inayochapishwa kwenye risiti.",
     "currentPasswordRequired": "Weka nenosiri lako la sasa.",
     "passwordsDiffer": "Manenosiri mapya mawili hayafanani.",
-    "passwordSame": "Chagua nenosiri jipya tofauti na la sasa."
+    "passwordSame": "Chagua nenosiri jipya tofauti na la sasa.",
+    "termBothLanguages": "Andika kipengele hiki kwa Kiingereza na kwa Kiswahili.",
+    "projectTitleRequired": "Upe mradi jina lenye angalau herufi 3.",
+    "categoryRequired": "Weka aina ya kazi, kwa mfano Mfano wa kifaa.",
+    "deadlineBeforeStart": "Tarehe ya mwisho iwe siku ya kuanza au baada yake.",
+    "dateInFuture": "Tarehe haiwezi kuwa ya baadaye.",
+    "expenseCategoryRequired": "Chagua aina.",
+    "expenseDescriptionRequired": "Eleza ilikuwa ya nini, kwa angalau herufi 3.",
+    "expenseMethodRequired": "Chagua ilivyolipwa.",
+    "categoryNameRequired": "Weka jina lenye herufi 2 hadi 40."
   },
   "apiErrors": {
     "INVALID_CREDENTIALS": "Barua pepe au nenosiri si sahihi.",
@@ -487,7 +505,21 @@
     "OPERATOR_STATUS_CHANGED": "Hali ya mhudumu huyu imebadilika. Ukurasa sasa unaionyesha.",
     "PAYMENT_ALREADY_REVERSED": "Malipo haya yameshabatilishwa.",
     "ADJUSTMENT_BELOW_ZERO": "Hilo lingeshusha malipo chini ya sifuri. Yabatilishe badala yake.",
-    "CURRENT_PASSWORD_WRONG": "Nenosiri la sasa si sahihi."
+    "CURRENT_PASSWORD_WRONG": "Nenosiri la sasa si sahihi.",
+    "PROJECT_NOT_DRAFT": "Mradi huu umeshatumwa kwa mteja na hauwezi kuhaririwa tena.",
+    "AGREEMENT_NOT_DRAFT": "Toleo hili la makubaliano limeshatumwa. Mabadiliko ya baadaye yanahitaji ombi la mabadiliko.",
+    "CLIENT_NOT_FOUND": "Mteja huyo si mmoja wa wateja wako.",
+    "PERMISSION_REQUIRED": "Msimamizi hajakuruhusu kufanya hivi.",
+    "EXPENSE_NOT_FOUND": "Gharama hiyo haikupatikana.",
+    "EXPENSE_NOT_PENDING": "Gharama hii haisubiri tena uamuzi.",
+    "EXPENSE_NOT_APPROVED": "Gharama iliyoidhinishwa pekee ndiyo inaweza kurekebishwa.",
+    "EXPENSE_ALREADY_REVERSED": "Gharama hii imeshabatilishwa.",
+    "EXPENSE_PROJECT_REQUIRED": "Chagua mradi ambao gharama hii inahusu.",
+    "EXPENSE_PROJECT_NOT_ALLOWED": "Gharama ya kudumu haihusiani na mradi.",
+    "CATEGORY_NOT_FOUND": "Aina hiyo haikupatikana.",
+    "CATEGORY_INACTIVE": "Aina hiyo haitumiki tena. Chagua nyingine.",
+    "CATEGORY_IN_USE": "Gharama zinatumia aina hii, kwa hiyo haiwezi kufutwa. Izime badala yake.",
+    "CATEGORY_NAME_TAKEN": "Aina yenye jina hili tayari ipo."
   },
   "client": {
     "home": {
@@ -1003,7 +1035,15 @@
       "CONVERSATION_VIEWED": "Mazungumzo yamesomwa na msimamizi",
       "PASSWORD_RESET": "Nenosiri limewekwa upya",
       "CONVERSATION_LIST_VIEWED": "Orodha ya mazungumzo imesomwa na msimamizi",
-      "PASSWORD_CHANGED": "Nenosiri limebadilishwa"
+      "PASSWORD_CHANGED": "Nenosiri limebadilishwa",
+      "PROJECT_UPDATED": "Rasimu ya mradi imehaririwa",
+      "EXPENSE_SUBMITTED": "Gharama imewasilishwa",
+      "EXPENSE_APPROVED": "Gharama imeidhinishwa",
+      "EXPENSE_REJECTED": "Gharama imekataliwa",
+      "EXPENSE_WITHDRAWN": "Gharama imeondolewa",
+      "EXPENSE_REVERSED": "Gharama imebatilishwa",
+      "EXPENSE_ADJUSTED": "Gharama imerekebishwa",
+      "EXPENSE_CATEGORY_CHANGED": "Aina ya gharama imebadilishwa"
     }
   },
   "settings": {
@@ -1154,5 +1194,306 @@
     "refresh": "Onyesha upya",
     "navUnread_one": "Mazungumzo {{count}} yenye ujumbe ambao haujasomwa",
     "navUnread_other": "Mazungumzo {{count}} yenye ujumbe ambao haujasomwa"
+  },
+  "terms": {
+    "hint": "Andika kila kipengele kwa Kiingereza na kwa Kiswahili. Mteja anakisoma kwa lugha yake.",
+    "itemLabel": "{{list}}: kipengele {{number}} ({{language}})",
+    "remove": "Ondoa kipengele {{number}} kwenye “{{list}}”",
+    "add": "Ongeza kipengele kwenye “{{list}}”"
+  },
+  "projects": {
+    "new": "Mradi mpya",
+    "newTitle": "Mradi mpya",
+    "newSubtitle": "Tengeneza mradi na toleo la kwanza la makubaliano yake. Mteja haoni chochote hadi uutume.",
+    "backToList": "Miradi yote",
+    "notAllowed": "Huwezi kutengeneza miradi",
+    "notAllowedBody": "Msimamizi ndiye anaamua nani anaweza kutengeneza miradi. Muulize msimamizi kama unahitaji.",
+    "createNote": "Mradi na makubaliano yake vinahifadhiwa kama rasimu. Unaweza kuvibadilisha na kuvihakiki kabla ya kutuma.",
+    "create": "Tengeneza rasimu",
+    "creating": "Inatengeneza…",
+    "created": "Rasimu {{reference}} imetengenezwa",
+    "form": {
+      "projectGroup": "Mradi",
+      "title": "Jina la mradi",
+      "category": "Aina ya kazi",
+      "categoryHint": "Kwa mfano Mfano wa kifaa, Kitabu / ripoti au Programu.",
+      "description": "Maelezo",
+      "descriptionHint": "Mteja aliomba nini, kwa sentensi moja au mbili.",
+      "deliverables": "Vitakavyokabidhiwa",
+      "deliverablesHint": "Anachopokea mteja mwishoni.",
+      "deliverable": "Kitakachokabidhiwa {{number}}",
+      "removeDeliverable": "Ondoa kitakachokabidhiwa {{number}}",
+      "addDeliverable": "Ongeza kitakachokabidhiwa",
+      "startDate": "Tarehe ya kuanza",
+      "agreementGroup": "Makubaliano, toleo la 1",
+      "agreementIntro": "Masharti ambayo mteja anakubali. Andika kila kipengele kwa Kiingereza na Kiswahili; mteja anavisoma kwa lugha yake.",
+      "price": "Bei (TZS)",
+      "priceHint": "Shilingi kamili, kwa mfano 1,850,000.",
+      "deadline": "Tarehe ya mwisho",
+      "client": "Mteja",
+      "clientSearch": "Tafuta wateja kwa jina au barua pepe",
+      "noClients": "Hakuna mteja anayelingana."
+    },
+    "preview": {
+      "title": "Hakiki: atakachoona mteja",
+      "body": "Inaonyesha kilichohifadhiwa. Hifadhi mabadiliko yako ili kuisasisha.",
+      "languages": "Lugha ya hakiki",
+      "deliverables": "Vitakavyokabidhiwa"
+    },
+    "saveDraft": "Hifadhi rasimu",
+    "saving": "Inahifadhi…",
+    "draftSaved": "Rasimu imehifadhiwa",
+    "sendTitle": "Tuma kwa mteja",
+    "sendBody": "{{name}} ataweza kusoma mradi na kukubali makubaliano. Baada ya kutuma, toleo hili haliwezi kuhaririwa tena; mabadiliko ya baadaye yanahitaji ombi la mabadiliko.",
+    "saveFirst": "Hifadhi mabadiliko yako kabla ya kutuma.",
+    "send": "Tuma kwa mteja",
+    "confirmTitle": "Tuma toleo la {{version}} la makubaliano kwa {{name}}?",
+    "confirmBody": "Mteja ataona mradi na makubaliano kwa Kiingereza na Kiswahili na anaweza kuyakubali. Toleo hili haliwezi kuhaririwa baada ya kutuma.",
+    "sent": "Imetumwa kwa {{name}}",
+    "sentNotice": "Imetumwa kwa {{name}}. Toleo hili haliwezi kuhaririwa tena; mabadiliko ya baadaye yanahitaji ombi la mabadiliko.",
+    "readOnlyDraft": "Mradi huu bado ni rasimu. Wafanyakazi walioruhusiwa na msimamizi kutengeneza miradi ndio wanaoweza kuuhariri."
+  },
+  "expenses": {
+    "tabs": {
+      "payments": "Malipo",
+      "expenses": "Gharama",
+      "mine": "Gharama zangu"
+    },
+    "subtitleOperator": "Gharama ulizolipa kwa kazi za INSTIWISE. Msimamizi anaidhinisha kila moja kabla haijahesabiwa kwenye jumla yoyote.",
+    "adminIntro": "Gharama hazihaririwi wala kufutwa. Zilizoidhinishwa hurekebishwa kwa safu ya kubatilisha au ya kurekebisha (EXPC-…), kama malipo.",
+    "add": "Ongeza gharama",
+    "columns": {
+      "reference": "Kumbukumbu",
+      "date": "Tarehe ya kulipa",
+      "kind": "Aina",
+      "category": "Kundi",
+      "project": "Mradi",
+      "amount": "Kiasi",
+      "status": "Hali",
+      "enteredBy": "Aliyeingiza",
+      "actions": "Vitendo"
+    },
+    "kind": {
+      "FIXED": "Ya kudumu",
+      "VARIABLE": "Ya mradi"
+    },
+    "kindHint": {
+      "FIXED": "Gharama ya kampuni kama kodi ya pango au intaneti. Haihusiani na mradi.",
+      "VARIABLE": "Gharama ya mradi mmoja, kama vifaa au usafiri."
+    },
+    "companyCost": "Gharama ya kampuni",
+    "waiting_one": "Gharama {{count}} inasubiri idhini ({{amount}})",
+    "waiting_other": "Gharama {{count}} zinasubiri idhini ({{amount}})",
+    "noneWaiting": "Hakuna kinachosubiri idhini.",
+    "empty": {
+      "mine": "Bado hujaongeza gharama yoyote",
+      "mineBody": "Ongeza gharama ulizolipa, pamoja na namba ya risiti kama unayo. Msimamizi anaidhinisha kila moja.",
+      "all": "Bado hakuna gharama",
+      "allBody": "Gharama zinazoongezwa na wasimamizi au kuwasilishwa na wahudumu zitaonekana hapa.",
+      "noMatches": "Hakuna gharama zinazolingana na vichujio hivi"
+    },
+    "showMore": "Onyesha zaidi",
+    "filters": {
+      "title": "Chuja gharama",
+      "status": "Hali",
+      "allStatuses": "Hali zote",
+      "kind": "Aina",
+      "allKinds": "Aina zote",
+      "category": "Kundi",
+      "allCategories": "Makundi yote",
+      "project": "Mradi",
+      "allProjects": "Miradi yote",
+      "from": "Imelipwa kuanzia",
+      "to": "Imelipwa hadi",
+      "clear": "Ondoa vichujio"
+    },
+    "rejectedBecause": "Sababu: {{reason}}",
+    "corrects": "inarekebisha {{reference}}",
+    "approve": "Idhinisha",
+    "approveTitle": "Idhinisha {{reference}}?",
+    "approveBody": "{{amount}} kwa “{{description}}”, iliyoingizwa na {{name}}. Ikishaidhinishwa inahesabiwa kwenye kila jumla na inaweza kurekebishwa tu, si kuhaririwa.",
+    "approved": "{{reference}} imeidhinishwa",
+    "reject": "Kataa",
+    "rejectTitle": "Kataa {{reference}}?",
+    "rejectBody": "Inabaki kwenye kumbukumbu pamoja na sababu yako, na aliyeiingiza ataona sababu. Anaweza kuwasilisha iliyorekebishwa.",
+    "rejectReason": "Sababu ya kukataa",
+    "rejected": "{{reference}} imekataliwa",
+    "withdraw": "Ondoa",
+    "withdrawTitle": "Ondoa {{reference}}?",
+    "withdrawBody": "Msimamizi hataikagua. Inabaki kwenye orodha yako ikiwa na alama Imeondolewa.",
+    "withdrawn": "{{reference}} imeondolewa",
+    "reverseBody": "Safu ya marekebisho (EXPC-…) inafuta kilichobaki cha {{reference}}. {{reference}} inabaki kwenye kumbukumbu ikiwa na alama Imebatilishwa.",
+    "reversed": "{{reference}} imebatilishwa na {{correction}}",
+    "adjustDirection": "Gharama ilirekodiwa",
+    "history": {
+      "title": "Historia ya {{reference}}",
+      "body": "Kama ilivyoingizwa mara ya kwanza, kisha kila marekebisho, ya zamani kwanza. Hakuna kinachohaririwa hapa.",
+      "enteredBy": "Iliingizwa na {{name}} tarehe {{date}}",
+      "decidedBy": "Iliamuliwa na {{name}} tarehe {{date}}",
+      "notLoaded": "{{reference}}: onyesha safu zaidi kwenye orodha ili uione"
+    },
+    "form": {
+      "title": "Ongeza gharama",
+      "step1": "Hatua ya 1 kati ya 2: taarifa",
+      "step2": "Hatua ya 2 kati ya 2: hakiki na uwasilishe",
+      "noteOperator": "Msimamizi lazima aidhinishe gharama hii kabla haijahesabiwa kwenye jumla yoyote.",
+      "noteAdmin": "Gharama unazoongeza kama msimamizi zinaidhinishwa papo hapo na kuhesabiwa mara moja.",
+      "paidOn": "Tarehe ya kulipa",
+      "paidOnHint": "Leo au kabla ya leo.",
+      "amount": "Kiasi (TZS)",
+      "kind": "Aina ya gharama",
+      "category": "Kundi",
+      "chooseCategory": "Chagua kundi",
+      "description": "Ilikuwa ya nini?",
+      "vendor": "Alilipwa nani",
+      "vendorHint": "Duka, kampuni au mtu.",
+      "method": "Njia ya malipo",
+      "chooseMethod": "Chagua ilivyolipwa",
+      "reference": "Namba ya risiti au muamala",
+      "project": "Mradi",
+      "chooseProject": "Chagua mradi",
+      "projectHintOperator": "Miradi ya wateja wako pekee ndiyo imeorodheshwa.",
+      "review": "Hakiki",
+      "edit": "Badilisha taarifa",
+      "submitOperator": "Wasilisha kwa idhini",
+      "submitAdmin": "Ongeza na uidhinishe",
+      "confirmTitle": "Hakiki gharama hii ya {{amount}}",
+      "submitted": "{{reference}} imewasilishwa. Msimamizi ataikagua.",
+      "added": "{{reference}} imeongezwa na kuidhinishwa",
+      "back": "Rudi kwenye gharama"
+    },
+    "categories": {
+      "title": "Makundi ya gharama",
+      "body": "Orodha ambayo watu huchagua wanapoongeza gharama. Kundi linalotumika haliwezi kufutwa: lizime ili kuzuia maingizo mapya.",
+      "list": "Makundi",
+      "name": "Kundi jipya",
+      "add": "Ongeza kundi",
+      "added": "{{name}} limeongezwa",
+      "rename": "Badili jina",
+      "renameTitle": "Badili jina la {{name}}",
+      "newName": "Jina jipya",
+      "save": "Hifadhi",
+      "renamed": "Jina limebadilishwa kuwa {{name}}",
+      "deactivate": "Zima",
+      "activate": "Washa",
+      "deactivated": "{{name}} limezimwa",
+      "activated": "{{name}} limewashwa",
+      "delete": "Futa",
+      "deleteTitle": "Futa {{name}}?",
+      "deleteBody": "Hakuna gharama inayolitumia. Hili haliwezi kutenduliwa.",
+      "deleted": "{{name}} limefutwa",
+      "inUse_one": "Linatumiwa na gharama {{count}}",
+      "inUse_other": "Linatumiwa na gharama {{count}}",
+      "unused": "Bado halijatumika",
+      "active": "Linatumika",
+      "inactive": "Limezimwa",
+      "cannotDelete": "Linatumika, kwa hiyo haliwezi kufutwa. Lizime badala yake."
+    },
+    "overviewPending_one": "Gharama {{count}} inasubiri idhini",
+    "overviewPending_other": "Gharama {{count}} zinasubiri idhini",
+    "navPending_one": "Gharama {{count}} inasubiri idhini",
+    "navPending_other": "Gharama {{count}} zinasubiri idhini"
+  },
+  "analytics": {
+    "tabs": {
+      "analytics": "Takwimu",
+      "reports": "Ripoti"
+    },
+    "scope": {
+      "ADMIN": "Kampuni nzima: kila mradi na kila gharama iliyoidhinishwa, ya kudumu na ya mradi.",
+      "OPERATOR": "Inajumuisha wateja uliopewa tu: malipo ya miradi yao na gharama za mradi zilizoidhinishwa. Gharama za kudumu na jumla za kampuni hazionyeshwi."
+    },
+    "profitRule": {
+      "ADMIN": "Faida = malipo yaliyokusanywa ukiondoa gharama zilizoidhinishwa.",
+      "OPERATOR": "Faida = malipo yaliyokusanywa ukiondoa gharama za mradi zilizoidhinishwa."
+    },
+    "cashBasis": "Kila malipo na kila gharama huhesabiwa siku ilipopokelewa au kulipwa. Gharama zinazosubiri, zilizokataliwa, zilizoondolewa na zilizobatilishwa hazihesabiwi.",
+    "period": {
+      "label": "Kipindi",
+      "month": "Mwezi huu",
+      "lastMonth": "Mwezi uliopita",
+      "quarter": "Robo hii ya mwaka",
+      "year": "Mwaka huu",
+      "custom": "Chagua tarehe",
+      "from": "Kuanzia",
+      "to": "Hadi",
+      "showing": "Inaonyesha {{from}} hadi {{to}}",
+      "invalid": "Tarehe ya kuanza lazima iwe kabla ya tarehe ya mwisho au siku hiyo hiyo.",
+      "missing": "Chagua tarehe zote mbili."
+    },
+    "tiles": {
+      "heading": "Jumla za kipindi",
+      "collected": "Kilichokusanywa",
+      "collectedRule": "Malipo yaliyopokelewa katika kipindi, baada ya marekebisho",
+      "agreed": "Thamani ya mikataba",
+      "agreedRule": "Hadi leo, kwa miradi hiyo hiyo",
+      "outstanding": "Madeni yaliyobaki",
+      "outstandingRule": "Bado kukusanywa, hadi leo",
+      "fixed": "Gharama za kudumu",
+      "fixedRule": "Gharama za kampuni zilizoidhinishwa na kulipwa katika kipindi",
+      "variable": "Gharama za mradi",
+      "variableRule": "Gharama za miradi zilizoidhinishwa na kulipwa katika kipindi",
+      "profit": "Faida",
+      "profitRule": {
+        "ADMIN": "Kilichokusanywa ukiondoa gharama za kudumu na za mradi",
+        "OPERATOR": "Kilichokusanywa ukiondoa gharama za mradi"
+      },
+      "margin": "Kiwango cha faida",
+      "marginRule": "Faida kama sehemu ya kilichokusanywa",
+      "marginNone": "Hakuna kilichokusanywa katika kipindi hiki",
+      "awaiting": "Inasubiri idhini",
+      "awaitingRule_one": "Gharama {{count}} iliyolipwa katika kipindi, haihesabiwi hadi iidhinishwe",
+      "awaitingRule_other": "Gharama {{count}} zilizolipwa katika kipindi, hazihesabiwi hadi ziidhinishwe",
+      "awaitingLink": "Angalia gharama zinazosubiri"
+    },
+    "series": {
+      "month": "Mwezi",
+      "collected": "Kilichokusanywa",
+      "expenses": "Gharama",
+      "variableExpenses": "Gharama za mradi",
+      "fixedExpenses": "Gharama za kudumu",
+      "profit": "Faida"
+    },
+    "chart": {
+      "showTable": "Onyesha kama jedwali",
+      "keyboard": "Weka kielekezi kwenye chati na utumie vitufe vya mishale kusoma kila thamani."
+    },
+    "trend": {
+      "title": "Mwenendo wa kila mwezi",
+      "description": "Kilichokusanywa, gharama na faida kwa kila mwezi"
+    },
+    "category": {
+      "title": "Gharama kwa kundi",
+      "titleOperator": "Gharama za mradi kwa kundi",
+      "description": "Gharama zilizoidhinishwa na kulipwa katika kipindi",
+      "name": "Kundi",
+      "amount": "Kiasi",
+      "empty": "Hakuna gharama zilizoidhinishwa katika kipindi hiki."
+    },
+    "projects": {
+      "title": "Faida kwa kila mradi",
+      "note": {
+        "ADMIN": "Gharama za mradi tu: gharama za kudumu ni za kampuni nzima na hazigawanywi kwa miradi.",
+        "OPERATOR": "Miradi ya wateja uliopewa, pamoja na gharama zao za mradi zilizoidhinishwa."
+      },
+      "project": "Mradi",
+      "client": "Mteja",
+      "agreed": "Bei ya mkataba",
+      "collected": "Kilichokusanywa",
+      "outstanding": "Kilichobaki",
+      "expenses": "Gharama za mradi",
+      "profit": "Faida",
+      "margin": "Kiwango cha faida",
+      "search": "Tafuta mradi au mteja",
+      "show": "Onyesha",
+      "all": "Miradi yote",
+      "active": "Yenye fedha katika kipindi hiki",
+      "loss": "Inayopata hasara",
+      "empty": "Hakuna mradi unaolingana na vichujio hivi."
+    },
+    "empty": {
+      "title": "Hakuna kilichokusanywa wala kutumika katika kipindi hiki",
+      "body": "Chagua kipindi kingine, au rekodi malipo na gharama kwanza."
+    }
   }
 }

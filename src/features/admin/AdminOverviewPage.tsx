@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { usePendingExpenses } from "@/features/expenses/queries";
 import { Link } from "react-router-dom";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader } from "@/components/PageHeader";
@@ -40,6 +41,7 @@ export function AdminOverviewPage() {
   const language = useLanguage();
   const overview = useAdminOverview();
   const data = overview.data;
+  const pendingExpenses = usePendingExpenses().data?.count ?? 0;
 
   return (
     <div className="space-y-8">
@@ -60,7 +62,8 @@ export function AdminOverviewPage() {
         <>
           {(data.pendingOperatorCount > 0 ||
             data.unassignedClientCount > 0 ||
-            data.changesWaitingForAdmin > 0) && (
+            data.changesWaitingForAdmin > 0 ||
+            pendingExpenses > 0) && (
             <Section id="admin-needs" title={t("admin.overview.needsYou")}>
               <div className="grid gap-2 sm:grid-cols-3">
                 {data.pendingOperatorCount > 0 && (
@@ -76,6 +79,11 @@ export function AdminOverviewPage() {
                 {data.changesWaitingForAdmin > 0 && (
                   <ActionLink to="/admin/projects/changes">
                     {t("changes.admin.waitingCount", { count: data.changesWaitingForAdmin })}
+                  </ActionLink>
+                )}
+                {pendingExpenses > 0 && (
+                  <ActionLink to="/admin/finance?tab=expenses&status=PENDING">
+                    {t("expenses.overviewPending", { count: pendingExpenses })}
                   </ActionLink>
                 )}
               </div>

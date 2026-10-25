@@ -34,7 +34,7 @@ const METHODS: PaymentMethod[] = ["cash", "bank", "mobile", "other"];
 const NEEDS_REFERENCE: PaymentMethod[] = ["bank", "mobile"];
 const UPCOMING_DAYS = 30;
 
-const assignedClients = (): MockClient[] =>
+export const assignedClients = (): MockClient[] =>
   staffState().clients.filter((client) => client.operatorId === MOCK_OPERATOR_ID);
 
 export function assignedProjects(): MockProject[] {

@@ -12,6 +12,7 @@ import type { Role } from "@/lib/roles";
 import { Breadcrumb } from "./Breadcrumb";
 import { DemoBanner } from "./DemoBanner";
 import { DevToolbar } from "./DevToolbar";
+import { usePendingExpenses } from "@/features/expenses/queries";
 import { useOperatorUnread } from "@/features/messages/queries";
 import { SidebarNav } from "./SidebarNav";
 import { MAIN_CONTENT_ID, SkipLink } from "./SkipLink";
@@ -39,7 +40,21 @@ export function SidebarLayout({ role }: { role: Exclude<Role, "CLIENT"> }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Operators only: an admin's inbox list is audited, so it is never fetched for a badge.
   const unread = useOperatorUnread(role === "OPERATOR");
-  const badges = unread ? { "/operator/messages": unread } : undefined;
+  // Admins: expenses waiting for a decision, on the Finance item.
+  const pendingExpenses = usePendingExpenses(role === "ADMIN").data?.count ?? 0;
+  const badges = {
+    ...(unread
+      ? { "/operator/messages": { count: unread, label: t("inbox.navUnread", { count: unread }) } }
+      : {}),
+    ...(pendingExpenses
+      ? {
+          "/admin/finance": {
+            count: pendingExpenses,
+            label: t("expenses.navPending", { count: pendingExpenses }),
+          },
+        }
+      : {}),
+  };
 
   function toggleCollapsed() {
     const next = !collapsed;

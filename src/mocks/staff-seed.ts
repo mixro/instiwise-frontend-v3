@@ -2,6 +2,7 @@ import type { AuditEntry, Settings } from "@/features/admin/api";
 import type { MockOperator } from "./admin-store";
 import type { StaffInvitation } from "@/features/invitations/api";
 import type { MockProject } from "./client";
+import { terms } from "./terms";
 
 /*
  * Staff, clients and their assignment (per client: brief open question 3 is still
@@ -256,9 +257,9 @@ function acceptedV1(price: number, deadline: string, by: string, scope: string[]
     acceptedBy: by,
     price,
     deadline,
-    scope,
-    exclusions: [],
-    paymentTerms: ["Half before work starts", "Half on delivery"],
+    scope: terms(...scope),
+    exclusions: terms(),
+    paymentTerms: terms("Half before work starts", "Half on delivery"),
   };
 }
 

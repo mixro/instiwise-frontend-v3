@@ -1,5 +1,6 @@
 import type { ChangeRecord } from "./changes";
 import type { MockProject } from "./client";
+import { terms } from "./terms";
 
 /*
  * Change-request history for the mock backend.
@@ -13,32 +14,32 @@ const ADMIN = "Rehema Said";
 const CLIENT = "Neema Mwakyusa";
 
 const IRRIGATION_V1 = {
-  scope: [
+  scope: terms(
     "Design and build the controller on an ESP32 board",
     "Four capacitive soil-moisture sensors, one per bed",
     "Project report and wiring diagram",
-  ],
+  ),
   price: 1_600_000,
   deadline: "2026-11-14",
 };
 
 const IRRIGATION_V2 = {
-  scope: [
+  scope: terms(
     "Design and build the controller on an ESP32 board",
     "Four capacitive soil-moisture sensors, one per bed",
     "Ultrasonic tank level sensor with SMS alerts through a GSM module",
     "Project report and wiring diagram",
-  ],
+  ),
   price: 1_850_000,
   deadline: "2026-11-28",
 };
 
 const BIOGAS_V1 = {
-  scope: [
+  scope: terms(
     "Gas pressure sensor on the digester outlet",
     "LCD display of pressure and daily gas use",
     "Project report",
-  ],
+  ),
   price: 1_200_000,
   deadline: "2026-12-05",
 };
@@ -59,9 +60,11 @@ export function seedChangeRequests(projectId: string): ChangeRecord[] {
       after: {
         scope: [
           ...IRRIGATION_V2.scope.slice(0, 3),
-          "Rain sensor that skips watering when it rains",
-          "SMS alerts to a second phone number",
-          IRRIGATION_V2.scope[3] ?? "",
+          ...terms(
+            "Rain sensor that skips watering when it rains",
+            "SMS alerts to a second phone number",
+          ),
+          ...IRRIGATION_V2.scope.slice(3),
         ],
         price: 2_050_000,
         deadline: "2026-12-05",
@@ -81,8 +84,8 @@ export function seedChangeRequests(projectId: string): ChangeRecord[] {
       after: {
         scope: [
           ...IRRIGATION_V2.scope.slice(0, 3),
-          "20 W solar panel with charge controller and battery",
-          IRRIGATION_V2.scope[3] ?? "",
+          ...terms("20 W solar panel with charge controller and battery"),
+          ...IRRIGATION_V2.scope.slice(3),
         ],
         price: 2_250_000,
         deadline: "2026-11-28",
@@ -138,8 +141,8 @@ export function seedOtherClientProjects(): MockProject[] {
           acceptedAt: "2026-09-13T10:00:00Z",
           acceptedBy: "Saida Mfinanga",
           ...BIOGAS_V1,
-          exclusions: ["Plumbing changes to the digester"],
-          paymentTerms: ["Half before work starts", "Half on delivery"],
+          exclusions: terms("Plumbing changes to the digester"),
+          paymentTerms: terms("Half before work starts", "Half on delivery"),
         },
       ],
       progress: [],
@@ -178,8 +181,7 @@ export function seedOtherClientProjects(): MockProject[] {
           after: {
             scope: [
               ...BIOGAS_V1.scope.slice(0, 2),
-              "MQ-4 methane sensor with buzzer alarm",
-              "Project report",
+              ...terms("MQ-4 methane sensor with buzzer alarm", "Project report"),
             ],
             price: 1_350_000,
             deadline: BIOGAS_V1.deadline,
@@ -187,6 +189,39 @@ export function seedOtherClientProjects(): MockProject[] {
           needsAdminApproval: true,
         },
       ],
+    },
+    // A draft Baraka is still writing (decided 2026-10-25): staff see it with a
+    // Draft badge; Saida sees nothing until he sends it.
+    {
+      id: "prj_stove",
+      clientId: "cli_saida",
+      clientName: "Saida Mfinanga",
+      operatorName: OPERATOR,
+      reference: "PRJ-2026-021",
+      title: "Cookstove temperature logger",
+      status: "DRAFT",
+      category: "Prototype",
+      description: "Logs the temperature of an improved cookstove to compare charcoal use.",
+      deliverables: ["Temperature logger", "Project report"],
+      startDate: "2026-11-10",
+      deadline: "2027-01-20",
+      agreements: [
+        {
+          version: 1,
+          status: "DRAFT",
+          createdAt: "2026-10-24T08:30:00Z",
+          price: 900_000,
+          deadline: "2027-01-20",
+          scope: terms("Thermocouple sensor on the stove", "SD card logger with a daily summary"),
+          exclusions: terms("Repairs to the stove"),
+          paymentTerms: terms("Half before work starts", "Half on delivery"),
+        },
+      ],
+      progress: [],
+      messages: [],
+      payments: [],
+      documents: [],
+      changeRequests: [],
     },
   ];
 }

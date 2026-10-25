@@ -16,16 +16,18 @@ describe("routing and role guards", () => {
   });
 
   it.each([
-    ["CLIENT", "/admin/finance", "/client"],
-    ["CLIENT", "/operator/clients", "/client"],
-    ["OPERATOR", "/client/payments", "/operator"],
-    ["OPERATOR", "/admin/audit-logs", "/operator"],
-    ["ADMIN", "/client/account", "/admin"],
-    ["ADMIN", "/operator/payments", "/admin"],
-  ] as const)("redirects %s away from %s to %s", async (role, path, home) => {
+    ["CLIENT", "/admin/finance"],
+    ["CLIENT", "/admin/finance?tab=analytics"],
+    ["CLIENT", "/operator/clients"],
+    ["CLIENT", "/operator/finance?tab=reports"],
+    ["OPERATOR", "/client/payments"],
+    ["OPERATOR", "/admin/audit-logs"],
+    ["ADMIN", "/client/account"],
+    ["ADMIN", "/operator/payments"],
+  ] as const)("shows %s the no-access page on %s", async (role, path) => {
     renderApp(path, role);
-    await screen.findByRole("heading", { level: 1 });
-    expect(location()).toHaveTextContent(new RegExp(`^${home}$`));
+    expect(await screen.findByRole("link", { name: "Go to my home page" })).toBeVisible();
+    expect(location()).toHaveTextContent(/^\/no-access$/);
   });
 
   it("opens a role's own pages", async () => {

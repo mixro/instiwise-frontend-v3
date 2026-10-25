@@ -573,7 +573,12 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Edit a draft project (title, category, description, deliverables, start date)
+         * @description Only while the project is DRAFT; once sent it is history and answers
+         *     409 PROJECT_NOT_DRAFT. Audited (PROJECT_UPDATED). Decided 2026-10-25.
+         */
+        patch: operations["updateOperatorProject"];
         trace?: never;
     };
     "/operator/projects/{projectId}/change-requests": {
@@ -823,6 +828,98 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/operator/expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The operator's own expense entries, newest first
+         * @description Only entries this operator made (fixed and variable). Company-wide
+         *     fixed costs and other people's entries are never returned.
+         */
+        get: operations["listOperatorExpenses"];
+        put?: never;
+        /**
+         * Submit an expense (saved as PENDING for an admin)
+         * @description VARIABLE needs a project of an assigned client (any other project answers
+         *     404). FIXED takes no project. Audited (EXPENSE_SUBMITTED).
+         */
+        post: operations["submitOperatorExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/operator/expenses/{expenseId}/withdrawal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Withdraw one of the operator's own PENDING expenses
+         * @description Someone else's entry answers 404. Audited (EXPENSE_WITHDRAWN).
+         */
+        post: operations["withdrawOperatorExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/operator/expense-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Active expense categories to choose from */
+        get: operations["listOperatorExpenseCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/operator/finance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Money for the operator's assigned clients' projects (cash basis)
+         * @description Cash basis: collected is money received in the period (payments net of
+         *     their corrections) and expenses are APPROVED expenses paid in the period
+         *     (net of adjustments). Each expense and each payment counts once, on the
+         *     day it was paid or received; a reversed one counts nowhere. PENDING
+         *     expenses are only in awaitingApproval. agreedValue and outstanding are
+         *     as of today, for the same projects. Totals are computed by the server.
+         *     Decided 2026-10-25.
+         *     Operators: assigned clients' projects only (ADR 0002). Variable expenses
+         *     only: no fixed costs and no company totals. Profit = collected minus
+         *     approved variable expenses.
+         */
+        get: operations["getOperatorFinance"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/operator/profile": {
         parameters: {
             query?: never;
@@ -859,7 +956,8 @@ export interface paths {
         };
         /**
          * The inbox, one conversation per project of an assigned client
-         * @description Assigned clients only (ADR 0002). Newest activity first. unreadTotal
+         * @description Assigned clients only (ADR 0002). Draft projects are left out: the client
+         *     cannot see them yet. Newest activity first. unreadTotal
          *     counts conversations with unread client messages over every page and
          *     ignoring the filters (for the navigation badge). Decided 2026-10-21.
          */
@@ -1131,6 +1229,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/projects/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One project, drafts included */
+        get: operations["getAdminProject"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Edit a draft project (title, category, description, deliverables, start date)
+         * @description Only while the project is DRAFT. Audited (PROJECT_UPDATED).
+         */
+        patch: operations["updateAdminProject"];
+        trace?: never;
+    };
     "/admin/operators": {
         parameters: {
             query?: never;
@@ -1391,7 +1510,8 @@ export interface paths {
         };
         /**
          * Every project's conversation, with previews (every call is audited)
-         * @description Previews are message content, so every call writes
+         * @description Draft projects are left out (the client cannot see them yet).
+         *     Previews are message content, so every call writes
          *     CONVERSATION_LIST_VIEWED to the audit log. unreadCount and unreadTotal
          *     are the operator's unread client messages: a client waiting for an
          *     answer. Admins cannot reply, and reading never marks anything read.
@@ -1541,6 +1661,203 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Every expense row, corrections included, newest first */
+        get: operations["listAdminExpenses"];
+        put?: never;
+        /**
+         * Enter an expense (approved at once)
+         * @description APPROVED immediately: enteredBy and decidedBy are the same admin.
+         *     Audited (EXPENSE_APPROVED).
+         */
+        post: operations["createAdminExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/expenses/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** How many expenses wait for an admin, and their total */
+        get: operations["getAdminPendingExpenses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/expenses/{expenseId}/approval": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve a PENDING expense
+         * @description Audited (EXPENSE_APPROVED).
+         */
+        post: operations["approveExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/expenses/{expenseId}/rejection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reject a PENDING expense (reason required)
+         * @description Audited (EXPENSE_REJECTED). It stays visible with its reason; the operator submits a new one to correct it.
+         */
+        post: operations["rejectExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/expenses/{expenseId}/reversal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reverse an approved expense with a new correction row
+         * @description Never edits or deletes: a REVERSAL row (EXPC-…) of minus what is left,
+         *     linked by `corrects`; the original becomes REVERSED. One reversal per
+         *     expense. Audited (EXPENSE_REVERSED).
+         */
+        post: operations["reverseExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/expenses/{expenseId}/adjustment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Adjust an approved expense with a new correction row
+         * @description An ADJUSTMENT row (EXPC-…) adds or removes the difference; the original
+         *     becomes ADJUSTED. It cannot take the expense below zero (reverse it
+         *     instead). Audited (EXPENSE_ADJUSTED).
+         */
+        post: operations["adjustExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/expense-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Every expense category, inactive ones included */
+        get: operations["listAdminExpenseCategories"];
+        put?: never;
+        /**
+         * Add an expense category
+         * @description Audited (EXPENSE_CATEGORY_CHANGED).
+         */
+        post: operations["createExpenseCategory"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/expense-categories/{categoryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete an unused category
+         * @description Only when no expense uses it (409 CATEGORY_IN_USE otherwise: deactivate
+         *     it instead). Audited (EXPENSE_CATEGORY_CHANGED).
+         */
+        delete: operations["deleteExpenseCategory"];
+        options?: never;
+        head?: never;
+        /**
+         * Rename, deactivate or reactivate a category
+         * @description A deactivated category stays on existing expenses but cannot be chosen
+         *     for new ones. Audited (EXPENSE_CATEGORY_CHANGED).
+         */
+        patch: operations["updateExpenseCategory"];
+        trace?: never;
+    };
+    "/admin/finance/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Company collected, expenses and profit for a period (cash basis)
+         * @description Cash basis: collected is money received in the period (payments net of
+         *     their corrections) and expenses are APPROVED expenses paid in the period
+         *     (net of adjustments). Each expense and each payment counts once, on the
+         *     day it was paid or received; a reversed one counts nowhere. PENDING
+         *     expenses are only in awaitingApproval. agreedValue and outstanding are
+         *     as of today, for the same projects. Totals are computed by the server.
+         *     Decided 2026-10-25.
+         *     Profit = collected minus approved expenses (fixed and variable).
+         */
+        get: operations["getAdminFinanceAnalytics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/settings": {
         parameters: {
             query?: never;
@@ -1643,12 +1960,12 @@ export interface components {
          */
         DocumentKind: "pdf" | "word" | "spreadsheet" | "image";
         /** @enum {string} */
-        AuditAction: "PAYMENT_RECORDED" | "PAYMENT_REVERSED" | "PAYMENT_ADJUSTED" | "OPERATOR_APPROVED" | "OPERATOR_REJECTED" | "OPERATOR_SUSPENDED" | "OPERATOR_REACTIVATED" | "CLIENT_ASSIGNED" | "CHANGE_APPROVED" | "CHANGE_NOT_APPROVED" | "CHANGE_ACCEPTED" | "CHANGE_REJECTED" | "AGREEMENT_ACCEPTED" | "SETTINGS_UPDATED" | "CLIENT_UPDATED" | "OPERATOR_PERMISSIONS_CHANGED" | "INVITATION_CREATED" | "INVITATION_REVOKED" | "PROJECT_CREATED" | "AGREEMENT_SENT" | "DOCUMENT_UPLOADED" | "DOCUMENT_VISIBILITY_CHANGED" | "CONVERSATION_VIEWED" | "CONVERSATION_LIST_VIEWED" | "PASSWORD_CHANGED" | "PASSWORD_RESET";
+        AuditAction: "PAYMENT_RECORDED" | "PAYMENT_REVERSED" | "PAYMENT_ADJUSTED" | "OPERATOR_APPROVED" | "OPERATOR_REJECTED" | "OPERATOR_SUSPENDED" | "OPERATOR_REACTIVATED" | "CLIENT_ASSIGNED" | "CHANGE_APPROVED" | "CHANGE_NOT_APPROVED" | "CHANGE_ACCEPTED" | "CHANGE_REJECTED" | "AGREEMENT_ACCEPTED" | "SETTINGS_UPDATED" | "CLIENT_UPDATED" | "OPERATOR_PERMISSIONS_CHANGED" | "INVITATION_CREATED" | "INVITATION_REVOKED" | "PROJECT_CREATED" | "AGREEMENT_SENT" | "DOCUMENT_UPLOADED" | "DOCUMENT_VISIBILITY_CHANGED" | "CONVERSATION_VIEWED" | "CONVERSATION_LIST_VIEWED" | "PASSWORD_CHANGED" | "PROJECT_UPDATED" | "EXPENSE_SUBMITTED" | "EXPENSE_APPROVED" | "EXPENSE_REJECTED" | "EXPENSE_WITHDRAWN" | "EXPENSE_REVERSED" | "EXPENSE_ADJUSTED" | "EXPENSE_CATEGORY_CHANGED" | "PASSWORD_RESET";
         /**
          * @description Every code the API returns. The frontend has a translation for each.
          * @enum {string}
          */
-        ErrorCode: "UNAUTHENTICATED" | "FORBIDDEN" | "VALIDATION_FAILED" | "RATE_LIMITED" | "INTERNAL_ERROR" | "INVALID_CREDENTIALS" | "ACCOUNT_PENDING_APPROVAL" | "ACCOUNT_REJECTED" | "ACCOUNT_SUSPENDED" | "EMAIL_TAKEN" | "INVITATION_NOT_FOUND" | "INVITATION_EXPIRED" | "INVITATION_REVOKED" | "INVITATION_ALREADY_USED" | "PROJECT_NOT_FOUND" | "CLIENT_NOT_FOUND" | "OPERATOR_NOT_FOUND" | "PAYMENT_NOT_FOUND" | "RECEIPT_NOT_FOUND" | "DOCUMENT_NOT_FOUND" | "AGREEMENT_NOT_FOUND" | "CHANGE_REQUEST_NOT_FOUND" | "AGREEMENT_NOT_AWAITING_ACCEPTANCE" | "AGREEMENT_NOT_ACCEPTED" | "CHANGE_REQUEST_ALREADY_DECIDED" | "CHANGE_REQUEST_ALREADY_OPEN" | "CHANGE_REQUEST_NO_CHANGES" | "REASON_REQUIRED" | "PAYMENT_REFERENCE_REQUIRED" | "PAYMENT_DATE_OUT_OF_RANGE" | "PAYMENT_ALREADY_REVERSED" | "ADJUSTMENT_BELOW_ZERO" | "OPERATOR_HAS_CLIENTS" | "OPERATOR_NOT_ACTIVE" | "OPERATOR_NOT_PENDING" | "OPERATOR_STATUS_CHANGED" | "PERMISSION_REQUIRED" | "RESET_TOKEN_INVALID" | "RESET_TOKEN_EXPIRED" | "INVITATION_NOT_ACTIVE" | "AGREEMENT_NOT_DRAFT" | "FILE_TOO_LARGE" | "FILE_TYPE_NOT_ALLOWED" | "CURRENT_PASSWORD_WRONG";
+        ErrorCode: "UNAUTHENTICATED" | "FORBIDDEN" | "VALIDATION_FAILED" | "RATE_LIMITED" | "INTERNAL_ERROR" | "INVALID_CREDENTIALS" | "ACCOUNT_PENDING_APPROVAL" | "ACCOUNT_REJECTED" | "ACCOUNT_SUSPENDED" | "EMAIL_TAKEN" | "INVITATION_NOT_FOUND" | "INVITATION_EXPIRED" | "INVITATION_REVOKED" | "INVITATION_ALREADY_USED" | "PROJECT_NOT_FOUND" | "CLIENT_NOT_FOUND" | "OPERATOR_NOT_FOUND" | "PAYMENT_NOT_FOUND" | "RECEIPT_NOT_FOUND" | "DOCUMENT_NOT_FOUND" | "AGREEMENT_NOT_FOUND" | "CHANGE_REQUEST_NOT_FOUND" | "AGREEMENT_NOT_AWAITING_ACCEPTANCE" | "AGREEMENT_NOT_ACCEPTED" | "CHANGE_REQUEST_ALREADY_DECIDED" | "CHANGE_REQUEST_ALREADY_OPEN" | "CHANGE_REQUEST_NO_CHANGES" | "REASON_REQUIRED" | "PAYMENT_REFERENCE_REQUIRED" | "PAYMENT_DATE_OUT_OF_RANGE" | "PAYMENT_ALREADY_REVERSED" | "ADJUSTMENT_BELOW_ZERO" | "OPERATOR_HAS_CLIENTS" | "OPERATOR_NOT_ACTIVE" | "OPERATOR_NOT_PENDING" | "OPERATOR_STATUS_CHANGED" | "PERMISSION_REQUIRED" | "RESET_TOKEN_INVALID" | "RESET_TOKEN_EXPIRED" | "INVITATION_NOT_ACTIVE" | "AGREEMENT_NOT_DRAFT" | "FILE_TOO_LARGE" | "FILE_TYPE_NOT_ALLOWED" | "CURRENT_PASSWORD_WRONG" | "PROJECT_NOT_DRAFT" | "EXPENSE_NOT_FOUND" | "EXPENSE_NOT_PENDING" | "EXPENSE_NOT_APPROVED" | "EXPENSE_ALREADY_REVERSED" | "EXPENSE_PROJECT_REQUIRED" | "EXPENSE_PROJECT_NOT_ALLOWED" | "CATEGORY_NOT_FOUND" | "CATEGORY_INACTIVE" | "CATEGORY_IN_USE" | "CATEGORY_NAME_TAKEN";
         Health: {
             /** @enum {string} */
             status: "ok";
@@ -1849,9 +2166,9 @@ export interface components {
             createdAt: components["schemas"]["DateTime"];
             price: components["schemas"]["TzsAmount"];
             deadline: components["schemas"]["Date"];
-            scope: string[];
-            exclusions: string[];
-            paymentTerms: string[];
+            scope: components["schemas"]["BilingualText"][];
+            exclusions: components["schemas"]["BilingualText"][];
+            paymentTerms: components["schemas"]["BilingualText"][];
             acceptedAt?: components["schemas"]["DateTime"];
             acceptedBy?: string;
         };
@@ -1927,7 +2244,7 @@ export interface components {
             newPassword: string;
         };
         ChangeTerms: {
-            scope: string[];
+            scope: components["schemas"]["BilingualText"][];
             price: components["schemas"]["TzsAmount"];
             deadline: components["schemas"]["Date"];
         };
@@ -1955,9 +2272,9 @@ export interface components {
             after: components["schemas"]["ChangeTerms"];
             /** @description Computed by the server */
             scopeChanges: {
-                added: string[];
-                removed: string[];
-                unchanged: string[];
+                added: components["schemas"]["BilingualText"][];
+                removed: components["schemas"]["BilingualText"][];
+                unchanged: components["schemas"]["BilingualText"][];
             };
             priceDifference: components["schemas"]["SignedTzsAmount"];
             needsAdminApproval: boolean;
@@ -1980,13 +2297,41 @@ export interface components {
             outcome: "APPROVE" | "REJECT";
             reason?: components["schemas"]["Reason"];
         };
+        /** @description A project as staff see it (operators see assigned clients only) */
         OperatorProject: {
             id: components["schemas"]["Id"];
             reference: string;
             title: string;
+            status: components["schemas"]["ProjectStatus"];
+            clientId: components["schemas"]["Id"];
             clientName: string;
+            category: string;
+            description: string;
+            deliverables: string[];
+            startDate: components["schemas"]["Date"];
+            /** @description The accepted agreement's terms; absent until the client accepts one */
             terms?: components["schemas"]["ChangeTerms"];
             openChange: boolean;
+        };
+        AdminProjectDetail: components["schemas"]["OperatorProject"] & {
+            operatorName: string | null;
+        };
+        /** @description Only while the project is DRAFT. Send only what changes. */
+        ProjectUpdate: {
+            title?: string;
+            category?: string;
+            description?: string;
+            deliverables?: string[];
+            startDate?: components["schemas"]["Date"];
+        };
+        /**
+         * @description One agreement term in English and in Swahili, both written by staff
+         *     (ADR 0004: no machine translation). Both are required before a draft
+         *     is sent. Decided 2026-10-25.
+         */
+        BilingualText: {
+            en: string;
+            sw: string;
         };
         StaffPayment: components["schemas"]["Payment"] & {
             /** @description Staff-only; never in a client response or on a receipt */
@@ -2128,6 +2473,170 @@ export interface components {
         OptionalReasonRequest: {
             reason?: components["schemas"]["Reason"];
         };
+        /**
+         * @description FIXED is a company cost (rent, internet); VARIABLE belongs to one project
+         * @enum {string}
+         */
+        ExpenseKind: "FIXED" | "VARIABLE";
+        /**
+         * @description PENDING waits for an admin. APPROVED counts in totals; ADJUSTED counts
+         *     with its adjustment rows; REVERSED counts nowhere. Correction rows are
+         *     always APPROVED.
+         * @enum {string}
+         */
+        ExpenseStatus: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN" | "REVERSED" | "ADJUSTED";
+        /** @enum {string} */
+        ExpenseRowType: "EXPENSE" | "REVERSAL" | "ADJUSTMENT";
+        Person: {
+            id: components["schemas"]["Id"];
+            name: string;
+            role: components["schemas"]["Role"];
+        };
+        ExpenseCategoryOption: {
+            id: components["schemas"]["Id"];
+            name: string;
+        };
+        ExpenseCategory: {
+            id: components["schemas"]["Id"];
+            name: string;
+            active: boolean;
+            /** @description Expense rows using it; more than 0 means it cannot be deleted */
+            usageCount: number;
+        };
+        ExpenseCategoryCreate: {
+            name: string;
+        };
+        ExpenseCategoryUpdate: {
+            name?: string;
+            active?: boolean;
+        };
+        ExpenseDraft: {
+            paidOn: components["schemas"]["Date"];
+            amount: components["schemas"]["PositiveTzsAmount"];
+            kind: components["schemas"]["ExpenseKind"];
+            categoryId: components["schemas"]["Id"];
+            description: string;
+            vendor?: string;
+            paymentMethod: components["schemas"]["PaymentMethod"];
+            /** @description A receipt or transaction number (no file upload yet) */
+            referenceNumber?: string;
+            /** @description Required for VARIABLE, not allowed for FIXED */
+            projectId?: components["schemas"]["Id"];
+        };
+        /** @description A staff-only expense row. Never part of any client response. */
+        Expense: {
+            id: components["schemas"]["Id"];
+            /**
+             * @description EXP-2026-001 for expenses, EXPC-2026-0001 for correction rows
+             * @example EXP-2026-014
+             * @example EXPC-2026-0002
+             */
+            reference: string;
+            paidOn: components["schemas"]["Date"];
+            /** @description Whole TZS; negative only on correction rows */
+            amount: components["schemas"]["SignedTzsAmount"];
+            kind: components["schemas"]["ExpenseKind"];
+            category: components["schemas"]["ExpenseCategoryOption"];
+            description: string;
+            vendor?: string;
+            paymentMethod: components["schemas"]["PaymentMethod"];
+            referenceNumber?: string;
+            projectId?: components["schemas"]["Id"];
+            projectReference?: string;
+            projectTitle?: string;
+            status: components["schemas"]["ExpenseStatus"];
+            rowType: components["schemas"]["ExpenseRowType"];
+            /** @description Correction rows only; the reference of the expense they correct */
+            corrects?: string;
+            /** @description Expense rows only; references of the corrections made to it, oldest first */
+            correctedBy: string[];
+            enteredBy: components["schemas"]["Person"];
+            enteredAt: components["schemas"]["DateTime"];
+            decidedBy?: components["schemas"]["Person"];
+            decidedAt?: components["schemas"]["DateTime"];
+            /** @description Why it was rejected, reversed or adjusted */
+            decisionReason?: components["schemas"]["Reason"];
+        };
+        ExpenseCount: {
+            count: number;
+            amount: components["schemas"]["TzsAmount"];
+        };
+        ExpensePage: {
+            /** @description Newest first */
+            items: components["schemas"]["Expense"][];
+            nextCursor: components["schemas"]["NextCursor"];
+            /** @description Over every matching row, net of corrections, reversed ones excluded */
+            approvedTotal: components["schemas"]["TzsAmount"];
+            awaitingApproval: components["schemas"]["ExpenseCount"];
+        };
+        Period: {
+            from: components["schemas"]["Date"];
+            to: components["schemas"]["Date"];
+        };
+        /** @description Profit as a share of collected, in basis points (2350 = 23.50%); null when nothing was collected */
+        MarginBasisPoints: number | null;
+        FinanceMonth: {
+            month: components["schemas"]["Month"];
+            collected: components["schemas"]["SignedTzsAmount"];
+            expenses: components["schemas"]["TzsAmount"];
+            /** @description Admin analytics only */
+            fixedExpenses?: components["schemas"]["TzsAmount"];
+            /** @description Admin analytics only */
+            variableExpenses?: components["schemas"]["TzsAmount"];
+            profit: components["schemas"]["SignedTzsAmount"];
+        };
+        CategoryTotal: {
+            categoryId: components["schemas"]["Id"];
+            name: string;
+            amount: components["schemas"]["TzsAmount"];
+        };
+        ProjectFinance: {
+            projectId: components["schemas"]["Id"];
+            reference: string;
+            title: string;
+            clientName: string;
+            agreedValue: components["schemas"]["TzsAmount"];
+            collected: components["schemas"]["SignedTzsAmount"];
+            outstanding: components["schemas"]["TzsAmount"];
+            /** @description Approved variable expenses of this project in the period */
+            expenses: components["schemas"]["TzsAmount"];
+            profit: components["schemas"]["SignedTzsAmount"];
+            marginBasisPoints: components["schemas"]["MarginBasisPoints"];
+        };
+        /** @description Assigned clients' projects only; variable expenses only (no fixed costs) */
+        OperatorFinanceAnalytics: {
+            period: components["schemas"]["Period"];
+            agreedValue: components["schemas"]["TzsAmount"];
+            collected: components["schemas"]["SignedTzsAmount"];
+            outstanding: components["schemas"]["TzsAmount"];
+            variableExpenses: components["schemas"]["TzsAmount"];
+            profit: components["schemas"]["SignedTzsAmount"];
+            marginBasisPoints: components["schemas"]["MarginBasisPoints"];
+            /** @description PENDING variable expenses of these projects paid in the period */
+            awaitingApproval: components["schemas"]["ExpenseCount"];
+            monthly: components["schemas"]["FinanceMonth"][];
+            byCategory: components["schemas"]["CategoryTotal"][];
+            projects: components["schemas"]["ProjectFinance"][];
+        };
+        /** @description Every project and every expense, fixed and variable */
+        AdminFinanceAnalytics: {
+            period: components["schemas"]["Period"];
+            agreedValue: components["schemas"]["TzsAmount"];
+            collected: components["schemas"]["SignedTzsAmount"];
+            outstanding: components["schemas"]["TzsAmount"];
+            fixedExpenses: components["schemas"]["TzsAmount"];
+            variableExpenses: components["schemas"]["TzsAmount"];
+            /** @description fixedExpenses plus variableExpenses */
+            expenses: components["schemas"]["TzsAmount"];
+            profit: components["schemas"]["SignedTzsAmount"];
+            marginBasisPoints: components["schemas"]["MarginBasisPoints"];
+            /** @description Every PENDING expense paid in the period */
+            awaitingApproval: components["schemas"]["ExpenseCount"];
+            monthly: components["schemas"]["FinanceMonth"][];
+            byCategory: components["schemas"]["CategoryTotal"][];
+            /** @description Per-project profit table (variable expenses only; fixed costs are company-wide) */
+            projects: components["schemas"]["ProjectFinance"][];
+        };
         AdjustmentRequest: {
             /** @description Plus or minus the difference, never zero */
             amount: components["schemas"]["SignedTzsAmount"];
@@ -2248,9 +2757,9 @@ export interface components {
         AgreementDraft: {
             price: components["schemas"]["TzsAmount"];
             deadline: components["schemas"]["Date"];
-            scope: string[];
-            exclusions: string[];
-            paymentTerms: string[];
+            scope: components["schemas"]["BilingualText"][];
+            exclusions: components["schemas"]["BilingualText"][];
+            paymentTerms: components["schemas"]["BilingualText"][];
         };
         ProjectCreateRequest: {
             clientId: components["schemas"]["Id"];
@@ -2527,6 +3036,8 @@ export interface components {
         ReceiptNumber: string;
         /** @description Eight letters/digits as XXXX-XXXX (the frontend normalises links and typing) */
         InvitationCode: string;
+        ExpenseId: components["schemas"]["Id"];
+        CategoryId: components["schemas"]["Id"];
         AgreementVersionNumber: number;
         /** @description The nextCursor of the previous page; omit for the first page */
         Cursor: string;
@@ -3563,6 +4074,46 @@ export interface operations {
             500: components["responses"]["ServerError"];
         };
     };
+    updateOperatorProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectUpdate"];
+            };
+        };
+        responses: {
+            /** @description The saved project */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OperatorProject"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ForbiddenOrPermission"];
+            404: components["responses"]["NotFound"];
+            /** @description PROJECT_NOT_DRAFT (already sent to the client; history is not overwritten) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
     listOperatorChangeRequests: {
         parameters: {
             query?: never;
@@ -4004,6 +4555,168 @@ export interface operations {
             401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    listOperatorExpenses: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["ExpenseStatus"];
+                projectId?: components["schemas"]["Id"];
+                /** @description The nextCursor of the previous page; omit for the first page */
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of entries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpensePage"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    submitOperatorExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExpenseDraft"];
+            };
+        };
+        responses: {
+            /** @description The saved entry (PENDING) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            /** @description PROJECT_NOT_FOUND or CATEGORY_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description VALIDATION_FAILED, EXPENSE_PROJECT_REQUIRED, EXPENSE_PROJECT_NOT_ALLOWED or CATEGORY_INACTIVE */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    withdrawOperatorExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                expenseId: components["parameters"]["ExpenseId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The withdrawn entry */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description EXPENSE_NOT_PENDING */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    listOperatorExpenseCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active categories, by name */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseCategoryOption"][];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    getOperatorFinance: {
+        parameters: {
+            query: {
+                /** @description First calendar day, inclusive (Dar es Salaam) */
+                from: components["schemas"]["Date"];
+                /** @description Last calendar day, inclusive (Dar es Salaam) */
+                to: components["schemas"]["Date"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Analytics for the period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OperatorFinanceAnalytics"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
             422: components["responses"]["ValidationFailed"];
             500: components["responses"]["ServerError"];
         };
@@ -4508,6 +5221,72 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             /** @description CLIENT_NOT_FOUND */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    getAdminProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The project */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminProjectDetail"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    updateAdminProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectUpdate"];
+            };
+        };
+        responses: {
+            /** @description The saved project */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminProjectDetail"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description PROJECT_NOT_DRAFT (already sent to the client; history is not overwritten) */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5108,6 +5887,437 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    listAdminExpenses: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["ExpenseStatus"];
+                kind?: components["schemas"]["ExpenseKind"];
+                categoryId?: components["schemas"]["Id"];
+                projectId?: components["schemas"]["Id"];
+                /** @description Who entered it (an admin or an operator) */
+                enteredById?: components["schemas"]["Id"];
+                /** @description First day paid, inclusive */
+                from?: components["schemas"]["Date"];
+                /** @description Last day paid, inclusive */
+                to?: components["schemas"]["Date"];
+                /** @description The nextCursor of the previous page; omit for the first page */
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of rows and totals over every matching row */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpensePage"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    createAdminExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExpenseDraft"];
+            };
+        };
+        responses: {
+            /** @description The saved entry (APPROVED) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            /** @description PROJECT_NOT_FOUND or CATEGORY_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description VALIDATION_FAILED, EXPENSE_PROJECT_REQUIRED, EXPENSE_PROJECT_NOT_ALLOWED or CATEGORY_INACTIVE */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    getAdminPendingExpenses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Count and amount */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseCount"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    approveExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                expenseId: components["parameters"]["ExpenseId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The decided entry */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description EXPENSE_NOT_PENDING */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    rejectExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                expenseId: components["parameters"]["ExpenseId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description The decided entry */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description EXPENSE_NOT_PENDING */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: components["responses"]["ReasonRequired"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    reverseExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                expenseId: components["parameters"]["ExpenseId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description The new correction row */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description EXPENSE_NOT_APPROVED or EXPENSE_ALREADY_REVERSED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: components["responses"]["ReasonRequired"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    adjustExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                expenseId: components["parameters"]["ExpenseId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdjustmentRequest"];
+            };
+        };
+        responses: {
+            /** @description The new correction row */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description EXPENSE_NOT_APPROVED or EXPENSE_ALREADY_REVERSED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description ADJUSTMENT_BELOW_ZERO, REASON_REQUIRED or VALIDATION_FAILED */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    listAdminExpenseCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Categories, by name */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseCategory"][];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    createExpenseCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExpenseCategoryCreate"];
+            };
+        };
+        responses: {
+            /** @description The new category */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseCategory"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            /** @description CATEGORY_NAME_TAKEN */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    deleteExpenseCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                categoryId: components["parameters"]["CategoryId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description CATEGORY_IN_USE */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    updateExpenseCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                categoryId: components["parameters"]["CategoryId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExpenseCategoryUpdate"];
+            };
+        };
+        responses: {
+            /** @description The saved category */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseCategory"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            /** @description CATEGORY_NAME_TAKEN */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: components["responses"]["ValidationFailed"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    getAdminFinanceAnalytics: {
+        parameters: {
+            query: {
+                /** @description First calendar day, inclusive (Dar es Salaam) */
+                from: components["schemas"]["Date"];
+                /** @description Last calendar day, inclusive (Dar es Salaam) */
+                to: components["schemas"]["Date"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Analytics for the period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFinanceAnalytics"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
             500: components["responses"]["ServerError"];
         };
     };

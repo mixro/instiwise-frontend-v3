@@ -8,6 +8,8 @@ import {
   CHANGE_REQUEST_STATUSES,
   CORRECTION_KIND_TONES,
   CORRECTION_KINDS,
+  EXPENSE_STATUS_TONES,
+  EXPENSE_STATUSES,
   OPERATOR_STATUS_TONES,
   OPERATOR_STATUSES,
   INVITATION_STATUS_TONES,
@@ -40,6 +42,7 @@ describe("StatusBadge", () => {
     ["changeRequest", CHANGE_REQUEST_STATUSES, CHANGE_REQUEST_STATUS_TONES],
     ["correction", CORRECTION_KINDS, CORRECTION_KIND_TONES],
     ["operator", OPERATOR_STATUSES, OPERATOR_STATUS_TONES],
+    ["expense", EXPENSE_STATUSES, EXPENSE_STATUS_TONES],
   ] as const)("has a label and a tone for every %s status", (kind, statuses, tones) => {
     for (const language of ["en", "sw"]) {
       for (const status of statuses) {
@@ -60,6 +63,7 @@ describe("StatusBadge", () => {
         ["changeRequest", CHANGE_REQUEST_STATUSES],
         ["correction", CORRECTION_KINDS],
         ["operator", OPERATOR_STATUSES],
+        ["expense", EXPENSE_STATUSES],
       ] as const) {
         const labels = statuses.map((status) =>
           i18n.t(`status.${kind}.${status}` as "status.project.DRAFT", { lng: language }),

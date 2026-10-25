@@ -31,6 +31,15 @@
   --danger-fg: #9b1c1c;
 
   --ring: #0e7150;
+
+  /*
+   * Chart series, one hue per measure (never per rank). Checked for colour-blind
+   * separation and contrast against --surface in each mode; profit is under 3:1
+   * on white, so every chart also has a table and a labelled legend.
+   */
+  --chart-collected: #2a78d6;
+  --chart-expenses: #eb6834;
+  --chart-profit: #1baf7a;
 }
 
 .dark {
@@ -56,4 +65,8 @@
   --danger-fg: #f5a9a1;
 
   --ring: #6fd3aa;
+
+  --chart-collected: #3987e5;
+  --chart-expenses: #d95926;
+  --chart-profit: #199e70;
 }

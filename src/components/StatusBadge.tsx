@@ -5,6 +5,7 @@ import {
   AGREEMENT_STATUS_TONES,
   CHANGE_REQUEST_STATUS_TONES,
   CORRECTION_KIND_TONES,
+  EXPENSE_STATUS_TONES,
   OPERATOR_STATUS_TONES,
   INVITATION_STATUS_TONES,
   PAYMENT_STATUS_TONES,
@@ -12,6 +13,7 @@ import {
   type AgreementStatus,
   type ChangeRequestStatus,
   type CorrectionKind,
+  type ExpenseStatus,
   type OperatorStatus,
   type InvitationStatus,
   type PaymentStatus,
@@ -34,6 +36,7 @@ type StatusBadgeProps = { className?: string } & (
   | { kind: "changeRequest"; status: ChangeRequestStatus }
   | { kind: "correction"; status: CorrectionKind }
   | { kind: "operator"; status: OperatorStatus }
+  | { kind: "expense"; status: ExpenseStatus }
 );
 
 // One branch per kind so each translation key is checked against the locale file.
@@ -73,6 +76,11 @@ function describe(props: StatusBadgeProps, t: TFunction): { tone: StatusTone; la
       return {
         tone: OPERATOR_STATUS_TONES[props.status],
         label: t(`status.operator.${props.status}`),
+      };
+    case "expense":
+      return {
+        tone: EXPENSE_STATUS_TONES[props.status],
+        label: t(`status.expense.${props.status}`),
       };
   }
 }

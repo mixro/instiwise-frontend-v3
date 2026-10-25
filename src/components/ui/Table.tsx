@@ -7,7 +7,10 @@ import { cn } from "@/lib/cn";
  */
 export function Table({ className, ...props }: ComponentProps<"table">) {
   return (
-    <div tabIndex={0} className="w-full overflow-x-auto rounded-lg border border-border bg-surface">
+    <div
+      tabIndex={0}
+      className="relative w-full overflow-x-auto rounded-lg border border-border bg-surface"
+    >
       <table className={cn("w-full border-collapse text-sm", className)} {...props} />
     </div>
   );

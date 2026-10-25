@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, ShieldCheck, Trash2 } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { FormAlert } from "@/components/FormAlert";
 import { FormField } from "@/components/FormField";
+import { TermsEditor } from "@/components/TermsEditor";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
@@ -14,6 +15,7 @@ import { useRefreshAfterDecision } from "@/features/changes/queries";
 import { useErrorText } from "@/hooks/useErrorText";
 import { useToast } from "@/hooks/useToast";
 import { parseTzs } from "@/lib/format";
+import { cleanTerms, termsField } from "@/lib/terms";
 
 const schema = z.object({
   title: z.string().trim().min(3, "validation.changeTitleRequired").max(120, "validation.tooLong"),
@@ -22,9 +24,8 @@ const schema = z.object({
     .trim()
     .min(10, "validation.changeReasonRequired")
     .max(1000, "validation.tooLong"),
-  scope: z
-    .array(z.object({ item: z.string().max(300, "validation.tooLong") }))
-    .refine((rows) => rows.some((row) => row.item.trim() !== ""), "validation.scopeRequired"),
+  // Each item in English and Swahili (ADR 0004).
+  scope: termsField({ required: "validation.scopeRequired" }),
   price: z.string().refine((value) => !Number.isNaN(parseTzs(value)), "validation.amountInvalid"),
   deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "validation.dateInvalid"),
 });
@@ -60,12 +61,11 @@ export function ProposeChangeForm({ projectId, current, onDone }: ProposeChangeF
     defaultValues: {
       title: "",
       reason: "",
-      scope: current.scope.map((item) => ({ item })),
+      scope: current.scope.map((item) => ({ ...item })),
       price: String(current.price),
       deadline: current.deadline,
     },
   });
-  const rows = useFieldArray({ control, name: "scope" });
   const [price, deadline] = useWatch({ control, name: ["price", "deadline"] });
   const needsAdmin = parseTzs(price) !== current.price || deadline !== current.deadline;
 
@@ -75,7 +75,7 @@ export function ProposeChangeForm({ projectId, current, onDone }: ProposeChangeF
       const created = await changesApi.operator.propose(projectId, {
         title: values.title,
         reason: values.reason,
-        scope: values.scope.map((row) => row.item.trim()).filter(Boolean),
+        scope: cleanTerms(values.scope),
         price: parseTzs(values.price),
         deadline: values.deadline,
       });
@@ -107,35 +107,12 @@ export function ProposeChangeForm({ projectId, current, onDone }: ProposeChangeF
         {(field) => <Textarea rows={3} {...field} {...register("reason")} />}
       </FormField>
 
-      <fieldset className="space-y-2">
-        <legend className="text-sm font-medium">{t("changes.scope")}</legend>
-        <p className="text-sm text-muted">{t("changes.operator.scopeHint")}</p>
-        <ul className="space-y-2">
-          {rows.fields.map((row, index) => (
-            <li key={row.id} className="flex items-center gap-2">
-              <Input
-                aria-label={t("changes.operator.scopeItem", { number: index + 1 })}
-                {...register(`scope.${index}.item`)}
-              />
-              <Button
-                size="icon"
-                variant="ghost"
-                aria-label={t("changes.operator.removeItem", { number: index + 1 })}
-                onClick={() => rows.remove(index)}
-              >
-                <Trash2 className="size-4" aria-hidden="true" />
-              </Button>
-            </li>
-          ))}
-        </ul>
-        {errors.scope?.root?.message && (
-          <p className="text-sm text-danger-fg">{fieldError(errors.scope.root.message)}</p>
-        )}
-        <Button size="sm" onClick={() => rows.append({ item: "" })}>
-          <Plus className="size-4" aria-hidden="true" />
-          {t("changes.operator.addItem")}
-        </Button>
-      </fieldset>
+      <TermsEditor
+        control={control}
+        name="scope"
+        legend={t("changes.scope")}
+        hint={t("changes.operator.scopeHint")}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField

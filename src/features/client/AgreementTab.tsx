@@ -11,18 +11,21 @@ import { useErrorText } from "@/hooks/useErrorText";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/useToast";
 import { formatDate, formatDateTime, formatTzs } from "@/lib/format";
+import { termKey, termText, type Term } from "@/lib/terms";
 import { clientApi, type AgreementVersion } from "./api";
 import { useProjectId } from "./project-tabs";
 import { useAgreement, useRefreshClient } from "./queries";
 
-function TermsList({ title, items }: { title: string; items: string[] }) {
+/** Terms in the reader's language (both copies are stored, ADR 0004). */
+function TermsList({ title, items }: { title: string; items: Term[] }) {
+  const language = useLanguage();
   if (items.length === 0) return null;
   return (
     <div className="space-y-1">
       <h3 className="text-sm font-semibold">{title}</h3>
       <ul className="list-disc space-y-1 pl-5 text-sm">
         {items.map((item) => (
-          <li key={item}>{item}</li>
+          <li key={termKey(item)}>{termText(item, language)}</li>
         ))}
       </ul>
     </div>

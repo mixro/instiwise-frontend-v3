@@ -15,8 +15,8 @@ export const adminKeys = {
 
 export const useAdminOverview = () =>
   useQuery({ queryKey: adminKeys.overview(), queryFn: adminApi.overview });
-export const useAdminClients = () =>
-  useQuery({ queryKey: adminKeys.clients(), queryFn: adminApi.clients });
+export const useAdminClients = (enabled = true) =>
+  useQuery({ queryKey: adminKeys.clients(), queryFn: () => adminApi.clients(), enabled });
 export const useAdminProjects = () =>
   useQuery({ queryKey: adminKeys.projects(), queryFn: adminApi.projects });
 export const useAdminOperators = () =>

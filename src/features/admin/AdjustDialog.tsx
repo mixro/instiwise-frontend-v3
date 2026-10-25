@@ -17,12 +17,10 @@ import {
 } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import type { StaffPayment } from "@/features/operator/api";
 import { useErrorText } from "@/hooks/useErrorText";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/useToast";
 import { formatTzs, parseTzs } from "@/lib/format";
-import { adminApi } from "./api";
 import { useRefreshAll } from "./queries";
 
 const schema = z.object({
@@ -33,15 +31,29 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 interface AdjustDialogProps {
-  payment: StaffPayment;
+  /** The number of the payment or expense being corrected (RC-…, EXP-…). */
+  reference: string;
+  /** Its amount as first recorded, whole TZS. */
+  amount: number;
+  /** Saves the correction row; resolves to that row's number (COR-…, EXPC-…). */
+  onAdjust: (signedAmount: number, reason: string) => Promise<string>;
   onClose: () => void;
+  /** "The payment was recorded" unless given (e.g. for an expense). */
+  directionLabel?: string;
 }
 
 /**
- * A partial correction: a new COR row of plus or minus the difference, linked to
- * the payment, which keeps its number and is marked Adjusted.
+ * A partial correction: a new row of plus or minus the difference, linked to the
+ * original, which keeps its number and is marked Adjusted. Shared by payments
+ * and expenses; the server refuses a result below zero.
  */
-export function AdjustDialog({ payment, onClose }: AdjustDialogProps) {
+export function AdjustDialog({
+  reference,
+  amount: original,
+  onAdjust,
+  onClose,
+  directionLabel,
+}: AdjustDialogProps) {
   const { t } = useTranslation();
   const language = useLanguage();
   const { fieldError, apiError } = useErrorText();
@@ -65,13 +77,10 @@ export function AdjustDialog({ payment, onClose }: AdjustDialogProps) {
     setFormError(undefined);
     const amount = parseTzs(values.amount) * (values.direction === "decrease" ? -1 : 1);
     try {
-      const row = await adminApi.adjust(payment.id, amount, values.reason);
+      const correction = await onAdjust(amount, values.reason);
       toast({
         variant: "success",
-        title: t("finance.adjustDone", {
-          number: payment.receiptNumber,
-          correction: row.receiptNumber,
-        }),
+        title: t("finance.adjustDone", { number: reference, correction }),
       });
       void refresh();
       onClose();
@@ -84,18 +93,20 @@ export function AdjustDialog({ payment, onClose }: AdjustDialogProps) {
     <Dialog open onOpenChange={(open) => !open && !isSubmitting && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("finance.adjustTitle", { number: payment.receiptNumber })}</DialogTitle>
+          <DialogTitle>{t("finance.adjustTitle", { number: reference })}</DialogTitle>
           <DialogDescription>
             {t("finance.adjustBody", {
-              number: payment.receiptNumber,
-              amount: formatTzs(payment.amount, language),
+              number: reference,
+              amount: formatTzs(original, language),
             })}
           </DialogDescription>
         </DialogHeader>
         <form id="adjust-form" noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {formError && <FormAlert>{formError}</FormAlert>}
           <fieldset className="space-y-2">
-            <legend className="text-sm font-medium">{t("finance.direction")}</legend>
+            <legend className="text-sm font-medium">
+              {directionLabel ?? t("finance.direction")}
+            </legend>
             <Controller
               control={control}
               name="direction"
