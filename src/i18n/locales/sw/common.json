@@ -685,6 +685,8 @@
     "RATE_LIMITED": "Majaribio mengi mno. Subiri dakika chache kisha ujaribu tena.",
     "EMAIL_TAKEN": "Tayari kuna akaunti yenye barua pepe hii. Ingia badala yake.",
     "VALIDATION_FAILED": "Baadhi ya taarifa si sahihi. Hakiki sehemu zilizoangaziwa.",
+    "NOT_FOUND": "Ukurasa au kipengee hiki hakipo. Hakiki anwani kisha ujaribu tena.",
+    "INVALID_JSON": "Ombi halikuweza kusomeka. Pakia ukurasa upya kisha ujaribu tena.",
     "NETWORK_ERROR": "Imeshindwa kufikia INSTIWISE. Angalia mtandao wako kisha ujaribu tena.",
     "UNKNOWN_ERROR": "Hitilafu imetokea upande wetu. Jaribu tena.",
     "CHANGE_REQUEST_ALREADY_DECIDED": "Mabadiliko haya yameshaamuliwa. Ukurasa sasa unaonyesha matokeo.",

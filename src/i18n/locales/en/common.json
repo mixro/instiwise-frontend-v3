@@ -685,6 +685,8 @@
     "RATE_LIMITED": "Too many attempts. Wait a few minutes and try again.",
     "EMAIL_TAKEN": "An account with this email address already exists. Sign in instead.",
     "VALIDATION_FAILED": "Some details are not valid. Check the highlighted fields.",
+    "NOT_FOUND": "This page or item does not exist. Check the address and try again.",
+    "INVALID_JSON": "The request could not be read. Reload the page and try again.",
     "NETWORK_ERROR": "Can't reach INSTIWISE. Check your connection and try again.",
     "UNKNOWN_ERROR": "Something went wrong on our side. Try again.",
     "CHANGE_REQUEST_ALREADY_DECIDED": "This change was already decided. The page now shows the outcome.",
