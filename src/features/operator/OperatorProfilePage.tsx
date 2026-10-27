@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ChangePasswordForm } from "@/features/auth/ChangePasswordForm";
+import { EmailSettings } from "@/features/auth/EmailSettings";
 import { useErrorText } from "@/hooks/useErrorText";
 import { useToast } from "@/hooks/useToast";
 import type { Language } from "@/i18n/languages";
@@ -75,6 +76,15 @@ export function OperatorProfilePage() {
         <>
           <Section id="details-heading" title={t("operator.profile.details")}>
             <OperatorDetailsForm profile={profile.data} onSaved={store} />
+          </Section>
+
+          <Section id="email-heading" title={t("auth.email.heading")}>
+            <EmailSettings
+              email={profile.data.email}
+              emailVerified={profile.data.emailVerified}
+              pendingEmail={profile.data.pendingEmail}
+              onChanged={() => void profile.refetch()}
+            />
           </Section>
 
           <Section id="access-heading" title={t("operator.profile.access")}>

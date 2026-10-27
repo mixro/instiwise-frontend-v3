@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
 import { PageHeader } from "@/components/PageHeader";
 import { StatusBadge } from "@/components/StatusBadge";
+import { VerifiedTag } from "@/components/VerifiedTag";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -18,6 +19,8 @@ import { formatTzPhone } from "@/lib/phone";
 import { OPERATOR_STATUSES, type OperatorStatus } from "@/lib/status";
 import { adminApi, type AdminOperator } from "./api";
 import { AssignDialog } from "./AssignDialog";
+import { ResetCodeNote } from "./ResetCodeNote";
+import { ResetPasswordDialog } from "./ResetPasswordDialog";
 import { useAdminClients, useAdminOperators, useRefreshAll } from "./queries";
 
 type Action = "approve" | "reject" | "suspend" | "reactivate";
@@ -33,6 +36,7 @@ function OperatorCard({ operator }: { operator: AdminOperator }) {
   const clients = useAdminClients();
   const [action, setAction] = useState<Action | null>(null);
   const [assigning, setAssigning] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [error, setError] = useState<string>();
   const hasClients = operator.clients.length > 0;
 
@@ -62,6 +66,15 @@ function OperatorCard({ operator }: { operator: AdminOperator }) {
           <p className="text-xs text-muted">
             {t("admin.operators.registered", { date: formatDate(operator.registeredAt, language) })}
           </p>
+          <VerifiedTag
+            verified={operator.emailVerified}
+            label={
+              operator.emailVerified
+                ? t("admin.emailBadge.verified")
+                : t("admin.emailBadge.notVerified")
+            }
+          />
+          <ResetCodeNote resetCode={operator.resetCode} />
         </div>
         <StatusBadge kind="operator" status={operator.status} />
       </div>
@@ -112,6 +125,10 @@ function OperatorCard({ operator }: { operator: AdminOperator }) {
         {operator.status === "SUSPENDED" && (
           <Button onClick={() => setAction("reactivate")}>{t("admin.operators.reactivate")}</Button>
         )}
+        <Button onClick={() => setResetting(true)}>
+          {t("admin.reset.action")}
+          <span className="sr-only"> {operator.name}</span>
+        </Button>
       </div>
       {operator.status === "ACTIVE" && hasClients && (
         <p className="text-xs text-muted">
@@ -144,6 +161,8 @@ function OperatorCard({ operator }: { operator: AdminOperator }) {
           onConfirm={(reason) => run(action, reason)}
         />
       )}
+
+      {resetting && <ResetPasswordDialog account={operator} onClose={() => setResetting(false)} />}
 
       {assigning && (
         <AssignDialog

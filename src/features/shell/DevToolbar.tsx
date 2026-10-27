@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FlaskConical } from "lucide-react";
-import { startTransition, useId } from "react";
+import { startTransition, Suspense, useId } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,6 +14,7 @@ import { useSession } from "@/hooks/useSession";
 import { getHealth } from "@/lib/api";
 import { ROLES, isRole } from "@/lib/roles";
 import { MOCK_SIGNED_OUT } from "@/lib/session-context";
+import { MailboxButton } from "./mailbox";
 
 function ApiStatus() {
   const { t } = useTranslation();
@@ -69,6 +70,11 @@ export function DevToolbar() {
             <SelectItem value={MOCK_SIGNED_OUT}>{t("dev.signedOut")}</SelectItem>
           </SelectContent>
         </Select>
+        {MailboxButton && (
+          <Suspense fallback={null}>
+            <MailboxButton />
+          </Suspense>
+        )}
         <span className="ml-auto">
           <ApiStatus />
         </span>

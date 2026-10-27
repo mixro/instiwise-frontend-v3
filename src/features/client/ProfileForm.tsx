@@ -15,7 +15,8 @@ import { formatTzPhone, normalizeTzPhone } from "@/lib/phone";
 import { clientApi, type Profile } from "./api";
 import { useRefreshClient } from "./queries";
 
-// Decided 2026-10-17: clients edit their name and phone; the email (their sign-in) is read-only.
+// Decided 2026-10-17: clients edit their name and phone here; the email has its own section
+// (EmailSettings), because a new address waits for confirmation (ADR 0006).
 const profileSchema = z.object({ name: nameField, phone: optionalPhoneField });
 type ProfileValues = z.infer<typeof profileSchema>;
 
@@ -63,9 +64,6 @@ export function ProfileForm({ profile }: { profile: Profile }) {
       {formError && <FormAlert>{formError}</FormAlert>}
       <FormField label={t("auth.fields.name")} error={fieldError(errors.name?.message)}>
         {(control) => <Input autoComplete="name" {...control} {...register("name")} />}
-      </FormField>
-      <FormField label={t("auth.fields.email")} hint={t("client.account.emailHint")}>
-        {(control) => <Input type="email" value={profile.email} readOnly {...control} />}
       </FormField>
       <FormField
         label={t("auth.fields.phone")}

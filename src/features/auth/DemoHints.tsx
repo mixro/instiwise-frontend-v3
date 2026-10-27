@@ -1,17 +1,23 @@
 import { FlaskConical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { DEMO_ACCOUNTS, DEMO_CODES, DEMO_PASSWORD } from "@/mocks/demo-data";
+import { DEMO_ACCOUNTS, DEMO_CODES, DEMO_PASSWORD, DEMO_RESET_CODES } from "@/mocks/demo-data";
 
-/** Lists the mock backend's demo accounts and invitation codes (see demo-hints.ts). */
-export function DemoHints({ show }: { show: "accounts" | "codes" }) {
+const TITLES = {
+  accounts: "dev.demo.accountsTitle",
+  codes: "dev.demo.codesTitle",
+  resetCodes: "dev.demo.resetTitle",
+} as const;
+
+/** Lists the mock backend's demo accounts, invitation codes and reset codes (see demo-hints.ts). */
+export function DemoHints({ show }: { show: keyof typeof TITLES }) {
   const { t } = useTranslation();
 
   return (
     <details className="mt-8 rounded-lg border border-border bg-warning-bg px-4 py-3 text-sm text-warning-fg">
       <summary className="flex min-h-11 cursor-pointer items-center gap-2 font-medium sm:min-h-0">
         <FlaskConical className="size-4" aria-hidden="true" />
-        {show === "accounts" ? t("dev.demo.accountsTitle") : t("dev.demo.codesTitle")}
+        {t(TITLES[show])}
       </summary>
 
       {show === "accounts" ? (
@@ -27,6 +33,21 @@ export function DemoHints({ show }: { show: "accounts" | "codes" }) {
               </li>
             ))}
           </ul>
+        </div>
+      ) : show === "resetCodes" ? (
+        <div className="mt-3 space-y-2">
+          <ul className="space-y-1">
+            {DEMO_RESET_CODES.map(({ code, state }) => (
+              <li key={code} className="flex flex-wrap gap-x-2">
+                <Link to={`/reset/${code}`} className="font-mono underline underline-offset-4">
+                  {code}
+                </Link>
+                <span>· {t(`dev.demo.reset.${state}`)}</span>
+              </li>
+            ))}
+            <li>{t("dev.demo.reset.other")}</li>
+          </ul>
+          <p>{t("dev.demo.resetSuspended")}</p>
         </div>
       ) : (
         <div className="mt-3 space-y-2">

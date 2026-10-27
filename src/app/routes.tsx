@@ -14,6 +14,12 @@ import { InvitationEntryPage } from "@/features/auth/InvitationEntryPage";
 import { InvitationPage } from "@/features/auth/InvitationPage";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { PendingApprovalPage } from "@/features/auth/PendingApprovalPage";
+import { CheckEmailPage } from "@/features/auth/CheckEmailPage";
+import { ForgotPasswordPage } from "@/features/auth/ForgotPasswordPage";
+import { ResetEntryPage } from "@/features/auth/ResetEntryPage";
+import { ResetLinkPage } from "@/features/auth/ResetLinkPage";
+import { ResetPasswordPage } from "@/features/auth/ResetPasswordPage";
+import { VerifyEmailPage } from "@/features/auth/VerifyEmailPage";
 import { AccountPage } from "@/features/client/AccountPage";
 import { AgreementTab } from "@/features/client/AgreementTab";
 import { ChangesTab } from "@/features/client/ChangesTab";
@@ -152,6 +158,43 @@ export const routes: RouteObject[] = [
     element: (
       <GuestOnly>
         <InvitationPage />
+      </GuestOnly>
+    ),
+  },
+  // Password reset by email (ADR 0006).
+  {
+    path: "/forgot-password",
+    element: (
+      <GuestOnly>
+        <ForgotPasswordPage />
+      </GuestOnly>
+    ),
+  },
+  {
+    path: "/reset-password/:token",
+    element: (
+      <GuestOnly>
+        <ResetLinkPage />
+      </GuestOnly>
+    ),
+  },
+  // Email confirmation works signed in or not, from any device.
+  { path: "/verify-email/:token", element: <VerifyEmailPage /> },
+  { path: "/check-email", element: <CheckEmailPage /> },
+  // Password reset with an admin-issued code (ADR 0005), kept as a fallback.
+  {
+    path: "/reset",
+    element: (
+      <GuestOnly>
+        <ResetEntryPage />
+      </GuestOnly>
+    ),
+  },
+  {
+    path: "/reset/:code",
+    element: (
+      <GuestOnly>
+        <ResetPasswordPage />
       </GuestOnly>
     ),
   },

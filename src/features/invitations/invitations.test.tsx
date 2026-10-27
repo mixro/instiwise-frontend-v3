@@ -149,6 +149,7 @@ describe("operator invitations", () => {
     await user.type(screen.getByLabelText("Email address"), "amina@example.com");
     await user.type(screen.getByLabelText("Create a password"), "mradi2026");
     await user.click(screen.getByRole("button", { name: "Create account" }));
+    await user.click(await screen.findByRole("link", { name: "Continue to my home" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Home" })).toBeInTheDocument();
 
     // Single use, used by Amina, and she is Baraka's client now.

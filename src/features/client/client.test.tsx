@@ -255,10 +255,12 @@ describe("payments and receipts page", () => {
 });
 
 describe("account", () => {
-  it("edits name and phone; the email is read-only", async () => {
+  it("edits name and phone; the email has its own section", async () => {
     renderApp("/client/account", "CLIENT");
     const name = await screen.findByLabelText("Full name");
-    expect(screen.getByLabelText("Email address")).toHaveAttribute("readonly");
+    const email = screen.getByRole("region", { name: "Email address" });
+    expect(email).toHaveTextContent("neema@example.com");
+    expect(email).toHaveTextContent("Verified");
     expect(screen.getByLabelText(/Phone number/)).toHaveValue("+255 713 456 789");
 
     await userEvent.clear(name);

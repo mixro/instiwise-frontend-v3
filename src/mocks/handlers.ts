@@ -6,8 +6,10 @@ import { clientHandlers } from "./client";
 import { on } from "./contract";
 import { invitationHandlers } from "./invitations";
 import { messageHandlers } from "./messages";
+import { emailHandlers } from "./email";
 import { expenseHandlers } from "./expenses";
 import { projectHandlers } from "./projects";
+import { resetCodeHandlers } from "./reset-codes";
 import { operatorHandlers } from "./operator";
 
 /**
@@ -28,4 +30,6 @@ export const handlers = [
   ...messageHandlers,
   ...projectHandlers,
   ...expenseHandlers,
+  ...resetCodeHandlers,
+  ...emailHandlers,
 ];

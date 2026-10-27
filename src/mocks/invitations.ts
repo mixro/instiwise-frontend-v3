@@ -3,6 +3,7 @@ import type { Invitation } from "@/features/auth/api";
 import type { InvitationStatus } from "@/lib/status";
 import type { StaffInvitation } from "@/features/invitations/api";
 import { addAudit, MOCK_ADMIN, operatorById, staffState } from "./admin-store";
+import { newShortCode } from "./codes";
 import { fail, on } from "./contract";
 import { DEMO_CODES } from "./demo-data";
 import { MOCK_ADMIN_ID, MOCK_OPERATOR, MOCK_OPERATOR_ID, type MockInvitation } from "./staff-seed";
@@ -59,17 +60,11 @@ function present(invitation: MockInvitation): StaffInvitation {
 const newestFirst = (a: MockInvitation, b: MockInvitation) =>
   b.createdAt.localeCompare(a.createdAt);
 
-/** 8 characters without look-alikes (0/O, 1/I), shown as XXXX-XXXX. */
-const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-function newCode(): string {
-  for (;;) {
-    const bytes = crypto.getRandomValues(new Uint8Array(8));
-    const raw = Array.from(bytes, (byte) => ALPHABET[byte % ALPHABET.length]).join("");
-    const code = `${raw.slice(0, 4)}-${raw.slice(4)}`;
-    if (!DEMO_CODES[code] && !findInvitation(code)) return code;
-  }
-}
+/** Taken: a demo code, an invitation or a reset code (one format for all, ADR 0005). */
+export const codeTaken = (code: string) =>
+  Boolean(DEMO_CODES[code]) ||
+  findInvitation(code) !== undefined ||
+  staffState().resetCodes.some((reset) => reset.code === code);
 
 export function findInvitation(code: string): MockInvitation | undefined {
   return invitations().find((invitation) => invitation.code === code);
@@ -79,7 +74,7 @@ function create(fields: Pick<MockInvitation, "role" | "label" | "operator" | "in
   const days = staffState().settings.invitationValidityDays;
   const invitation: MockInvitation = {
     ...fields,
-    code: newCode(),
+    code: newShortCode(codeTaken),
     createdAt: new Date().toISOString(),
     expiresAt: at(days),
   };

@@ -251,7 +251,35 @@
         "INVITATION_ALREADY_USED": "already used",
         "other": "Any other code: does not exist."
       },
-      "emailTaken": "Registering with a demo account's email address gives the 'already exists' error."
+      "emailTaken": "Registering with a demo account's email address gives the 'already exists' error.",
+      "resetTitle": "Mock backend: demo reset codes",
+      "reset": {
+        "VALID": "works",
+        "EXPIRED": "expired",
+        "USED": "already used",
+        "CANCELLED": "cancelled",
+        "LOCKED": "locked",
+        "other": "Any other code: does not exist."
+      },
+      "resetSuspended": "RST2-FRJI belongs to a suspended operator: the reset works, signing in still does not.",
+      "mailbox": {
+        "open": "Mailbox",
+        "openCount_one": "Mailbox ({{count}} email)",
+        "openCount_other": "Mailbox ({{count}} emails)",
+        "title": "Mock mailbox",
+        "body": "The demo sends no real email. These are the emails the mock backend would have sent, newest first. Open a link to continue.",
+        "empty": "No emails yet. Register, ask for a password reset or change an email address.",
+        "to": "To {{email}}",
+        "sent": "Sent {{time}}",
+        "language": "Written in {{language}}",
+        "openLink": "Open link",
+        "kinds": {
+          "VERIFY": "Confirm your email address",
+          "CHANGE": "Confirm your new email address",
+          "RESET": "Reset your password"
+        },
+        "hint": "Demo: no email is really sent. Open the Mailbox at the top of the page to find it."
+      }
     }
   },
   "status": {
@@ -383,7 +411,8 @@
       "submit": "Sign in",
       "submitting": "Signing in…",
       "haveInvitation": "Got an invitation?",
-      "enterCode": "Enter your link or code"
+      "enterCode": "Enter your link or code",
+      "forgot": "Forgot password?"
     },
     "invite": {
       "title": "Enter your invitation",
@@ -434,6 +463,169 @@
       "title": "Your account is waiting for approval",
       "body": "An INSTIWISE admin checks every new operator account. You can sign in once it is approved.",
       "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Reset your password",
+      "askAdmin": "INSTIWISE does not send reset emails. Ask your administrator for a reset code; they send it to you on WhatsApp.",
+      "enterIt": "Then paste the link or type the code here.",
+      "field": "Reset link or code",
+      "hint": "8 letters and numbers, for example R7KM-2QXP.",
+      "submit": "Continue",
+      "remembered": "Remembered your password?",
+      "signIn": "Sign in",
+      "checking": "Checking your reset code…",
+      "loadFailed": "We couldn't check your reset code",
+      "formTitle": "Choose a new password",
+      "expires": "This code works once and expires on {{date}}.",
+      "signedOut": "Saving it signs you out on every other device.",
+      "password": "New password",
+      "confirm": "Type the new password again",
+      "save": "Save new password",
+      "saving": "Saving…",
+      "done": {
+        "title": "Your password has been changed",
+        "body": "Sign in with your new password. Any other device you used is now signed out."
+      },
+      "states": {
+        "tryAnother": "Enter a different code",
+        "retry": "Try again",
+        "invalid": {
+          "title": "This reset code doesn't work",
+          "body": "Check the link or code and try again. If it still doesn't work, ask your administrator for a new code."
+        },
+        "expired": {
+          "title": "This reset code has expired",
+          "body": "Reset codes work for 24 hours. Ask your administrator for a new one."
+        },
+        "used": {
+          "title": "This reset code has already been used",
+          "body": "Each code works once. If you already chose a new password with it, sign in with that password."
+        },
+        "cancelled": {
+          "title": "This reset code was cancelled",
+          "body": "It was cancelled or replaced by a newer code. Use the newest code you received, or ask your administrator for a new one."
+        },
+        "locked": {
+          "title": "This reset code is locked",
+          "body": "Too many attempts were made with it. Ask your administrator for a new code."
+        },
+        "limited": {
+          "title": "Too many attempts",
+          "body": "For your safety, wait a few minutes before trying a code again."
+        }
+      }
+    },
+    "forgot": {
+      "title": "Forgot your password?",
+      "body": "Enter the email address you sign in with. If it belongs to a confirmed account, we send it a link to choose a new password.",
+      "field": "Email address",
+      "submit": "Send reset link",
+      "sending": "Sending…",
+      "sentTitle": "Check your email",
+      "sentBody": "If an account exists for {{email}}, we sent it a link to choose a new password. The link works for 1 hour. Check your spam folder too.",
+      "again": "Use another address",
+      "backToSignIn": "Back to sign in",
+      "haveCode": "Got a reset code from your administrator?",
+      "enterCode": "Enter it here",
+      "limited": "Too many requests. Try again in {{time}}."
+    },
+    "resetLink": {
+      "checking": "Checking your link…",
+      "loadFailed": "We couldn't check your link",
+      "expires": "This link works once and expires at {{time}}.",
+      "signedOut": "Saving it signs you out on every device.",
+      "requestNew": "Ask for a new link",
+      "states": {
+        "invalid": {
+          "title": "This link doesn't work",
+          "body": "It may be incomplete. Open the whole link from the email, or ask for a new one."
+        },
+        "expired": {
+          "title": "This link has expired",
+          "body": "Password reset links work for 1 hour. Ask for a new one."
+        },
+        "used": {
+          "title": "This link has already been used",
+          "body": "Each link works once. If you already chose a new password with it, sign in."
+        },
+        "cancelled": {
+          "title": "A newer link replaced this one",
+          "body": "You asked for another reset link after this one. Use the most recent email, or ask again."
+        }
+      }
+    },
+    "verify": {
+      "title": "Confirm your email address",
+      "body": "Press Confirm to finish. Opening this page on its own changes nothing.",
+      "confirm": "Confirm my email address",
+      "confirming": "Confirming…",
+      "doneTitle": "Email address confirmed",
+      "doneBody": "{{email}} is confirmed. Thank you.",
+      "doneChanged": "{{email}} is now your sign-in email. Use it the next time you sign in.",
+      "continue": "Continue",
+      "signIn": "Sign in",
+      "loadFailed": "We couldn't confirm your email address",
+      "states": {
+        "invalid": {
+          "title": "This link doesn't work",
+          "body": "It may be incomplete, or a newer link replaced it. Use the most recent email."
+        },
+        "expired": {
+          "title": "This link has expired",
+          "body": "Confirmation links work for 24 hours. Ask for a new one."
+        },
+        "used": {
+          "title": "Already confirmed",
+          "body": "This address was already confirmed with this link. There is nothing else to do."
+        },
+        "taken": {
+          "title": "This address is already in use",
+          "body": "Another account confirmed it first. Choose a different address on your profile."
+        }
+      }
+    },
+    "checkEmail": {
+      "title": "Check your email",
+      "body": "We sent a link to {{email}}. Open it and press Confirm to verify your address. It works for 24 hours.",
+      "bodyNoEmail": "We sent you a link. Open it and press Confirm to verify your address.",
+      "operatorNote": "An admin also needs to approve your account before you can sign in.",
+      "clientNote": "You can start using INSTIWISE now; a reminder stays at the top until you confirm.",
+      "spam": "Nothing arrived? Check your spam folder, then send it again.",
+      "continue": "Continue to my home",
+      "backToSignIn": "Back to sign in"
+    },
+    "resend": {
+      "button": "Resend email",
+      "sending": "Sending…",
+      "wait": "Resend in {{time}}",
+      "sent": "Sent. Check your inbox.",
+      "sentTo": "Sent to {{email}}. Check your inbox.",
+      "limited": "Too many emails for now. Try again in {{time}}.",
+      "field": "Email address",
+      "send": "Send a new link"
+    },
+    "banner": {
+      "text": "Confirm your email address {{email}}: open the link we sent you.",
+      "label": "Email not confirmed"
+    },
+    "email": {
+      "heading": "Email address",
+      "current": "Sign-in email",
+      "verified": "Verified",
+      "notVerified": "Not verified",
+      "notVerifiedBody": "Confirm it with the link we sent, so you can reset your password if you ever forget it.",
+      "pendingTitle": "Waiting for confirmation",
+      "pendingBody": "We sent a link to {{email}}. Until you confirm it, keep signing in with {{current}}.",
+      "cancel": "Cancel change",
+      "cancelTitle": "Cancel the change to {{email}}?",
+      "cancelBody": "The link we sent stops working. You keep signing in with {{current}}.",
+      "cancelled": "Email change cancelled",
+      "change": "Change email",
+      "newEmail": "New email address",
+      "password": "Current password",
+      "passwordHint": "Needed to protect your account.",
+      "submit": "Send confirmation link",
+      "requested": "We sent a link to {{email}}. Open it to finish the change."
     }
   },
   "validation": {
@@ -480,7 +672,11 @@
     "expenseCategoryRequired": "Choose a category.",
     "expenseDescriptionRequired": "Say what it was for, in at least 3 characters.",
     "expenseMethodRequired": "Choose how it was paid.",
-    "categoryNameRequired": "Enter a name of 2 to 40 characters."
+    "categoryNameRequired": "Enter a name of 2 to 40 characters.",
+    "resetCodeRequired": "Paste your reset link or type the code.",
+    "resetCodeFormat": "That doesn't look like a reset link or code. Codes look like R7KM-2QXP.",
+    "confirmPasswordRequired": "Type the new password again.",
+    "newEmailSame": "That is already your email address."
   },
   "apiErrors": {
     "INVALID_CREDENTIALS": "The email address or password is wrong.",
@@ -519,7 +715,22 @@
     "CATEGORY_NOT_FOUND": "That category was not found.",
     "CATEGORY_INACTIVE": "That category is no longer in use. Choose another one.",
     "CATEGORY_IN_USE": "Expenses use this category, so it cannot be deleted. Deactivate it instead.",
-    "CATEGORY_NAME_TAKEN": "A category with this name already exists."
+    "CATEGORY_NAME_TAKEN": "A category with this name already exists.",
+    "ACCOUNT_NOT_FOUND": "This account no longer exists. Reload the page.",
+    "RESET_CODE_NOT_ACTIVE": "This account no longer has an active reset code. Reload the page to see why.",
+    "RESET_CODE_NOT_FOUND": "This reset code doesn't work.",
+    "RESET_CODE_EXPIRED": "This reset code has expired.",
+    "RESET_CODE_CANCELLED": "This reset code was cancelled.",
+    "RESET_CODE_ALREADY_USED": "This reset code has already been used.",
+    "RESET_CODE_LOCKED": "This reset code is locked after too many attempts.",
+    "RESET_TOKEN_INVALID": "This reset link doesn't work.",
+    "RESET_TOKEN_EXPIRED": "This reset link has expired.",
+    "RESET_TOKEN_USED": "This reset link has already been used.",
+    "RESET_TOKEN_CANCELLED": "A newer reset link replaced this one.",
+    "VERIFICATION_TOKEN_INVALID": "This confirmation link doesn't work.",
+    "VERIFICATION_TOKEN_EXPIRED": "This confirmation link has expired.",
+    "EMAIL_ALREADY_VERIFIED": "Your email address is already confirmed.",
+    "EMAIL_CHANGE_NOT_PENDING": "There is no email change waiting. Reload the page."
   },
   "client": {
     "home": {
@@ -654,7 +865,6 @@
     },
     "account": {
       "profile": "Profile",
-      "emailHint": "This is how you sign in. Ask the INSTIWISE team if it needs to change.",
       "save": "Save changes",
       "saving": "Saving…",
       "saved": "Profile saved"
@@ -821,7 +1031,6 @@
     "profile": {
       "subtitle": "Your details, what you are allowed to do, and your password.",
       "details": "Your details",
-      "emailHint": "This is how you sign in. Ask an admin if it needs to change.",
       "role": "Role",
       "access": "Your access",
       "status": "Status",
@@ -954,6 +1163,29 @@
         "SUSPENDED": "No suspended operators",
         "REJECTED": "No operators were turned down"
       }
+    },
+    "reset": {
+      "action": "Reset password",
+      "issueTitle": "Reset the password of {{name}}?",
+      "issueBody": "You get a one-time code to send to {{name}}. It works once, for 24 hours, and lets them choose a new password. Their other sessions end when they use it.",
+      "issue": "Issue reset code",
+      "activeTitle": "{{name}} already has a reset code",
+      "activeBody": "Issued on {{issued}} by {{by}}, valid until {{expires}}. The code itself cannot be shown again.",
+      "activeChoice": "Cancel it, or issue a new code (which cancels this one).",
+      "issueNew": "Issue new code",
+      "cancelCode": "Cancel code",
+      "cancelled": "Reset code for {{name}} cancelled",
+      "codeTitle": "Reset code for {{name}}",
+      "codeBody": "Shown only now: once you close this, nobody can see it again. Send it to {{name}}. It works once and expires on {{expires}}.",
+      "link": "Reset link",
+      "code": "Reset code",
+      "message": "{{admin}} from INSTIWISE: to choose a new password, open {{link}} (or enter the code {{code}}). It works once and expires on {{expires}}.",
+      "done": "Done",
+      "active": "Reset code active until {{expires}}"
+    },
+    "emailBadge": {
+      "verified": "Email verified",
+      "notVerified": "Email not verified"
     }
   },
   "finance": {
@@ -1033,7 +1265,6 @@
       "DOCUMENT_UPLOADED": "Document uploaded",
       "DOCUMENT_VISIBILITY_CHANGED": "Document visibility changed",
       "CONVERSATION_VIEWED": "Conversation read by an admin",
-      "PASSWORD_RESET": "Password reset",
       "CONVERSATION_LIST_VIEWED": "Conversation list viewed by an admin",
       "PASSWORD_CHANGED": "Password changed",
       "PROJECT_UPDATED": "Draft project edited",
@@ -1043,7 +1274,15 @@
       "EXPENSE_WITHDRAWN": "Expense withdrawn",
       "EXPENSE_REVERSED": "Expense reversed",
       "EXPENSE_ADJUSTED": "Expense adjusted",
-      "EXPENSE_CATEGORY_CHANGED": "Expense category changed"
+      "EXPENSE_CATEGORY_CHANGED": "Expense category changed",
+      "PASSWORD_RESET_CODE_ISSUED": "Password reset code issued",
+      "PASSWORD_RESET_CODE_CANCELLED": "Password reset code cancelled",
+      "PASSWORD_RESET_COMPLETED": "Password reset completed",
+      "PASSWORD_RESET_REQUESTED": "Password reset email sent",
+      "EMAIL_VERIFICATION_SENT": "Confirmation email sent",
+      "EMAIL_VERIFIED": "Email address confirmed",
+      "EMAIL_CHANGE_REQUESTED": "Email change requested",
+      "EMAIL_CHANGED": "Email address changed"
     }
   },
   "settings": {
@@ -1128,14 +1367,6 @@
       "body": "Send the link, or the code if they prefer to type it. It works once and expires on {{date}}.",
       "link": "Invitation link",
       "code": "Invitation code",
-      "copyLink": "Copy link",
-      "copyCode": "Copy code",
-      "copiedLink": "Link copied",
-      "copiedCode": "Code copied",
-      "copyFailed": "Could not copy. Select the text and copy it yourself.",
-      "whatsapp": "Share on WhatsApp",
-      "whatsappNote": "Opens WhatsApp to pick the contact. Nothing said there is saved in INSTIWISE.",
-      "newTab": "(opens in a new tab)",
       "message": "{{inviter}} invited you to INSTIWISE. Register here: {{link}} (or enter the code {{code}}). The invitation expires on {{date}}.",
       "done": "Done",
       "again": "Share"
@@ -1495,5 +1726,21 @@
       "title": "Nothing collected or spent in this period",
       "body": "Choose another period, or record payments and expenses first."
     }
+  },
+  "share": {
+    "copyLink": "Copy link",
+    "copyCode": "Copy code",
+    "copiedLink": "Link copied",
+    "copiedCode": "Code copied",
+    "copyFailed": "Could not copy. Select the text and copy it yourself.",
+    "whatsapp": "Share on WhatsApp",
+    "whatsappNote": "Opens WhatsApp to pick the contact. Nothing said there is saved in INSTIWISE.",
+    "newTab": "(opens in a new tab)"
+  },
+  "time": {
+    "seconds_one": "{{count}} second",
+    "seconds_other": "{{count}} seconds",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes"
   }
 }

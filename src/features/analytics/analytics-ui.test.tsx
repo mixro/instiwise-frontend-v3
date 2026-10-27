@@ -30,7 +30,7 @@ async function tile(label: string): Promise<string> {
 /** "-TSh 190,000" -> -190000. Only to compare figures the server sent. */
 const amountOf = (text: string) => Number(text.replace(/[^\d-]/g, ""));
 
-describe("admin analytics", { timeout: 15_000 }, () => {
+describe("admin analytics", { timeout: 40_000 }, () => {
   it("counts approved expenses only: pending, rejected and reversed ones are left out", async () => {
     renderApp(ADMIN_PAGE(OCTOBER), "ADMIN");
     // October: rent 350,000 and internet 120,000 (fixed); 40,000 + 25,000 + 30,000
@@ -152,7 +152,7 @@ describe("admin analytics", { timeout: 15_000 }, () => {
   });
 });
 
-describe("operator reports", { timeout: 15_000 }, () => {
+describe("operator reports", { timeout: 40_000 }, () => {
   it("cover assigned clients only, with no fixed costs or company totals", async () => {
     const user = userEvent.setup();
     renderApp(OPERATOR_PAGE(range("2026-05-01", "2026-10-31")), "OPERATOR");

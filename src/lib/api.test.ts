@@ -91,7 +91,8 @@ describe("typed client", () => {
   it("sends JSON bodies and resolves 204 and 202 answers to undefined", async () => {
     let sent: unknown;
     server.use(
-      http.post("/api/auth/password-reset", async ({ request }) => {
+      // 202 is not in this operation's contract; any bodiless 2xx resolves the same way.
+      http.post("/api/auth/reset-codes/:code/completion", async ({ request }) => {
         sent = await request.json();
         return new HttpResponse(null, { status: 202 });
       }),
@@ -99,9 +100,12 @@ describe("typed client", () => {
     );
 
     await expect(
-      apiClient.POST("/auth/password-reset", { body: { email: "asha@example.co.tz" } }),
+      apiClient.POST("/auth/reset-codes/{code}/completion", {
+        path: { code: "RST2-NEMA" },
+        body: { password: "Mpya2026pass" },
+      }),
     ).resolves.toBeUndefined();
-    expect(sent).toEqual({ email: "asha@example.co.tz" });
+    expect(sent).toEqual({ password: "Mpya2026pass" });
     await expect(apiClient.POST("/auth/logout")).resolves.toBeUndefined();
   });
 });

@@ -15,7 +15,7 @@ import { formatTzPhone, normalizeTzPhone } from "@/lib/phone";
 import { operatorApi, type OperatorProfile } from "./api";
 
 // Decided 2026-10-21: operators edit their name and phone (kept, as at registration);
-// email, role, status and permissions are read-only here.
+// role, status and permissions are read-only; the email has its own section (ADR 0006).
 const schema = z.object({ name: nameField, phone: requiredPhone });
 type Values = z.infer<typeof schema>;
 
@@ -80,9 +80,6 @@ export function OperatorDetailsForm({
             {...register("phone")}
           />
         )}
-      </FormField>
-      <FormField label={t("auth.fields.email")} hint={t("operator.profile.emailHint")}>
-        {(control) => <Input type="email" value={profile.email} readOnly {...control} />}
       </FormField>
       <FormField label={t("operator.profile.role")}>
         {(control) => <Input value={t("roles.OPERATOR")} readOnly {...control} />}

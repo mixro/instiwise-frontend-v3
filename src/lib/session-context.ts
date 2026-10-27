@@ -13,6 +13,11 @@ export interface SessionUser {
    * offer; the server checks it again on every call.
    */
   permissions?: OperatorPermissions;
+  /**
+   * The sign-in email from the sign-in answer. Absent for the mock role
+   * switcher's demo people. The verification banner reads the rest from /auth/me.
+   */
+  email?: string;
 }
 
 export interface SessionContextValue {

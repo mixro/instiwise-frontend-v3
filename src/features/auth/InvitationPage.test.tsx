@@ -106,6 +106,13 @@ describe("client registration", () => {
     });
     await userEvent.click(screen.getByRole("button", { name: "Create account" }));
 
+    // Signed in, first told where the confirmation link went (ADR 0006).
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Check your email" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/We sent a link to amani@example.com/)).toBeVisible();
+    expect(screen.getByRole("button", { name: "Resend email" })).toBeVisible();
+    await userEvent.click(screen.getByRole("link", { name: "Continue to my home" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Home" })).toBeInTheDocument();
     expect(location()).toHaveTextContent("/client");
   });
@@ -161,13 +168,11 @@ describe("operator registration", () => {
     await userEvent.click(screen.getByRole("button", { name: "Create account" }));
 
     expect(
-      await screen.findByRole("heading", {
-        level: 1,
-        name: "Your account is waiting for approval",
-      }),
+      await screen.findByRole("heading", { level: 1, name: "Check your email" }),
     ).toBeInTheDocument();
+    expect(screen.getByText(/An admin also needs to approve your account/)).toBeVisible();
 
-    // Signing in before approval lands on the same page.
+    // Signing in before approval lands on the waiting page.
     await userEvent.click(screen.getByRole("link", { name: "Back to sign in" }));
     await fill({ "Email address": "zawadi@example.com", Password: "mradi2026" });
     await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
@@ -188,6 +193,7 @@ describe("operator registration", () => {
       "Create a password": "mradi2026",
     });
     await userEvent.click(screen.getByRole("button", { name: "Create account" }));
+    await userEvent.click(await screen.findByRole("link", { name: "Continue to my home" }));
     await screen.findByRole("heading", { level: 1, name: "Home" });
 
     // The same code again, after signing out.

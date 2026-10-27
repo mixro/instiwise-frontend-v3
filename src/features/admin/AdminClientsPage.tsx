@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DataTable, type DataTableColumn } from "@/components/DataTable";
 import { MoneyCell } from "@/components/MoneyCell";
+import { VerifiedTag } from "@/components/VerifiedTag";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { AdminInvitations } from "@/features/invitations/AdminInvitations";
@@ -11,6 +12,8 @@ import { useErrorText } from "@/hooks/useErrorText";
 import { formatTzPhone } from "@/lib/phone";
 import type { AdminClient } from "./api";
 import { AssignDialog } from "./AssignDialog";
+import { ResetCodeNote } from "./ResetCodeNote";
+import { ResetPasswordDialog } from "./ResetPasswordDialog";
 import { useAdminClients, useAdminOperators } from "./queries";
 
 /** Every client, who works with them, and what they owe. Assign or reassign here. */
@@ -21,6 +24,7 @@ export function AdminClientsPage() {
   const operators = useAdminOperators();
   const [assigning, setAssigning] = useState<AdminClient | null>(null);
   const [inviting, setInviting] = useState(false);
+  const [resetting, setResetting] = useState<AdminClient | null>(null);
 
   const activeOperators = (operators.data ?? []).filter((o) => o.status === "ACTIVE");
 
@@ -32,6 +36,15 @@ export function AdminClientsPage() {
         <span>
           <span className="block font-medium">{client.name}</span>
           <span className="block text-xs text-muted">{client.email}</span>
+          <VerifiedTag
+            verified={client.emailVerified}
+            label={
+              client.emailVerified
+                ? t("admin.emailBadge.verified")
+                : t("admin.emailBadge.notVerified")
+            }
+          />
+          <ResetCodeNote resetCode={client.resetCode} />
         </span>
       ),
       sortValue: (client) => client.name,
@@ -73,10 +86,16 @@ export function AdminClientsPage() {
       id: "actions",
       header: t("admin.actions"),
       cell: (client) => (
-        <Button size="sm" onClick={() => setAssigning(client)}>
-          {client.operator ? t("admin.clients.reassign") : t("admin.clients.assign")}
-          <span className="sr-only"> {client.name}</span>
-        </Button>
+        <span className="inline-flex flex-wrap justify-end gap-2">
+          <Button size="sm" onClick={() => setAssigning(client)}>
+            {client.operator ? t("admin.clients.reassign") : t("admin.clients.assign")}
+            <span className="sr-only"> {client.name}</span>
+          </Button>
+          <Button size="sm" onClick={() => setResetting(client)}>
+            {t("admin.reset.action")}
+            <span className="sr-only"> {client.name}</span>
+          </Button>
+        </span>
       ),
     },
   ];
@@ -111,6 +130,7 @@ export function AdminClientsPage() {
         mode="admin"
         operators={activeOperators.map(({ id, name }) => ({ id, name }))}
       />
+      {resetting && <ResetPasswordDialog account={resetting} onClose={() => setResetting(null)} />}
       {assigning && (
         <AssignDialog
           open

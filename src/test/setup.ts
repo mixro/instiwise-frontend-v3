@@ -1,16 +1,21 @@
 import "@testing-library/jest-dom/vitest";
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
 import i18n from "@/i18n";
 import { resetMockStaff } from "@/mocks/admin-store";
 import { resetMockAuth } from "@/mocks/auth";
 import { resetMockClient } from "@/mocks/client";
+import { resetMockEmail } from "@/mocks/email";
 import { mediaState } from "./media";
 import { server } from "./server";
 
 // The MSW handlers answer /api calls, as in the browser with VITE_USE_MOCKS=true.
 // Tests that stub fetch themselves bypass them.
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
+
+// findBy and waitFor wait 1 s by default; with every test file running in parallel
+// (the mock backend adds its own delay) screens can take longer to appear.
+configure({ asyncUtilTimeout: 5000 });
 afterAll(() => server.close());
 
 // Radix measures elements and captures the pointer; jsdom implements neither.
@@ -54,6 +59,7 @@ afterEach(async () => {
   resetMockAuth();
   resetMockClient();
   resetMockStaff();
+  resetMockEmail();
   vi.unstubAllGlobals();
   await i18n.changeLanguage("en");
 });

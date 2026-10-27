@@ -22,6 +22,24 @@
 #   status = 200
 #   force = true
 
+# Pages with a secret in the path (ADR 0005, ADR 0006) never pass it on as a
+# Referer. Tokens are only ever in the path, never in a query string. The pages
+# also set the same policy themselves when reached inside the app.
+[[headers]]
+  for = "/reset-password/*"
+  [headers.values]
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/verify-email/*"
+  [headers.values]
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/reset/*"
+  [headers.values]
+    Referrer-Policy = "no-referrer"
+
 # Every other path is a screen of the app: answer with index.html so deep links
 # and reloads (for example /client/projects) work. Real files such as
 # /mockServiceWorker.js and /assets/* are served first, because this rule is not

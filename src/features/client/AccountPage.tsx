@@ -4,6 +4,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { PageHeader } from "@/components/PageHeader";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { EmailSettings } from "@/features/auth/EmailSettings";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useErrorText } from "@/hooks/useErrorText";
@@ -63,6 +64,23 @@ export function AccountPage() {
         )}
         {profile.data && <ProfileForm profile={profile.data} />}
       </section>
+
+      {profile.data && (
+        <section
+          aria-labelledby="email-heading"
+          className="space-y-4 rounded-lg border border-border bg-surface p-4"
+        >
+          <h2 id="email-heading" className="text-base font-semibold">
+            {t("auth.email.heading")}
+          </h2>
+          <EmailSettings
+            email={profile.data.email}
+            emailVerified={profile.data.emailVerified}
+            pendingEmail={profile.data.pendingEmail}
+            onChanged={() => void profile.refetch()}
+          />
+        </section>
+      )}
 
       <section
         aria-labelledby="preferences-heading"

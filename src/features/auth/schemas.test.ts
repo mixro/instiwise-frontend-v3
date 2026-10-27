@@ -6,6 +6,8 @@ import {
   invitationEntrySchema,
   loginSchema,
   operatorRegistrationSchema,
+  resetEntrySchema,
+  resetPasswordSchema,
 } from "./schemas";
 
 const VALID = {
@@ -87,9 +89,44 @@ describe("login and invitation schemas", () => {
   });
 });
 
+describe("password reset schemas", () => {
+  it("accept a reset link or code, and explain anything else", () => {
+    expect(resetEntrySchema.safeParse({ code: "https://x.tz/reset/r7km-2qxp" }).success).toBe(true);
+    expect(firstErrors(resetEntrySchema.safeParse({ code: "" }))).toEqual({
+      code: "validation.resetCodeRequired",
+    });
+    expect(firstErrors(resetEntrySchema.safeParse({ code: "hello" }))).toEqual({
+      code: "validation.resetCodeFormat",
+    });
+  });
+
+  it("apply the registration rules and ask for the same password twice", () => {
+    expect(
+      resetPasswordSchema.safeParse({ password: "Mpya2026", confirmPassword: "Mpya2026" }).success,
+    ).toBe(true);
+    expect(
+      firstErrors(resetPasswordSchema.safeParse({ password: "abc123", confirmPassword: "" })),
+    ).toEqual({
+      password: "validation.passwordTooShort",
+      confirmPassword: "validation.confirmPasswordRequired",
+    });
+    expect(
+      firstErrors(
+        resetPasswordSchema.safeParse({ password: "Mpya2026", confirmPassword: "Mpya2027" }),
+      ),
+    ).toEqual({ confirmPassword: "validation.passwordsDiffer" });
+  });
+});
+
 describe("validation messages", () => {
   it("exist in English and Swahili for every key the schemas use", () => {
-    const source = [clientRegistrationSchema, operatorRegistrationSchema, loginSchema]
+    const source = [
+      clientRegistrationSchema,
+      operatorRegistrationSchema,
+      loginSchema,
+      resetEntrySchema,
+      resetPasswordSchema,
+    ]
       .map((schema) => JSON.stringify(schema.def))
       .join();
     const used = new Set(source.match(/validation\.\w+/g));

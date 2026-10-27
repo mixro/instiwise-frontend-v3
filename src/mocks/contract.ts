@@ -48,3 +48,12 @@ export const on = {
 export function fail(status: number, code: ContractErrorCode) {
   return HttpResponse.json<ErrorBody>({ error: { code, message: code } }, { status });
 }
+
+/** RATE_LIMITED with the wait in the body and the Retry-After header, as the contract says. */
+export function failRateLimited(retryAfterSeconds: number) {
+  const seconds = Math.max(1, Math.ceil(retryAfterSeconds));
+  return HttpResponse.json<ErrorBody>(
+    { error: { code: "RATE_LIMITED", message: "RATE_LIMITED", retryAfterSeconds: seconds } },
+    { status: 429, headers: { "Retry-After": String(seconds) } },
+  );
+}

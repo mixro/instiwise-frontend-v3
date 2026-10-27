@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { parseInvitationInput } from "@/lib/invitation-code";
+import { parseInvitationInput, parseResetCodeInput } from "@/lib/invitation-code";
 import { normalizeTzPhone } from "@/lib/phone";
 
 /*
@@ -65,6 +65,18 @@ export const invitationEntrySchema = z.object({
     ),
 });
 
+/** /reset: the code an admin sent, or the whole link (ADR 0005). */
+export const resetEntrySchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(1, "validation.resetCodeRequired")
+    .refine(
+      (value) => value === "" || parseResetCodeInput(value) !== null,
+      "validation.resetCodeFormat",
+    ),
+});
+
 export const clientRegistrationSchema = z.object({
   name: nameField,
   email,
@@ -100,8 +112,38 @@ export const changePasswordSchema = z
     ...always,
   });
 
+/** /reset/:code: a new password under the registration rules, typed twice. */
+export const resetPasswordSchema = z
+  .object({
+    password: newPassword,
+    confirmPassword: z.string().min(1, "validation.confirmPasswordRequired"),
+  })
+  .refine((values) => !values.confirmPassword || values.confirmPassword === values.password, {
+    message: "validation.passwordsDiffer",
+    path: ["confirmPassword"],
+    ...always,
+  });
+
+/** /forgot-password, and asking for a new confirmation link while signed out (ADR 0006). */
+export const emailOnlySchema = z.object({ email });
+
+/** A new sign-in address (pending until confirmed) and the current password. */
+export function emailChangeSchema(currentEmail: string) {
+  return z.object({
+    newEmail: email.refine(
+      (value) => value.toLowerCase() !== currentEmail.toLowerCase(),
+      "validation.newEmailSame",
+    ),
+    currentPassword: z.string().min(1, "validation.currentPasswordRequired"),
+  });
+}
+
 export type LoginValues = z.infer<typeof loginSchema>;
 export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+export type EmailOnlyValues = z.infer<typeof emailOnlySchema>;
+export type EmailChangeValues = z.infer<ReturnType<typeof emailChangeSchema>>;
+export type ResetEntryValues = z.infer<typeof resetEntrySchema>;
+export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 export type InvitationEntryValues = z.infer<typeof invitationEntrySchema>;
 export type ClientRegistrationValues = z.infer<typeof clientRegistrationSchema>;
 export type OperatorRegistrationValues = z.infer<typeof operatorRegistrationSchema>;

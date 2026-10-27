@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo, Mark } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/Sheet";
+import { VerifyEmailBanner } from "@/features/auth/VerifyEmailBanner";
 import { cn } from "@/lib/cn";
 import type { Role } from "@/lib/roles";
 import { Breadcrumb } from "./Breadcrumb";
@@ -155,6 +156,7 @@ export function SidebarLayout({ role }: { role: Exclude<Role, "CLIENT"> }) {
             <UserMenu />
           </div>
         </header>
+        <VerifyEmailBanner />
 
         <main id={MAIN_CONTENT_ID} className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 lg:px-8">
           <Outlet />

@@ -42,7 +42,12 @@ export function LoginPage() {
     try {
       const { user } = await login(values);
       // GuestOnly then moves them on (to where they were going, or their home).
-      signIn({ role: user.role, name: user.name, permissions: user.permissions });
+      signIn({
+        role: user.role,
+        name: user.name,
+        permissions: user.permissions,
+        email: user.email,
+      });
       // The language saved with the account follows the user to every device.
       void i18n.changeLanguage(user.preferredLanguage);
     } catch (error) {
@@ -91,6 +96,9 @@ export function LoginPage() {
             <PasswordInput autoComplete="current-password" {...control} {...register("password")} />
           )}
         </FormField>
+        <p className="-mt-2 text-sm">
+          <TextLink to="/forgot-password">{t("auth.login.forgot")}</TextLink>
+        </p>
         <Button type="submit" variant="primary" loading={isSubmitting} className="w-full">
           {isSubmitting ? t("auth.login.submitting") : t("auth.login.submit")}
         </Button>

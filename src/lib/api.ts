@@ -31,12 +31,15 @@ export type ApiErrorCode =
 export class ApiError extends Error {
   readonly code: ApiErrorCode;
   readonly status: number;
+  /** RATE_LIMITED: seconds until the server takes the request again (body or Retry-After). */
+  readonly retryAfterSeconds?: number;
 
-  constructor(code: ApiErrorCode, status: number, message?: string) {
+  constructor(code: ApiErrorCode, status: number, message?: string, retryAfterSeconds?: number) {
     super(message ?? code);
     this.name = "ApiError";
     this.code = code;
     this.status = status;
+    this.retryAfterSeconds = retryAfterSeconds;
   }
 }
 
@@ -110,20 +113,24 @@ async function send(method: Method, path: string, options: RawOptions = {}): Pro
     }
     let code: ApiErrorCode = "UNKNOWN_ERROR";
     let message: string | undefined;
+    const header = Number(response.headers.get("Retry-After"));
+    let retryAfter = Number.isInteger(header) && header > 0 ? header : undefined;
     try {
       const failure = (await response.json()) as {
-        error?: { code?: ApiErrorCode; message?: string };
+        error?: { code?: ApiErrorCode; message?: string; retryAfterSeconds?: number };
       };
       code = failure.error?.code ?? code;
       message = failure.error?.message;
+      retryAfter = failure.error?.retryAfterSeconds ?? retryAfter;
     } catch {
       // The body was not JSON; keep the generic code.
     }
-    throw new ApiError(code, response.status, message);
+    throw new ApiError(code, response.status, message, retryAfter);
   }
 
-  if (response.status === 204 || response.status === 202) return undefined;
   if (type.includes("application/pdf")) return response.blob();
+  // 204, and a 202 that only says "accepted", have no body.
+  if (response.status === 204 || !type.includes("application/json")) return undefined;
   return response.json();
 }
 

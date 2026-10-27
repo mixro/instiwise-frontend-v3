@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/brand/Logo";
+import { VerifyEmailBanner } from "@/features/auth/VerifyEmailBanner";
 import { cn } from "@/lib/cn";
 import { DemoBanner } from "./DemoBanner";
 import { DevToolbar } from "./DevToolbar";
@@ -58,6 +59,7 @@ export function ClientLayout() {
           </div>
         </div>
       </header>
+      <VerifyEmailBanner />
 
       <main id={MAIN_CONTENT_ID} className="mx-auto max-w-5xl px-4 pt-6 pb-28 md:pb-12">
         <Outlet />

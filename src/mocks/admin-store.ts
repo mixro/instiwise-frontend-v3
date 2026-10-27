@@ -8,6 +8,7 @@ import {
   type MockClient,
   type MockInvitation,
 } from "./staff-seed";
+import { seedResetCodes, type MockResetCode } from "./reset-seed";
 import {
   seedExpenseCategories,
   seedExpenses,
@@ -22,8 +23,8 @@ import {
 
 export const MOCK_ADMIN = "Rehema Said";
 
-/** An operator account; its clients come from the assignments. */
-export type MockOperator = Omit<AdminOperator, "clients">;
+/** An operator account; its clients come from the assignments, its reset code from resetCodes. */
+export type MockOperator = Omit<AdminOperator, "clients" | "resetCode" | "emailVerified">;
 
 interface StaffState {
   operators: MockOperator[];
@@ -33,6 +34,10 @@ interface StaffState {
   invitations: MockInvitation[];
   expenses: MockExpense[];
   expenseCategories: MockExpenseCategory[];
+  /** Password reset codes, every one ever issued (ADR 0005). */
+  resetCodes: MockResetCode[];
+  /** When this browser last failed a reset code check or completion (the per-client limit). */
+  resetFailures: number[];
 }
 
 function seed(): StaffState {
@@ -44,6 +49,8 @@ function seed(): StaffState {
     invitations: seedInvitations(),
     expenses: seedExpenses(),
     expenseCategories: seedExpenseCategories(),
+    resetCodes: seedResetCodes(),
+    resetFailures: [],
   };
 }
 

@@ -14,6 +14,8 @@ import { addAudit, MOCK_ADMIN, operatorById, staffState, type MockOperator } fro
 import { setMockAccountState } from "./auth";
 import { fail, on } from "./contract";
 import { markInvitationRejected } from "./invitations";
+import { emailStatus } from "./email";
+import { resetCodeStatus } from "./reset-codes";
 import { balanceOf, mockProjects, type MockPayment, type MockProject } from "./client";
 import { clientNameOf, recordedThisMonth, staffPayments, sumBalances } from "./operator";
 import type { MockClient } from "./staff-seed";
@@ -41,6 +43,8 @@ function adminClient(client: MockClient): AdminClient {
     phone: client.phone,
     projectCount: projects.length,
     operator: operator ? { id: operator.id, name: operator.name } : null,
+    resetCode: resetCodeStatus(client.id),
+    emailVerified: emailStatus(client.email).emailVerified,
     ...sumBalances(projects.map(balanceOf)),
   };
 }
@@ -48,6 +52,8 @@ function adminClient(client: MockClient): AdminClient {
 function adminOperator(operator: MockOperator): AdminOperator {
   return {
     ...operator,
+    resetCode: resetCodeStatus(operator.id),
+    emailVerified: emailStatus(operator.email).emailVerified,
     clients: staffState()
       .clients.filter((client) => client.operatorId === operator.id)
       .map(({ id, name }) => ({ id, name })),

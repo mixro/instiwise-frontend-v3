@@ -121,7 +121,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/password-reset": {
+    "/auth/password-reset-requests": {
         parameters: {
             query?: never;
             header?: never;
@@ -132,9 +132,14 @@ export interface paths {
         put?: never;
         /**
          * Ask for a password reset email
-         * @description Always answers 202, whether or not the email has an account, so
-         *     accounts cannot be discovered. The email holds a single-use,
-         *     short-lived token. Built in phase 4.
+         * @description Always answers 202 with no body, whether the email has an account or
+         *     not, is verified or not, or belongs to a suspended account, so no
+         *     account can be discovered (ADR 0006). An email is only sent to a
+         *     verified address of an account that could sign in; it holds a link
+         *     /reset-password/<token>, valid 1 hour, single use. A new request
+         *     cancels the account's previous link. Sent in the account's saved
+         *     language. Audited (PASSWORD_RESET_REQUESTED) only when an email is
+         *     sent. Rate limited per client, never per account.
          */
         post: operations["requestPasswordReset"];
         delete?: never;
@@ -143,7 +148,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/password-reset/{token}": {
+    "/auth/password-resets/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check a password reset link before choosing a new password
+         * @description Reveals only that the link can be used and until when, never the
+         *     account. Rate limited per client.
+         */
+        get: operations["getPasswordReset"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password-resets/{token}/completion": {
         parameters: {
             query?: never;
             header?: never;
@@ -153,9 +179,175 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Set a new password with the emailed token
-         * @description Uses the token once and revokes every refresh token of the account
-         *     (signed out everywhere). Audited (PASSWORD_RESET). Built in phase 4.
+         * Set a new password with a reset link
+         * @description Uses the link once, changes the password and revokes every refresh
+         *     token of the account, so every session is signed out. Does not sign
+         *     in; the usual sign-in rules apply afterwards. Audited
+         *     (PASSWORD_RESET_COMPLETED), never with the token or the password.
+         */
+        post: operations["completeEmailPasswordReset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/email-verification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send the signed-in user's verification email again
+         * @description Sends to the pending new address when an email change is waiting,
+         *     otherwise to the unverified sign-in address. A new link cancels the
+         *     previous one. At most one email per 60 seconds and 5 per hour per
+         *     address (RATE_LIMITED with retryAfterSeconds). Audited
+         *     (EMAIL_VERIFICATION_SENT).
+         */
+        post: operations["resendEmailVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/email-verification-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a verification email again, signed out (after registering)
+         * @description For people who cannot sign in yet, such as an operator waiting for
+         *     approval. Always answers 202 with no body, whether or not the address
+         *     has an account or is already verified. The same limits as the signed-in
+         *     resend apply to the address given, so the answer never depends on an
+         *     account. Sent in the account's saved language.
+         */
+        post: operations["requestEmailVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/email-verifications/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm an email address with the emailed link
+         * @description A POST, sent by the Confirm button: opening the link (as mail scanners
+         *     do) verifies nothing. Works signed in or not. Valid 24 hours, single
+         *     use. For an email change, the new address becomes the sign-in address
+         *     now and the old one stops working. Audited (EMAIL_VERIFIED, plus
+         *     EMAIL_CHANGED for a change).
+         */
+        post: operations["confirmEmailVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/email-change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change the sign-in email (pending until the new address is confirmed)
+         * @description Needs the current password. The new address gets a verification link;
+         *     until it is confirmed the old address stays the sign-in address. A new
+         *     request replaces a pending one. Shares the resend limits. Audited
+         *     (EMAIL_CHANGE_REQUESTED and EMAIL_VERIFICATION_SENT). Admin accounts
+         *     have no such screen yet, so clients and operators only.
+         */
+        post: operations["requestEmailChange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/email-change/cancellation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel a pending email change
+         * @description The link sent to the new address stops working; the sign-in address does not change.
+         */
+        post: operations["cancelEmailChange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/reset-codes/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check a password reset code before choosing a new password
+         * @description Reveals only that the code can be used and until when: never the
+         *     account, its name or its email (ADR 0005). Rate limited per client;
+         *     every failed check counts toward the limit.
+         */
+        get: operations["getResetCode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/reset-codes/{code}/completion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set a new password with a reset code
+         * @description Uses the code once and revokes every refresh token of the account, so
+         *     every other session is signed out. Does not sign in: the user signs in
+         *     with the new password, and the usual sign-in rules still apply (a
+         *     suspended, waiting or rejected operator still cannot sign in).
+         *     Each refused attempt on an existing code counts; after 5 the code is
+         *     locked (RESET_CODE_LOCKED) and the admin must issue a new one. Audited
+         *     (PASSWORD_RESET_COMPLETED), never with the code or the password.
          */
         post: operations["completePasswordReset"];
         delete?: never;
@@ -490,7 +682,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** Change name and phone (email is read-only) */
+        /** Change name and phone (the email changes through /auth/email-change) */
         patch: operations["updateClientProfile"];
         trace?: never;
     };
@@ -1179,8 +1371,9 @@ export interface paths {
         /**
          * Correct a client's name, email or phone
          * @description Send only what changes; phone null removes it. A new email is also the
-         *     new sign-in email. One CLIENT_UPDATED audit entry per changed field,
-         *     with from and to.
+         *     new sign-in email at once, marked not verified, and gets a verification
+         *     link (ADR 0006); any pending change by the client is cancelled. One
+         *     CLIENT_UPDATED audit entry per changed field, with from and to.
          */
         patch: operations["updateAdminClient"];
         trace?: never;
@@ -1661,6 +1854,52 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/accounts/{accountId}/reset-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Issue a one-time password reset code for a client or operator
+         * @description Returns the code and its link once; it is never shown again (the
+         *     account records only carry resetCode times). Valid for 24 hours and
+         *     for one reset. Issuing cancels the account's previous active code
+         *     (audited PASSWORD_RESET_CODE_CANCELLED, then PASSWORD_RESET_CODE_ISSUED).
+         *     The code is never written to the audit log. Admin accounts answer
+         *     ACCOUNT_NOT_FOUND. Decided 2026-10-27 (ADR 0005).
+         */
+        post: operations["issueResetCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/accounts/{accountId}/reset-code/cancellation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel an account's active password reset code
+         * @description The code stops working at once (RESET_CODE_CANCELLED). Audited
+         *     (PASSWORD_RESET_CODE_CANCELLED).
+         */
+        post: operations["cancelResetCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/expenses": {
         parameters: {
             query?: never;
@@ -1960,12 +2199,12 @@ export interface components {
          */
         DocumentKind: "pdf" | "word" | "spreadsheet" | "image";
         /** @enum {string} */
-        AuditAction: "PAYMENT_RECORDED" | "PAYMENT_REVERSED" | "PAYMENT_ADJUSTED" | "OPERATOR_APPROVED" | "OPERATOR_REJECTED" | "OPERATOR_SUSPENDED" | "OPERATOR_REACTIVATED" | "CLIENT_ASSIGNED" | "CHANGE_APPROVED" | "CHANGE_NOT_APPROVED" | "CHANGE_ACCEPTED" | "CHANGE_REJECTED" | "AGREEMENT_ACCEPTED" | "SETTINGS_UPDATED" | "CLIENT_UPDATED" | "OPERATOR_PERMISSIONS_CHANGED" | "INVITATION_CREATED" | "INVITATION_REVOKED" | "PROJECT_CREATED" | "AGREEMENT_SENT" | "DOCUMENT_UPLOADED" | "DOCUMENT_VISIBILITY_CHANGED" | "CONVERSATION_VIEWED" | "CONVERSATION_LIST_VIEWED" | "PASSWORD_CHANGED" | "PROJECT_UPDATED" | "EXPENSE_SUBMITTED" | "EXPENSE_APPROVED" | "EXPENSE_REJECTED" | "EXPENSE_WITHDRAWN" | "EXPENSE_REVERSED" | "EXPENSE_ADJUSTED" | "EXPENSE_CATEGORY_CHANGED" | "PASSWORD_RESET";
+        AuditAction: "PAYMENT_RECORDED" | "PAYMENT_REVERSED" | "PAYMENT_ADJUSTED" | "OPERATOR_APPROVED" | "OPERATOR_REJECTED" | "OPERATOR_SUSPENDED" | "OPERATOR_REACTIVATED" | "CLIENT_ASSIGNED" | "CHANGE_APPROVED" | "CHANGE_NOT_APPROVED" | "CHANGE_ACCEPTED" | "CHANGE_REJECTED" | "AGREEMENT_ACCEPTED" | "SETTINGS_UPDATED" | "CLIENT_UPDATED" | "OPERATOR_PERMISSIONS_CHANGED" | "INVITATION_CREATED" | "INVITATION_REVOKED" | "PROJECT_CREATED" | "AGREEMENT_SENT" | "DOCUMENT_UPLOADED" | "DOCUMENT_VISIBILITY_CHANGED" | "CONVERSATION_VIEWED" | "CONVERSATION_LIST_VIEWED" | "PASSWORD_CHANGED" | "PROJECT_UPDATED" | "EXPENSE_SUBMITTED" | "EXPENSE_APPROVED" | "EXPENSE_REJECTED" | "EXPENSE_WITHDRAWN" | "EXPENSE_REVERSED" | "EXPENSE_ADJUSTED" | "EXPENSE_CATEGORY_CHANGED" | "PASSWORD_RESET_CODE_ISSUED" | "PASSWORD_RESET_CODE_CANCELLED" | "PASSWORD_RESET_COMPLETED" | "EMAIL_VERIFICATION_SENT" | "EMAIL_VERIFIED" | "EMAIL_CHANGE_REQUESTED" | "EMAIL_CHANGED" | "PASSWORD_RESET_REQUESTED";
         /**
          * @description Every code the API returns. The frontend has a translation for each.
          * @enum {string}
          */
-        ErrorCode: "UNAUTHENTICATED" | "FORBIDDEN" | "VALIDATION_FAILED" | "RATE_LIMITED" | "INTERNAL_ERROR" | "INVALID_CREDENTIALS" | "ACCOUNT_PENDING_APPROVAL" | "ACCOUNT_REJECTED" | "ACCOUNT_SUSPENDED" | "EMAIL_TAKEN" | "INVITATION_NOT_FOUND" | "INVITATION_EXPIRED" | "INVITATION_REVOKED" | "INVITATION_ALREADY_USED" | "PROJECT_NOT_FOUND" | "CLIENT_NOT_FOUND" | "OPERATOR_NOT_FOUND" | "PAYMENT_NOT_FOUND" | "RECEIPT_NOT_FOUND" | "DOCUMENT_NOT_FOUND" | "AGREEMENT_NOT_FOUND" | "CHANGE_REQUEST_NOT_FOUND" | "AGREEMENT_NOT_AWAITING_ACCEPTANCE" | "AGREEMENT_NOT_ACCEPTED" | "CHANGE_REQUEST_ALREADY_DECIDED" | "CHANGE_REQUEST_ALREADY_OPEN" | "CHANGE_REQUEST_NO_CHANGES" | "REASON_REQUIRED" | "PAYMENT_REFERENCE_REQUIRED" | "PAYMENT_DATE_OUT_OF_RANGE" | "PAYMENT_ALREADY_REVERSED" | "ADJUSTMENT_BELOW_ZERO" | "OPERATOR_HAS_CLIENTS" | "OPERATOR_NOT_ACTIVE" | "OPERATOR_NOT_PENDING" | "OPERATOR_STATUS_CHANGED" | "PERMISSION_REQUIRED" | "RESET_TOKEN_INVALID" | "RESET_TOKEN_EXPIRED" | "INVITATION_NOT_ACTIVE" | "AGREEMENT_NOT_DRAFT" | "FILE_TOO_LARGE" | "FILE_TYPE_NOT_ALLOWED" | "CURRENT_PASSWORD_WRONG" | "PROJECT_NOT_DRAFT" | "EXPENSE_NOT_FOUND" | "EXPENSE_NOT_PENDING" | "EXPENSE_NOT_APPROVED" | "EXPENSE_ALREADY_REVERSED" | "EXPENSE_PROJECT_REQUIRED" | "EXPENSE_PROJECT_NOT_ALLOWED" | "CATEGORY_NOT_FOUND" | "CATEGORY_INACTIVE" | "CATEGORY_IN_USE" | "CATEGORY_NAME_TAKEN";
+        ErrorCode: "UNAUTHENTICATED" | "FORBIDDEN" | "VALIDATION_FAILED" | "RATE_LIMITED" | "INTERNAL_ERROR" | "INVALID_CREDENTIALS" | "ACCOUNT_PENDING_APPROVAL" | "ACCOUNT_REJECTED" | "ACCOUNT_SUSPENDED" | "EMAIL_TAKEN" | "INVITATION_NOT_FOUND" | "INVITATION_EXPIRED" | "INVITATION_REVOKED" | "INVITATION_ALREADY_USED" | "PROJECT_NOT_FOUND" | "CLIENT_NOT_FOUND" | "OPERATOR_NOT_FOUND" | "PAYMENT_NOT_FOUND" | "RECEIPT_NOT_FOUND" | "DOCUMENT_NOT_FOUND" | "AGREEMENT_NOT_FOUND" | "CHANGE_REQUEST_NOT_FOUND" | "AGREEMENT_NOT_AWAITING_ACCEPTANCE" | "AGREEMENT_NOT_ACCEPTED" | "CHANGE_REQUEST_ALREADY_DECIDED" | "CHANGE_REQUEST_ALREADY_OPEN" | "CHANGE_REQUEST_NO_CHANGES" | "REASON_REQUIRED" | "PAYMENT_REFERENCE_REQUIRED" | "PAYMENT_DATE_OUT_OF_RANGE" | "PAYMENT_ALREADY_REVERSED" | "ADJUSTMENT_BELOW_ZERO" | "OPERATOR_HAS_CLIENTS" | "OPERATOR_NOT_ACTIVE" | "OPERATOR_NOT_PENDING" | "OPERATOR_STATUS_CHANGED" | "PERMISSION_REQUIRED" | "ACCOUNT_NOT_FOUND" | "RESET_CODE_NOT_FOUND" | "RESET_CODE_EXPIRED" | "RESET_CODE_CANCELLED" | "RESET_CODE_ALREADY_USED" | "RESET_CODE_LOCKED" | "RESET_CODE_NOT_ACTIVE" | "RESET_TOKEN_INVALID" | "RESET_TOKEN_EXPIRED" | "RESET_TOKEN_USED" | "RESET_TOKEN_CANCELLED" | "VERIFICATION_TOKEN_INVALID" | "VERIFICATION_TOKEN_EXPIRED" | "EMAIL_ALREADY_VERIFIED" | "EMAIL_CHANGE_NOT_PENDING" | "INVITATION_NOT_ACTIVE" | "AGREEMENT_NOT_DRAFT" | "FILE_TOO_LARGE" | "FILE_TYPE_NOT_ALLOWED" | "CURRENT_PASSWORD_WRONG" | "PROJECT_NOT_DRAFT" | "EXPENSE_NOT_FOUND" | "EXPENSE_NOT_PENDING" | "EXPENSE_NOT_APPROVED" | "EXPENSE_ALREADY_REVERSED" | "EXPENSE_PROJECT_REQUIRED" | "EXPENSE_PROJECT_NOT_ALLOWED" | "CATEGORY_NOT_FOUND" | "CATEGORY_INACTIVE" | "CATEGORY_IN_USE" | "CATEGORY_NAME_TAKEN";
         Health: {
             /** @enum {string} */
             status: "ok";
@@ -1985,6 +2224,8 @@ export interface components {
                 details?: {
                     [key: string]: unknown;
                 };
+                /** @description RATE_LIMITED only; the same value as the Retry-After header */
+                retryAfterSeconds?: number;
             };
         };
         LoginRequest: {
@@ -1992,6 +2233,10 @@ export interface components {
             password: string;
         };
         AuthUser: {
+            /** @description The sign-in email was confirmed (ADR 0006); unverified users can still sign in */
+            emailVerified: boolean;
+            /** @description A new address waiting for confirmation; the email above stays in use until then */
+            pendingEmail: null | components["schemas"]["Email"];
             id: components["schemas"]["Id"];
             name: string;
             email: components["schemas"]["Email"];
@@ -2027,6 +2272,8 @@ export interface components {
             phone?: components["schemas"]["Phone"];
             /** @description At least one letter and one number */
             password: string;
+            /** @description The interface language at registration; saved with the account, so the verification email and later emails use it (default en) */
+            preferredLanguage?: components["schemas"]["Language"];
         };
         RegistrationResult: components["schemas"]["ClientRegistered"] | components["schemas"]["OperatorPendingApproval"];
         /** @description A client is registered and signed in at once */
@@ -2203,6 +2450,10 @@ export interface components {
             expiresAt: components["schemas"]["DateTime"];
         };
         Profile: {
+            /** @description The sign-in email was confirmed (ADR 0006); unverified users can still sign in */
+            emailVerified: boolean;
+            /** @description A new address waiting for confirmation; the email above stays in use until then */
+            pendingEmail: null | components["schemas"]["Email"];
             name: string;
             email: components["schemas"]["Email"];
             phone?: components["schemas"]["Phone"];
@@ -2222,8 +2473,12 @@ export interface components {
         Language: "en" | "sw";
         OperatorProfile: {
             name: string;
-            /** @description Read-only here; an admin corrects it */
+            /** @description Changed through /auth/email-change (or corrected by an admin) */
             email: components["schemas"]["Email"];
+            /** @description The sign-in email was confirmed (ADR 0006); unverified users can still sign in */
+            emailVerified: boolean;
+            /** @description A new address waiting for confirmation; the email above stays in use until then */
+            pendingEmail: null | components["schemas"]["Email"];
             phone: components["schemas"]["Phone"];
             preferredLanguage: components["schemas"]["Language"];
             status: components["schemas"]["OperatorStatus"];
@@ -2434,6 +2689,9 @@ export interface components {
             recentActivity: components["schemas"]["AuditEntry"][];
         };
         AdminClient: components["schemas"]["ClientSummary"] & {
+            /** @description Shown as a badge; it does not block anything */
+            emailVerified: boolean;
+            resetCode: components["schemas"]["ResetCodeStatus"];
             /** @description null until an admin assigns one */
             operator: null | {
                 id: components["schemas"]["Id"];
@@ -2446,6 +2704,9 @@ export interface components {
             openChange: boolean;
         };
         AdminOperator: {
+            /** @description Shown as a badge; it does not block approval */
+            emailVerified: boolean;
+            resetCode: components["schemas"]["ResetCodeStatus"];
             permissions: components["schemas"]["OperatorPermissions"];
             id: components["schemas"]["Id"];
             name: string;
@@ -2689,12 +2950,62 @@ export interface components {
             items: components["schemas"]["StaffPayment"][];
             nextCursor: components["schemas"]["NextCursor"];
         };
-        PasswordResetRequest: {
+        NewPasswordRequest: {
+            /** @description At least one letter and one number (the registration rules) */
+            password: string;
+        };
+        EmailRequest: {
             email: components["schemas"]["Email"];
         };
-        NewPasswordRequest: {
-            /** @description At least one letter and one number */
-            password: string;
+        /** @description Only that the link is usable and until when; nothing about the account */
+        TokenCheck: {
+            expiresAt: components["schemas"]["DateTime"];
+        };
+        VerificationSent: {
+            /** @description The signed-in user's own address that the link went to */
+            sentTo: components["schemas"]["Email"];
+            /** @description When the next email may be asked for (60 seconds later, or later when the hourly limit is reached) */
+            resendAvailableAt: components["schemas"]["DateTime"];
+        };
+        EmailVerified: {
+            /** @description The address now verified (the link's owner already knows it) */
+            email: components["schemas"]["Email"];
+            /** @description True when it confirmed an email change; the address is now the sign-in email */
+            changed: boolean;
+        };
+        EmailChangeRequest: {
+            newEmail: components["schemas"]["Email"];
+            currentPassword: string;
+        };
+        /** @description Only that the code is usable and until when; nothing about the account */
+        ResetCodeCheck: {
+            /** @example R7KM-2QXP */
+            code: string;
+            expiresAt: components["schemas"]["DateTime"];
+        };
+        /** @description Returned once, when the code is issued; never again */
+        ResetCodeIssued: {
+            /** @example R7KM-2QXP */
+            code: string;
+            /**
+             * Format: uri
+             * @description The reset link to share (/reset/<code>)
+             */
+            link: string;
+            issuedAt: components["schemas"]["DateTime"];
+            expiresAt: components["schemas"]["DateTime"];
+        };
+        /**
+         * @description The account's active reset code, without the code itself; null when
+         *     there is none (used, expired, cancelled and locked codes are not active)
+         */
+        ResetCodeStatus: null | {
+            issuedAt: components["schemas"]["DateTime"];
+            expiresAt: components["schemas"]["DateTime"];
+            issuedBy: {
+                id: components["schemas"]["Id"];
+                name: string;
+            };
         };
         /** @description Granted by an admin; both start false */
         OperatorPermissions: {
@@ -3036,6 +3347,12 @@ export interface components {
         ReceiptNumber: string;
         /** @description Eight letters/digits as XXXX-XXXX (the frontend normalises links and typing) */
         InvitationCode: string;
+        /** @description A password reset code, same format as an invitation code (XXXX-XXXX) */
+        ResetCode: string;
+        /** @description The secret in an emailed link; only ever in the URL path, never in a query or body */
+        EmailToken: string;
+        /** @description A client's or an operator's id (AdminClient.id, AdminOperator.id) */
+        AccountId: components["schemas"]["Id"];
         ExpenseId: components["schemas"]["Id"];
         CategoryId: components["schemas"]["Id"];
         AgreementVersionNumber: number;
@@ -3262,11 +3579,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PasswordResetRequest"];
+                "application/json": components["schemas"]["EmailRequest"];
             };
         };
         responses: {
-            /** @description Accepted (an email is sent if the account exists) */
+            /** @description Accepted (the same answer for every address) */
             202: {
                 headers: {
                     [name: string]: unknown;
@@ -3278,12 +3595,357 @@ export interface operations {
             500: components["responses"]["ServerError"];
         };
     };
+    getPasswordReset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The secret in an emailed link; only ever in the URL path, never in a query or body */
+                token: components["parameters"]["EmailToken"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A usable link */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenCheck"];
+                };
+            };
+            /** @description RESET_TOKEN_INVALID */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_TOKEN_USED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_TOKEN_EXPIRED or RESET_TOKEN_CANCELLED (a newer link was requested) */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    completeEmailPasswordReset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The secret in an emailed link; only ever in the URL path, never in a query or body */
+                token: components["parameters"]["EmailToken"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NewPasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description Password changed; every session is signed out */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description RESET_TOKEN_INVALID */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_TOKEN_USED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_TOKEN_EXPIRED or RESET_TOKEN_CANCELLED */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: components["responses"]["ValidationFailed"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    resendEmailVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sent */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerificationSent"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description EMAIL_ALREADY_VERIFIED (nothing is waiting for confirmation) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    requestEmailVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted (the same answer for every address) */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationFailed"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    confirmEmailVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The secret in an emailed link; only ever in the URL path, never in a query or body */
+                token: components["parameters"]["EmailToken"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Verified */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmailVerified"];
+                };
+            };
+            /** @description VERIFICATION_TOKEN_INVALID (unknown, or replaced by a newer link or a cancelled change) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description EMAIL_ALREADY_VERIFIED (the link was used) or EMAIL_TAKEN (another account took the new address meanwhile) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description VERIFICATION_TOKEN_EXPIRED */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    requestEmailChange: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailChangeRequest"];
+            };
+        };
+        responses: {
+            /** @description Pending; a verification email was sent to the new address */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VerificationSent"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            /** @description EMAIL_TAKEN */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description VALIDATION_FAILED (also the current address) or CURRENT_PASSWORD_WRONG */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["ServerError"];
+        };
+    };
+    cancelEmailChange: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cancelled */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            /** @description EMAIL_CHANGE_NOT_PENDING */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    getResetCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A password reset code, same format as an invitation code (XXXX-XXXX) */
+                code: components["parameters"]["ResetCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A usable code */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResetCodeCheck"];
+                };
+            };
+            /** @description RESET_CODE_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_CODE_ALREADY_USED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_CODE_EXPIRED, RESET_CODE_CANCELLED or RESET_CODE_LOCKED */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["ServerError"];
+        };
+    };
     completePasswordReset: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                token: string;
+                /** @description A password reset code, same format as an invitation code (XXXX-XXXX) */
+                code: components["parameters"]["ResetCode"];
             };
             cookie?: never;
         };
@@ -3300,7 +3962,7 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description RESET_TOKEN_INVALID (unknown or already used) */
+            /** @description RESET_CODE_NOT_FOUND */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -3309,7 +3971,16 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description RESET_TOKEN_EXPIRED */
+            /** @description RESET_CODE_ALREADY_USED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_CODE_EXPIRED, RESET_CODE_CANCELLED or RESET_CODE_LOCKED */
             410: {
                 headers: {
                     [name: string]: unknown;
@@ -5879,6 +6550,83 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             /** @description INVITATION_NOT_ACTIVE (not PENDING, so already accepted, expired, revoked or rejected) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    issueResetCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A client's or an operator's id (AdminClient.id, AdminOperator.id) */
+                accountId: components["parameters"]["AccountId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The new code, shown once */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResetCodeIssued"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            /** @description ACCOUNT_NOT_FOUND (no client or operator with this id) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            500: components["responses"]["ServerError"];
+        };
+    };
+    cancelResetCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A client's or an operator's id (AdminClient.id, AdminOperator.id) */
+                accountId: components["parameters"]["AccountId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cancelled */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
+            /** @description ACCOUNT_NOT_FOUND */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description RESET_CODE_NOT_ACTIVE (none issued, or already used, expired, cancelled or locked) */
             409: {
                 headers: {
                     [name: string]: unknown;

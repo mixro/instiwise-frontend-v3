@@ -251,7 +251,35 @@
         "INVITATION_ALREADY_USED": "umeshatumika",
         "other": "Msimbo mwingine wowote: haupo."
       },
-      "emailTaken": "Kujisajili kwa barua pepe ya akaunti ya mfano kunaleta hitilafu ya 'tayari ipo'."
+      "emailTaken": "Kujisajili kwa barua pepe ya akaunti ya mfano kunaleta hitilafu ya 'tayari ipo'.",
+      "resetTitle": "Seva ya majaribio: misimbo ya mfano ya kuweka upya nenosiri",
+      "reset": {
+        "VALID": "inafanya kazi",
+        "EXPIRED": "muda umeisha",
+        "USED": "umeshatumika",
+        "CANCELLED": "umefutwa",
+        "LOCKED": "umefungwa",
+        "other": "Msimbo mwingine wowote: haupo."
+      },
+      "resetSuspended": "RST2-FRJI ni wa mhudumu aliyesimamishwa: kuweka upya kunafanya kazi, kuingia bado hakuwezekani.",
+      "mailbox": {
+        "open": "Sanduku la barua",
+        "openCount_one": "Sanduku la barua (barua {{count}})",
+        "openCount_other": "Sanduku la barua (barua {{count}})",
+        "title": "Sanduku la barua la majaribio",
+        "body": "Toleo la majaribio halitumi barua pepe halisi. Hizi ni barua ambazo seva ya majaribio ingetuma, za karibuni kwanza. Fungua kiungo kuendelea.",
+        "empty": "Bado hakuna barua. Jisajili, omba kuweka upya nenosiri au badilisha barua pepe.",
+        "to": "Kwa {{email}}",
+        "sent": "Imetumwa {{time}}",
+        "language": "Imeandikwa kwa {{language}}",
+        "openLink": "Fungua kiungo",
+        "kinds": {
+          "VERIFY": "Thibitisha barua pepe yako",
+          "CHANGE": "Thibitisha barua pepe yako mpya",
+          "RESET": "Weka upya nenosiri lako"
+        },
+        "hint": "Majaribio: hakuna barua pepe halisi inayotumwa. Fungua Sanduku la barua juu ya ukurasa kuiona."
+      }
     }
   },
   "status": {
@@ -383,7 +411,8 @@
       "submit": "Ingia",
       "submitting": "Inaingia…",
       "haveInvitation": "Una mwaliko?",
-      "enterCode": "Weka kiungo au msimbo wako"
+      "enterCode": "Weka kiungo au msimbo wako",
+      "forgot": "Umesahau nenosiri?"
     },
     "invite": {
       "title": "Weka mwaliko wako",
@@ -434,6 +463,169 @@
       "title": "Akaunti yako inasubiri kuidhinishwa",
       "body": "Msimamizi wa INSTIWISE hukagua kila akaunti mpya ya mhudumu. Utaweza kuingia ikishaidhinishwa.",
       "backToLogin": "Rudi kwenye kuingia"
+    },
+    "reset": {
+      "title": "Weka upya nenosiri lako",
+      "askAdmin": "INSTIWISE haitumi barua pepe za kuweka upya nenosiri. Muombe msimamizi wako msimbo wa kuweka upya; atakutumia kwa WhatsApp.",
+      "enterIt": "Kisha bandika kiungo au andika msimbo hapa.",
+      "field": "Kiungo au msimbo wa kuweka upya",
+      "hint": "Herufi na tarakimu 8, kwa mfano R7KM-2QXP.",
+      "submit": "Endelea",
+      "remembered": "Umekumbuka nenosiri lako?",
+      "signIn": "Ingia",
+      "checking": "Tunakagua msimbo wako…",
+      "loadFailed": "Hatukuweza kukagua msimbo wako",
+      "formTitle": "Chagua nenosiri jipya",
+      "expires": "Msimbo huu unatumika mara moja na muda wake unaisha tarehe {{date}}.",
+      "signedOut": "Ukilihifadhi, utatolewa kwenye kila kifaa kingine.",
+      "password": "Nenosiri jipya",
+      "confirm": "Andika nenosiri jipya tena",
+      "save": "Hifadhi nenosiri jipya",
+      "saving": "Inahifadhi…",
+      "done": {
+        "title": "Nenosiri lako limebadilishwa",
+        "body": "Ingia kwa nenosiri lako jipya. Kifaa kingine chochote ulichotumia kimetolewa."
+      },
+      "states": {
+        "tryAnother": "Weka msimbo mwingine",
+        "retry": "Jaribu tena",
+        "invalid": {
+          "title": "Msimbo huu wa kuweka upya haufanyi kazi",
+          "body": "Hakiki kiungo au msimbo kisha ujaribu tena. Ukiendelea kushindwa, muombe msimamizi wako msimbo mpya."
+        },
+        "expired": {
+          "title": "Muda wa msimbo huu umeisha",
+          "body": "Misimbo ya kuweka upya inafanya kazi kwa saa 24. Muombe msimamizi wako msimbo mpya."
+        },
+        "used": {
+          "title": "Msimbo huu umeshatumika",
+          "body": "Kila msimbo unatumika mara moja. Kama umeshachagua nenosiri jipya kwa msimbo huu, ingia kwa nenosiri hilo."
+        },
+        "cancelled": {
+          "title": "Msimbo huu umefutwa",
+          "body": "Umefutwa au umebadilishwa na msimbo mpya zaidi. Tumia msimbo mpya zaidi uliopokea, au muombe msimamizi wako msimbo mpya."
+        },
+        "locked": {
+          "title": "Msimbo huu umefungwa",
+          "body": "Majaribio mengi mno yamefanywa kwa msimbo huu. Muombe msimamizi wako msimbo mpya."
+        },
+        "limited": {
+          "title": "Majaribio mengi mno",
+          "body": "Kwa usalama wako, subiri dakika chache kabla ya kujaribu msimbo tena."
+        }
+      }
+    },
+    "forgot": {
+      "title": "Umesahau nenosiri lako?",
+      "body": "Weka barua pepe unayoingia nayo. Kama ni ya akaunti iliyothibitishwa, tutatuma kiungo cha kuchagua nenosiri jipya.",
+      "field": "Barua pepe",
+      "submit": "Tuma kiungo cha kuweka upya",
+      "sending": "Inatuma…",
+      "sentTitle": "Angalia barua pepe yako",
+      "sentBody": "Kama kuna akaunti ya {{email}}, tumeituma kiungo cha kuchagua nenosiri jipya. Kiungo kinafanya kazi kwa saa 1. Angalia pia folda ya barua taka.",
+      "again": "Tumia barua pepe nyingine",
+      "backToSignIn": "Rudi kuingia",
+      "haveCode": "Umepata msimbo wa kuweka upya kutoka kwa msimamizi wako?",
+      "enterCode": "Uweke hapa",
+      "limited": "Maombi mengi mno. Jaribu tena baada ya {{time}}."
+    },
+    "resetLink": {
+      "checking": "Tunakagua kiungo chako…",
+      "loadFailed": "Hatukuweza kukagua kiungo chako",
+      "expires": "Kiungo hiki kinatumika mara moja na muda wake unaisha saa {{time}}.",
+      "signedOut": "Ukilihifadhi, utatolewa kwenye kila kifaa.",
+      "requestNew": "Omba kiungo kipya",
+      "states": {
+        "invalid": {
+          "title": "Kiungo hiki hakifanyi kazi",
+          "body": "Huenda hakijakamilika. Fungua kiungo kizima kutoka kwenye barua pepe, au omba kipya."
+        },
+        "expired": {
+          "title": "Muda wa kiungo hiki umeisha",
+          "body": "Viungo vya kuweka upya nenosiri vinafanya kazi kwa saa 1. Omba kipya."
+        },
+        "used": {
+          "title": "Kiungo hiki kimeshatumika",
+          "body": "Kila kiungo kinatumika mara moja. Kama umeshachagua nenosiri jipya kwa kiungo hiki, ingia."
+        },
+        "cancelled": {
+          "title": "Kiungo kipya zaidi kimechukua nafasi ya hiki",
+          "body": "Uliomba kiungo kingine baada ya hiki. Tumia barua pepe ya hivi karibuni, au omba tena."
+        }
+      }
+    },
+    "verify": {
+      "title": "Thibitisha barua pepe yako",
+      "body": "Bonyeza Thibitisha kukamilisha. Kufungua ukurasa huu peke yake hakubadilishi chochote.",
+      "confirm": "Thibitisha barua pepe yangu",
+      "confirming": "Inathibitisha…",
+      "doneTitle": "Barua pepe imethibitishwa",
+      "doneBody": "{{email}} imethibitishwa. Asante.",
+      "doneChanged": "{{email}} sasa ndiyo barua pepe yako ya kuingia. Itumie utakapoingia tena.",
+      "continue": "Endelea",
+      "signIn": "Ingia",
+      "loadFailed": "Hatukuweza kuthibitisha barua pepe yako",
+      "states": {
+        "invalid": {
+          "title": "Kiungo hiki hakifanyi kazi",
+          "body": "Huenda hakijakamilika, au kiungo kipya zaidi kimechukua nafasi yake. Tumia barua pepe ya hivi karibuni."
+        },
+        "expired": {
+          "title": "Muda wa kiungo hiki umeisha",
+          "body": "Viungo vya kuthibitisha vinafanya kazi kwa saa 24. Omba kipya."
+        },
+        "used": {
+          "title": "Tayari imethibitishwa",
+          "body": "Barua pepe hii ilishathibitishwa kwa kiungo hiki. Hakuna jingine la kufanya."
+        },
+        "taken": {
+          "title": "Barua pepe hii tayari inatumika",
+          "body": "Akaunti nyingine iliithibitisha kwanza. Chagua barua pepe nyingine kwenye wasifu wako."
+        }
+      }
+    },
+    "checkEmail": {
+      "title": "Angalia barua pepe yako",
+      "body": "Tumetuma kiungo kwa {{email}}. Kifungue na ubonyeze Thibitisha ili kuthibitisha barua pepe yako. Kinafanya kazi kwa saa 24.",
+      "bodyNoEmail": "Tumekutumia kiungo. Kifungue na ubonyeze Thibitisha ili kuthibitisha barua pepe yako.",
+      "operatorNote": "Msimamizi pia anahitaji kuidhinisha akaunti yako kabla hujaweza kuingia.",
+      "clientNote": "Unaweza kuanza kutumia INSTIWISE sasa; ukumbusho utabaki juu hadi utakapothibitisha.",
+      "spam": "Hakuna kilichofika? Angalia folda ya barua taka, kisha utume tena.",
+      "continue": "Endelea kwenye ukurasa wangu",
+      "backToSignIn": "Rudi kuingia"
+    },
+    "resend": {
+      "button": "Tuma barua pepe tena",
+      "sending": "Inatuma…",
+      "wait": "Tuma tena baada ya {{time}}",
+      "sent": "Imetumwa. Angalia sanduku lako la barua.",
+      "sentTo": "Imetumwa kwa {{email}}. Angalia sanduku lako la barua.",
+      "limited": "Barua pepe nyingi mno kwa sasa. Jaribu tena baada ya {{time}}.",
+      "field": "Barua pepe",
+      "send": "Tuma kiungo kipya"
+    },
+    "banner": {
+      "text": "Thibitisha barua pepe yako {{email}}: fungua kiungo tulichokutumia.",
+      "label": "Barua pepe haijathibitishwa"
+    },
+    "email": {
+      "heading": "Barua pepe",
+      "current": "Barua pepe ya kuingia",
+      "verified": "Imethibitishwa",
+      "notVerified": "Haijathibitishwa",
+      "notVerifiedBody": "Ithibitishe kwa kiungo tulichotuma, ili uweze kuweka upya nenosiri ukilisahau.",
+      "pendingTitle": "Inasubiri kuthibitishwa",
+      "pendingBody": "Tumetuma kiungo kwa {{email}}. Hadi utakapoithibitisha, endelea kuingia kwa {{current}}.",
+      "cancel": "Futa mabadiliko",
+      "cancelTitle": "Futa mabadiliko kwenda {{email}}?",
+      "cancelBody": "Kiungo tulichotuma kitaacha kufanya kazi. Utaendelea kuingia kwa {{current}}.",
+      "cancelled": "Mabadiliko ya barua pepe yamefutwa",
+      "change": "Badilisha barua pepe",
+      "newEmail": "Barua pepe mpya",
+      "password": "Nenosiri la sasa",
+      "passwordHint": "Linahitajika kulinda akaunti yako.",
+      "submit": "Tuma kiungo cha kuthibitisha",
+      "requested": "Tumetuma kiungo kwa {{email}}. Kifungue kukamilisha mabadiliko."
     }
   },
   "validation": {
@@ -480,7 +672,11 @@
     "expenseCategoryRequired": "Chagua aina.",
     "expenseDescriptionRequired": "Eleza ilikuwa ya nini, kwa angalau herufi 3.",
     "expenseMethodRequired": "Chagua ilivyolipwa.",
-    "categoryNameRequired": "Weka jina lenye herufi 2 hadi 40."
+    "categoryNameRequired": "Weka jina lenye herufi 2 hadi 40.",
+    "resetCodeRequired": "Bandika kiungo cha kuweka upya nenosiri au andika msimbo.",
+    "resetCodeFormat": "Hicho hakifanani na kiungo au msimbo wa kuweka upya nenosiri. Misimbo inafanana na R7KM-2QXP.",
+    "confirmPasswordRequired": "Andika nenosiri jipya tena.",
+    "newEmailSame": "Hiyo tayari ni barua pepe yako."
   },
   "apiErrors": {
     "INVALID_CREDENTIALS": "Barua pepe au nenosiri si sahihi.",
@@ -519,7 +715,22 @@
     "CATEGORY_NOT_FOUND": "Aina hiyo haikupatikana.",
     "CATEGORY_INACTIVE": "Aina hiyo haitumiki tena. Chagua nyingine.",
     "CATEGORY_IN_USE": "Gharama zinatumia aina hii, kwa hiyo haiwezi kufutwa. Izime badala yake.",
-    "CATEGORY_NAME_TAKEN": "Aina yenye jina hili tayari ipo."
+    "CATEGORY_NAME_TAKEN": "Aina yenye jina hili tayari ipo.",
+    "ACCOUNT_NOT_FOUND": "Akaunti hii haipo tena. Pakia ukurasa upya.",
+    "RESET_CODE_NOT_ACTIVE": "Akaunti hii haina tena msimbo hai wa kuweka upya nenosiri. Pakia ukurasa upya uone sababu.",
+    "RESET_CODE_NOT_FOUND": "Msimbo huu wa kuweka upya nenosiri haufanyi kazi.",
+    "RESET_CODE_EXPIRED": "Muda wa msimbo huu wa kuweka upya nenosiri umeisha.",
+    "RESET_CODE_CANCELLED": "Msimbo huu wa kuweka upya nenosiri umefutwa.",
+    "RESET_CODE_ALREADY_USED": "Msimbo huu wa kuweka upya nenosiri umeshatumika.",
+    "RESET_CODE_LOCKED": "Msimbo huu umefungwa baada ya majaribio mengi mno.",
+    "RESET_TOKEN_INVALID": "Kiungo hiki cha kuweka upya nenosiri hakifanyi kazi.",
+    "RESET_TOKEN_EXPIRED": "Muda wa kiungo hiki cha kuweka upya umeisha.",
+    "RESET_TOKEN_USED": "Kiungo hiki cha kuweka upya kimeshatumika.",
+    "RESET_TOKEN_CANCELLED": "Kiungo kipya zaidi kimechukua nafasi ya hiki.",
+    "VERIFICATION_TOKEN_INVALID": "Kiungo hiki cha kuthibitisha hakifanyi kazi.",
+    "VERIFICATION_TOKEN_EXPIRED": "Muda wa kiungo hiki cha kuthibitisha umeisha.",
+    "EMAIL_ALREADY_VERIFIED": "Barua pepe yako tayari imethibitishwa.",
+    "EMAIL_CHANGE_NOT_PENDING": "Hakuna mabadiliko ya barua pepe yanayosubiri. Pakia ukurasa upya."
   },
   "client": {
     "home": {
@@ -654,7 +865,6 @@
     },
     "account": {
       "profile": "Wasifu",
-      "emailHint": "Hivi ndivyo unavyoingia. Muombe timu ya INSTIWISE ikiwa inahitaji kubadilishwa.",
       "save": "Hifadhi mabadiliko",
       "saving": "Inahifadhi…",
       "saved": "Wasifu umehifadhiwa"
@@ -821,7 +1031,6 @@
     "profile": {
       "subtitle": "Taarifa zako, unachoruhusiwa kufanya, na nenosiri lako.",
       "details": "Taarifa zako",
-      "emailHint": "Hivi ndivyo unavyoingia. Muulize msimamizi kama inahitaji kubadilishwa.",
       "role": "Jukumu",
       "access": "Ufikiaji wako",
       "status": "Hali",
@@ -954,6 +1163,29 @@
         "SUSPENDED": "Hakuna wahudumu waliosimamishwa",
         "REJECTED": "Hakuna wahudumu waliokataliwa"
       }
+    },
+    "reset": {
+      "action": "Weka upya nenosiri",
+      "issueTitle": "Weka upya nenosiri la {{name}}?",
+      "issueBody": "Utapata msimbo wa mara moja wa kumtumia {{name}}. Unafanya kazi mara moja, kwa saa 24, na unamwezesha kuchagua nenosiri jipya. Vipindi vyake vingine vinaisha akiutumia.",
+      "issue": "Toa msimbo wa kuweka upya",
+      "activeTitle": "{{name}} tayari ana msimbo wa kuweka upya",
+      "activeBody": "Ulitolewa tarehe {{issued}} na {{by}}, unafanya kazi hadi {{expires}}. Msimbo wenyewe hauwezi kuonyeshwa tena.",
+      "activeChoice": "Ufute, au toa msimbo mpya (ambao unafuta huu).",
+      "issueNew": "Toa msimbo mpya",
+      "cancelCode": "Futa msimbo",
+      "cancelled": "Msimbo wa kuweka upya wa {{name}} umefutwa",
+      "codeTitle": "Msimbo wa kuweka upya wa {{name}}",
+      "codeBody": "Unaonyeshwa sasa tu: ukifunga hapa, hakuna atakayeweza kuuona tena. Mtumie {{name}}. Unatumika mara moja na muda wake unaisha tarehe {{expires}}.",
+      "link": "Kiungo cha kuweka upya",
+      "code": "Msimbo wa kuweka upya",
+      "message": "{{admin}} kutoka INSTIWISE: ili kuchagua nenosiri jipya, fungua {{link}} (au weka msimbo {{code}}). Unatumika mara moja na muda wake unaisha tarehe {{expires}}.",
+      "done": "Nimemaliza",
+      "active": "Msimbo wa kuweka upya uko hai hadi {{expires}}"
+    },
+    "emailBadge": {
+      "verified": "Barua pepe imethibitishwa",
+      "notVerified": "Barua pepe haijathibitishwa"
     }
   },
   "finance": {
@@ -1033,7 +1265,6 @@
       "DOCUMENT_UPLOADED": "Hati imepakiwa",
       "DOCUMENT_VISIBILITY_CHANGED": "Mwonekano wa hati umebadilishwa",
       "CONVERSATION_VIEWED": "Mazungumzo yamesomwa na msimamizi",
-      "PASSWORD_RESET": "Nenosiri limewekwa upya",
       "CONVERSATION_LIST_VIEWED": "Orodha ya mazungumzo imesomwa na msimamizi",
       "PASSWORD_CHANGED": "Nenosiri limebadilishwa",
       "PROJECT_UPDATED": "Rasimu ya mradi imehaririwa",
@@ -1043,7 +1274,15 @@
       "EXPENSE_WITHDRAWN": "Gharama imeondolewa",
       "EXPENSE_REVERSED": "Gharama imebatilishwa",
       "EXPENSE_ADJUSTED": "Gharama imerekebishwa",
-      "EXPENSE_CATEGORY_CHANGED": "Aina ya gharama imebadilishwa"
+      "EXPENSE_CATEGORY_CHANGED": "Aina ya gharama imebadilishwa",
+      "PASSWORD_RESET_CODE_ISSUED": "Msimbo wa kuweka upya nenosiri umetolewa",
+      "PASSWORD_RESET_CODE_CANCELLED": "Msimbo wa kuweka upya nenosiri umefutwa",
+      "PASSWORD_RESET_COMPLETED": "Nenosiri limewekwa upya",
+      "PASSWORD_RESET_REQUESTED": "Barua pepe ya kuweka upya nenosiri imetumwa",
+      "EMAIL_VERIFICATION_SENT": "Barua pepe ya kuthibitisha imetumwa",
+      "EMAIL_VERIFIED": "Barua pepe imethibitishwa",
+      "EMAIL_CHANGE_REQUESTED": "Ombi la kubadilisha barua pepe",
+      "EMAIL_CHANGED": "Barua pepe imebadilishwa"
     }
   },
   "settings": {
@@ -1128,14 +1367,6 @@
       "body": "Tuma kiungo, au msimbo kama anapendelea kuuandika. Unatumika mara moja na muda wake unaisha tarehe {{date}}.",
       "link": "Kiungo cha mwaliko",
       "code": "Msimbo wa mwaliko",
-      "copyLink": "Nakili kiungo",
-      "copyCode": "Nakili msimbo",
-      "copiedLink": "Kiungo kimenakiliwa",
-      "copiedCode": "Msimbo umenakiliwa",
-      "copyFailed": "Imeshindikana kunakili. Chagua maandishi kisha unakili mwenyewe.",
-      "whatsapp": "Shiriki kwa WhatsApp",
-      "whatsappNote": "Inafungua WhatsApp uchague mtu. Hakuna kinachosemwa huko kinachohifadhiwa kwenye INSTIWISE.",
-      "newTab": "(inafunguka kwenye kichupo kipya)",
       "message": "{{inviter}} amekualika kwenye INSTIWISE. Jisajili hapa: {{link}} (au weka msimbo {{code}}). Muda wa mwaliko unaisha tarehe {{date}}.",
       "done": "Nimemaliza",
       "again": "Shiriki"
@@ -1495,5 +1726,21 @@
       "title": "Hakuna kilichokusanywa wala kutumika katika kipindi hiki",
       "body": "Chagua kipindi kingine, au rekodi malipo na gharama kwanza."
     }
+  },
+  "share": {
+    "copyLink": "Nakili kiungo",
+    "copyCode": "Nakili msimbo",
+    "copiedLink": "Kiungo kimenakiliwa",
+    "copiedCode": "Msimbo umenakiliwa",
+    "copyFailed": "Imeshindikana kunakili. Chagua maandishi kisha unakili mwenyewe.",
+    "whatsapp": "Shiriki kwa WhatsApp",
+    "whatsappNote": "Inafungua WhatsApp uchague mtu. Hakuna kinachosemwa huko kinachohifadhiwa kwenye INSTIWISE.",
+    "newTab": "(inafunguka kwenye kichupo kipya)"
+  },
+  "time": {
+    "seconds_one": "sekunde {{count}}",
+    "seconds_other": "sekunde {{count}}",
+    "minutes_one": "dakika {{count}}",
+    "minutes_other": "dakika {{count}}"
   }
 }

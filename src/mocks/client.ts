@@ -20,6 +20,7 @@ import { seedChangeRequests, seedOtherClientProjects } from "./change-seed";
 import { addAudit } from "./admin-store";
 import { accountLanguage, setAccountLanguage } from "./auth";
 import { fail, on } from "./contract";
+import { emailStatus } from "./email";
 import { terms } from "./terms";
 import { seedUnassignedProjects } from "./staff-seed";
 
@@ -94,8 +95,8 @@ type SeedProject = Omit<MockProject, "clientId" | "clientName" | "operatorName" 
 /** The signed-in mock client. Client endpoints only ever return this client's projects. */
 export const MOCK_CLIENT_ID = "cli_neema";
 
-/** The language lives with the account (mocks/auth.ts); the rest of the profile here. */
-type StoredProfile = Omit<Profile, "preferredLanguage">;
+/** The language and the email status live with the account (mocks/auth.ts, mocks/email.ts). */
+type StoredProfile = Omit<Profile, "preferredLanguage" | "emailVerified" | "pendingEmail">;
 
 function seedNeema(): { projects: SeedProject[]; profile: StoredProfile } {
   return {
@@ -659,8 +660,14 @@ function findProject(id: unknown): MockProject | undefined {
 
 const profileOut = (): Profile => ({
   ...state.profile,
+  ...emailStatus(state.profile.email),
   preferredLanguage: accountLanguage(state.profile.email),
 });
+
+/** A confirmed email change of the demo client (ADR 0006). */
+export function renameMockClientEmail(from: string, to: string): void {
+  if (state.profile.email === from) state.profile.email = to;
+}
 
 export const clientHandlers = [
   on.get("/client/home", async () => {

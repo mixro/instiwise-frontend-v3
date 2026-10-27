@@ -179,7 +179,7 @@ describe("clients and assignment", () => {
   it("assigns a client without an operator, and the operator then sees them", async () => {
     renderApp("/admin/clients", "ADMIN");
     const table = await screen.findByRole("table", { name: "Clients" });
-    const assign = await within(table).findByRole("button", { name: /Daudi Mrisho/ });
+    const assign = await within(table).findByRole("button", { name: /^Assign operator Daudi/ });
     const row = assign.closest("tr") as HTMLElement;
     expect(row).toHaveTextContent("No operator");
 

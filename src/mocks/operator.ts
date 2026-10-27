@@ -14,6 +14,7 @@ import type { OperatorProfile } from "@/features/operator/api";
 import { addAudit, operatorById, staffState } from "./admin-store";
 import { accountLanguage, renameAccount, setAccountLanguage } from "./auth";
 import { fail, on } from "./contract";
+import { emailStatus } from "./email";
 import {
   balanceOf,
   mockProjects,
@@ -151,6 +152,7 @@ function operatorProfile(): OperatorProfile | undefined {
   return {
     name: operator.name,
     email: operator.email,
+    ...emailStatus(operator.email),
     phone: operator.phone,
     preferredLanguage: accountLanguage(operator.email),
     status: operator.status,

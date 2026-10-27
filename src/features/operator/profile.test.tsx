@@ -23,7 +23,9 @@ describe("operator profile", () => {
     const details = section("Your details");
     expect(details.getByLabelText("Full name")).toHaveValue("Baraka Mushi");
     expect(details.getByLabelText("Phone number")).toHaveValue("+255 754 321 987");
-    expect(details.getByLabelText("Email address")).toHaveAttribute("readonly");
+    // The email has its own section: it changes only after confirming the new one.
+    expect(section("Email address").getByText("baraka@example.com")).toBeVisible();
+    expect(section("Email address").getByText("Verified")).toBeVisible();
     expect(details.getByLabelText("Role")).toHaveAttribute("readonly");
     expect(details.getByLabelText("Role")).toHaveValue("Operator");
 
@@ -53,9 +55,9 @@ describe("operator profile", () => {
   it("saves name and phone, and refuses changes to read-only fields", async () => {
     await openProfile();
     const details = section("Your details");
-    const email = details.getByLabelText("Email address");
-    await userEvent.type(email, "x");
-    expect(email).toHaveValue("baraka@example.com");
+    const role = details.getByLabelText("Role");
+    await userEvent.type(role, "x");
+    expect(role).toHaveValue("Operator");
 
     const phone = details.getByLabelText("Phone number");
     await userEvent.clear(phone);

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import { useErrorText } from "@/hooks/useErrorText";
 import { useSession } from "@/hooks/useSession";
 import { ApiError } from "@/lib/api";
 import { normalizeTzPhone } from "@/lib/phone";
+import type { CheckEmailState } from "./CheckEmailPage";
 import {
   isInvitationErrorCode,
   register as registerAccount,
@@ -35,7 +36,7 @@ interface RegistrationFormProps {
 
 /** Client: signed in straight away. Operator: waits for an admin's approval. */
 export function RegistrationForm({ invitation, onInvitationProblem }: RegistrationFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { fieldError, apiError } = useErrorText();
   const { signIn } = useSession();
   const navigate = useNavigate();
@@ -64,12 +65,22 @@ export function RegistrationForm({ invitation, onInvitationProblem }: Registrati
         email: values.email,
         phone: normalizeTzPhone(values.phone) ?? undefined,
         password: values.password,
+        // Saved with the account; the confirmation email is written in it (ADR 0006).
+        preferredLanguage: i18n.language === "sw" ? "sw" : "en",
       });
+      const email = values.email.trim();
       if (result.status === "ACTIVE") {
-        // Signed in: GuestOnly takes the new client to their home.
-        signIn({ role: result.user.role, name: result.user.name });
+        // Signed in, then "check your email". One transition, so this sign-in page's
+        // GuestOnly never sends them home first.
+        startTransition(() => {
+          signIn({ role: result.user.role, name: result.user.name, email: result.user.email });
+          navigate("/check-email", { replace: true, state: { email } satisfies CheckEmailState });
+        });
       } else {
-        navigate("/pending-approval", { replace: true });
+        navigate("/check-email", {
+          replace: true,
+          state: { email, pendingApproval: true } satisfies CheckEmailState,
+        });
       }
     } catch (error) {
       if (error instanceof ApiError && error.code === "EMAIL_TAKEN") {

@@ -9,8 +9,11 @@ import {
   type DemoAccount,
 } from "./demo-data";
 import { addAudit, staffState } from "./admin-store";
+import { callerSession } from "./caller";
 import { fail, on } from "./contract";
+import { emailStatus, sendVerification } from "./email";
 import { acceptStaffInvitation, resolveStaffInvitation } from "./invitations";
+import { renameMockClientEmail } from "./client";
 import { NO_PERMISSIONS } from "./staff-seed";
 
 /*
@@ -18,7 +21,7 @@ import { NO_PERMISSIONS } from "./staff-seed";
  * can sign in straight away. Error bodies follow the contract's ErrorResponse.
  */
 
-interface StoredAccount extends DemoAccount {
+export interface StoredAccount extends DemoAccount {
   id: string;
   password: string;
   /** Saved with the account (decided 2026-10-21): sign-in switches to it. */
@@ -33,6 +36,12 @@ let usedCodes = new Set<string>();
  * operator when the role switcher was used instead of the sign-in form.
  */
 let lastSignedIn: string | null = null;
+/**
+ * Accounts whose sessions a password reset ended (ADR 0006). The mock has no
+ * refresh tokens, so /auth/me answers 401 for a stored session of these until
+ * the person signs in again.
+ */
+let revoked = new Set<string>();
 const DEMO_OPERATOR_EMAIL = "baraka@example.com";
 
 /** Back to the demo data. Tests call this between cases. */
@@ -51,6 +60,7 @@ export function resetMockAuth(): void {
   }));
   usedCodes = new Set();
   lastSignedIn = null;
+  revoked = new Set();
 }
 
 /** The account's saved language (the client and operator profiles read and write it here). */
@@ -63,6 +73,92 @@ export function setAccountLanguage(email: string, language: Language): void {
   if (account) account.preferredLanguage = language;
 }
 
+/**
+ * A completed password reset (ADR 0005). Accounts of the staff seed that never
+ * signed in here get one, with the state the admin screens show, so sign-in
+ * still refuses a suspended, waiting or rejected operator afterwards. The real
+ * server also revokes every refresh token; here the remembered sign-in ends.
+ */
+export function resetAccountPassword(
+  person: Pick<DemoAccount, "email" | "name" | "role" | "state">,
+  password: string,
+): void {
+  const account = findAccount(person.email);
+  if (account) {
+    account.password = password;
+  } else {
+    accounts.push({
+      ...person,
+      id: `usr_${accounts.length + 1}`,
+      password,
+      preferredLanguage: "en",
+    });
+  }
+  revokeSessions(person.email);
+}
+
+/** The account behind an email (the email mocks look people up this way). */
+export const mockAccount = (email: string): StoredAccount | undefined => findAccount(email);
+
+/** Sets a new password (a reset by email). */
+export function setAccountPassword(email: string, password: string): void {
+  const account = findAccount(email);
+  if (account) account.password = password;
+}
+
+/** Every session of the account ends (a completed reset). */
+export function revokeSessions(email: string): void {
+  const wanted = email.trim().toLowerCase();
+  revoked.add(wanted);
+  if (lastSignedIn === wanted) lastSignedIn = null;
+}
+
+/** Whether any account, or any client or operator record, already uses this address. */
+export function emailInUse(email: string): boolean {
+  const wanted = email.trim().toLowerCase();
+  const { clients, operators } = staffState();
+  return (
+    findAccount(wanted) !== undefined ||
+    clients.some((client) => client.email === wanted) ||
+    operators.some((operator) => operator.email === wanted)
+  );
+}
+
+/** A confirmed email change: the new address signs in, everywhere the old one was used. */
+export function changeAccountEmail(from: string, to: string): void {
+  const account = findAccount(from);
+  if (account) account.email = to;
+  const { clients, operators } = staffState();
+  for (const client of clients) if (client.email === from) client.email = to;
+  for (const operator of operators) if (operator.email === from) operator.email = to;
+  renameMockClientEmail(from, to);
+  if (lastSignedIn === from) lastSignedIn = to;
+}
+
+/** The demo people behind a bare role (role switcher, tests): Neema, Baraka, Rehema. */
+const ROLE_ACCOUNT_IDS = { CLIENT: "usr_demo_1", OPERATOR: "usr_demo_2", ADMIN: "usr_demo_3" };
+
+/**
+ * Who the mock thinks is signed in: the account the sign-in form stored, the
+ * demo person for a bare role, or else whoever signed in last in this tab.
+ * Undefined when nobody is, or when a reset ended that session.
+ */
+export function currentAccount(): StoredAccount | undefined {
+  const session = callerSession();
+  // No stored session (a real build keeps none): whoever signed in last in this tab.
+  if (!session) return lastSignedIn ? findAccount(lastSignedIn) : undefined;
+  const account = session.email
+    ? findAccount(session.email)
+    : accounts.find((candidate) => candidate.id === ROLE_ACCOUNT_IDS[session.role]);
+  if (!account || (session.email && revoked.has(account.email))) return undefined;
+  return account;
+}
+
+/** Whether these credentials would sign in (tests use it to prove a reset worked). */
+export function mockPasswordMatches(email: string, password: string): boolean {
+  return findAccount(email)?.password === password;
+}
+
 /** A profile name change also shows at the next sign-in. */
 export function renameAccount(email: string, name: string): void {
   const account = findAccount(email);
@@ -73,16 +169,10 @@ resetMockAuth();
 
 /** Operators carry the permissions an admin granted them (contract AuthUser). */
 function toUser({ id, name, email, role, preferredLanguage }: StoredAccount): AuthUser {
-  if (role !== "OPERATOR") return { id, name, email, role, preferredLanguage };
+  const user = { id, name, email, role, preferredLanguage, ...emailStatus(email) };
+  if (role !== "OPERATOR") return user;
   const operator = staffState().operators.find((o) => o.email === email);
-  return {
-    id,
-    name,
-    email,
-    role,
-    preferredLanguage,
-    permissions: operator?.permissions ?? NO_PERMISSIONS,
-  };
+  return { ...user, permissions: operator?.permissions ?? NO_PERMISSIONS };
 }
 
 const PASSWORD_RULE = /^(?=.*[A-Za-z])(?=.*\d).{8,128}$/;
@@ -132,7 +222,14 @@ export const authHandlers = [
     if (account.state === "REJECTED") return fail(403, "ACCOUNT_REJECTED");
     if (account.state === "SUSPENDED") return fail(403, "ACCOUNT_SUSPENDED");
     lastSignedIn = account.email;
+    revoked.delete(account.email);
     return HttpResponse.json(sessionFor(account));
+  }),
+
+  on.get("/auth/me", async () => {
+    await delay();
+    const account = currentAccount();
+    return account ? HttpResponse.json(toUser(account)) : fail(401, "UNAUTHENTICATED");
   }),
 
   on.post("/auth/password", async ({ request }) => {
@@ -177,7 +274,8 @@ export const authHandlers = [
       role: invitation.role,
       state: invitation.role === "OPERATOR" ? "PENDING_APPROVAL" : "ACTIVE",
       password: body.password,
-      preferredLanguage: "en",
+      // The interface language at registration (ADR 0006): the verification email uses it.
+      preferredLanguage: body.preferredLanguage ?? "en",
     };
     accounts.push(account);
     if (account.state === "ACTIVE") lastSignedIn = account.email;
@@ -215,6 +313,8 @@ export const authHandlers = [
       }
     }
     usedCodes.add(code);
+    // Unverified until the link in this email is confirmed; signing in still works.
+    sendVerification(account);
 
     const result: RegistrationResult =
       account.state === "ACTIVE"

@@ -62,9 +62,16 @@ const AUDIT_ACTION_ORDER: Record<AuditAction, number> = {
   DOCUMENT_VISIBILITY_CHANGED: 28,
   CONVERSATION_VIEWED: 29,
   CONVERSATION_LIST_VIEWED: 30,
-  PASSWORD_RESET: 31,
-  PASSWORD_CHANGED: 32,
-  SETTINGS_UPDATED: 33,
+  PASSWORD_CHANGED: 31,
+  PASSWORD_RESET_CODE_ISSUED: 32,
+  PASSWORD_RESET_CODE_CANCELLED: 33,
+  PASSWORD_RESET_COMPLETED: 34,
+  PASSWORD_RESET_REQUESTED: 35,
+  EMAIL_VERIFICATION_SENT: 36,
+  EMAIL_VERIFIED: 37,
+  EMAIL_CHANGE_REQUESTED: 38,
+  EMAIL_CHANGED: 39,
+  SETTINGS_UPDATED: 40,
 };
 
 export const AUDIT_ACTIONS = (Object.keys(AUDIT_ACTION_ORDER) as AuditAction[]).sort(
@@ -119,6 +126,13 @@ export const adminApi = {
       body: { amount, reason },
     }),
   audit: (filters: AuditFilters) => apiClient.GET("/admin/audit", { query: filters }),
+  /** A client's or operator's one-time reset code, returned only by this call (ADR 0005). */
+  issueResetCode: (accountId: string) =>
+    apiClient.POST("/admin/accounts/{accountId}/reset-code", { path: { accountId } }),
+  cancelResetCode: (accountId: string) =>
+    apiClient.POST("/admin/accounts/{accountId}/reset-code/cancellation", {
+      path: { accountId },
+    }),
   settings: () => apiClient.GET("/admin/settings"),
   saveSettings: (settings: Settings) => apiClient.PUT("/admin/settings", { body: settings }),
 };

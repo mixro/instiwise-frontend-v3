@@ -59,9 +59,10 @@ function readStoredSession(): SessionUser | null {
       const parsed = JSON.parse(stored) as Partial<SessionUser>;
       if (isRole(parsed.role) && typeof parsed.name === "string") {
         const permissions = readPermissions(parsed.permissions);
+        const email = typeof parsed.email === "string" ? { email: parsed.email } : {};
         return permissions
-          ? { role: parsed.role, name: parsed.name, permissions }
-          : { role: parsed.role, name: parsed.name };
+          ? { role: parsed.role, name: parsed.name, permissions, ...email }
+          : { role: parsed.role, name: parsed.name, ...email };
       }
     }
   } catch {

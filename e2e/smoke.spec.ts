@@ -45,6 +45,43 @@ const showChartsAsTables = async (page: Page, language: Language) => {
   await expect(page.locator("main [aria-pressed=false]")).toHaveCount(0);
 };
 
+/** The visible "Reset password" button of one account (table on desktop, card on phones). */
+const resetButton = (page: Page, language: Language, name: string) =>
+  page
+    .locator("main button:visible")
+    .filter({ hasText: language === "sw" ? "Weka upya nenosiri" : "Reset password" })
+    .filter({ hasText: name })
+    .first();
+
+/** A session as the sign-in form stores it, for people the role switcher does not offer. */
+const asPerson = (role: "CLIENT" | "OPERATOR", name: string, email: string) => ({
+  "instiwise.mockRole": JSON.stringify({ role, name, email }),
+});
+
+/** Fills a new password and its confirmation (reset by code or by link). */
+const fillNewPassword = async (page: Page, password: string) => {
+  for (const field of await page.locator("input[autocomplete=new-password]").all()) {
+    await field.fill(password);
+  }
+};
+
+/** The emailed links of the demo data (src/mocks/demo-data.ts). */
+const LINK = {
+  verify: "/verify-email/demo-verify-daudi-valid-4Fq8Zr2LmN7xPw",
+  verifyExpired: "/verify-email/demo-verify-juma-expired-9Kd3Vt6QsB1yHc",
+  verifyUsed: "/verify-email/demo-verify-neema-used-2Wp5Gx8RnJ4mLa",
+  reset: "/reset-password/demo-reset-neema-valid-8Mv2Ka5PxQ7cRe",
+  resetExpired: "/reset-password/demo-reset-baraka-expired-5Nb9Wc2GtV6hJs",
+  resetUsed: "/reset-password/demo-reset-rehema-used-1Qz4Xf7BdK3pMy",
+  resetCancelled: "/reset-password/demo-reset-neema-cancelled-3Lr6Ds9FqZ2nTw",
+};
+
+/** Clicks the Confirm button on /verify-email/<token> and waits for the outcome. */
+const confirmEmail = async (page: Page) => {
+  await page.locator("main button").first().click();
+  await expect(page.locator("main h1")).not.toHaveText(/Confirm your|Thibitisha barua/);
+};
+
 const VISITS: Visit[] = [
   // The client journey (phase 2.2), answered by src/mocks/client.ts.
   { name: "client-home", path: "/client", role: "CLIENT" },
@@ -478,6 +515,185 @@ const VISITS: Visit[] = [
   },
   { name: "register-operator", path: "/invite/OPR8-T2QW", role: "SIGNED_OUT" },
   { name: "pending-approval", path: "/pending-approval", role: "SIGNED_OUT" },
+  // Password reset with admin-issued codes (ADR 0005, src/mocks/reset-codes.ts).
+  { name: "reset-entry", path: "/reset", role: "SIGNED_OUT" },
+  {
+    name: "reset-entry-error",
+    path: "/reset",
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await page.locator("form input").fill("hello");
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("[aria-invalid=true]")).toBeVisible();
+    },
+  },
+  { name: "reset-form", path: "/reset/RST2-NEMA", role: "SIGNED_OUT" },
+  {
+    name: "reset-form-errors",
+    path: "/reset/RST2-NEMA",
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await page.locator("input[autocomplete=new-password]").first().fill("short1");
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("[aria-invalid=true]")).toHaveCount(2);
+    },
+  },
+  {
+    name: "reset-done",
+    path: "/reset/RST2-NEMA",
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      for (const field of await page.locator("input[autocomplete=new-password]").all()) {
+        await field.fill("Mpya2026pass");
+      }
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("main a[href='/login']")).toBeVisible();
+    },
+  },
+  { name: "reset-invalid", path: "/reset/ZZZZ-9999", role: "SIGNED_OUT" },
+  { name: "reset-expired", path: "/reset/RST2-XPRD", role: "SIGNED_OUT" },
+  { name: "reset-used", path: "/reset/RST2-USED", role: "SIGNED_OUT" },
+  { name: "reset-cancelled", path: "/reset/RST2-CNCL", role: "SIGNED_OUT" },
+  { name: "reset-locked", path: "/reset/RST2-LOCK", role: "SIGNED_OUT" },
+  // Email verification and reset by email (ADR 0006, src/mocks/email.ts).
+  { name: "forgot-password", path: "/forgot-password", role: "SIGNED_OUT" },
+  {
+    name: "forgot-password-error",
+    path: "/forgot-password",
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("[aria-invalid=true]")).toBeVisible();
+    },
+  },
+  {
+    name: "forgot-password-sent",
+    path: "/forgot-password",
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await page.locator("input[type=email]").fill("neema@example.com");
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("main a[href='/login']")).toBeVisible();
+    },
+  },
+  { name: "reset-link-form", path: LINK.reset, role: "SIGNED_OUT" },
+  {
+    name: "reset-link-errors",
+    path: LINK.reset,
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await page.locator("input[autocomplete=new-password]").first().fill("short1");
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("[aria-invalid=true]")).toHaveCount(2);
+    },
+  },
+  {
+    name: "reset-link-done",
+    path: LINK.reset,
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await fillNewPassword(page, "Mpya2026pass");
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("main a[href='/login']")).toBeVisible();
+    },
+  },
+  { name: "reset-link-expired", path: LINK.resetExpired, role: "SIGNED_OUT" },
+  { name: "reset-link-used", path: LINK.resetUsed, role: "SIGNED_OUT" },
+  { name: "reset-link-cancelled", path: LINK.resetCancelled, role: "SIGNED_OUT" },
+  { name: "reset-link-invalid", path: "/reset-password/abc", role: "SIGNED_OUT" },
+  { name: "verify-email", path: LINK.verify, role: "SIGNED_OUT" },
+  { name: "verify-email-done", path: LINK.verify, role: "SIGNED_OUT", prepare: confirmEmail },
+  {
+    name: "verify-email-expired",
+    path: LINK.verifyExpired,
+    role: "SIGNED_OUT",
+    prepare: confirmEmail,
+  },
+  { name: "verify-email-used", path: LINK.verifyUsed, role: "SIGNED_OUT", prepare: confirmEmail },
+  {
+    name: "check-email-client",
+    path: "/invite/KX7P-M4Q2",
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await page.locator("input[autocomplete=name]").fill("Amani Kweka");
+      await page.locator("input[type=email]").fill("amani@example.com");
+      await page.locator("input[autocomplete=new-password]").fill("mradi2026");
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("main a[href='/client']")).toBeVisible();
+    },
+  },
+  {
+    name: "check-email-operator",
+    path: "/invite/OPR8-T2QW",
+    role: "SIGNED_OUT",
+    prepare: async (page) => {
+      await page.locator("input[autocomplete=name]").fill("Musa Komba");
+      await page.locator("input[type=email]").fill("musa.k@example.com");
+      await page.locator("input[type=tel]").fill("0687 123 456");
+      await page.locator("input[autocomplete=new-password]").fill("mradi2026");
+      await page.locator("form button[type=submit]").click();
+      await expect(page.locator("main a[href='/login']")).toBeVisible();
+    },
+  },
+  {
+    name: "banner-client",
+    path: "/client",
+    role: "CLIENT",
+    storage: asPerson("CLIENT", "Daudi Mrisho", "daudi@example.com"),
+  },
+  {
+    name: "banner-operator",
+    path: "/operator",
+    role: "OPERATOR",
+    storage: asPerson("OPERATOR", "Juma Kassim", "juma@example.com"),
+  },
+  { name: "account-email", path: "/client/account", role: "CLIENT" },
+  {
+    name: "account-email-pending",
+    path: "/client/account",
+    role: "CLIENT",
+    prepare: async (page) => {
+      const section = page.locator("section", { has: page.locator("#email-heading") });
+      await section.locator("button").first().click();
+      await section.locator("input[type=email]").fill("neema.m@example.com");
+      await section.locator("input[autocomplete=current-password]").fill("Instiwise2026");
+      await section.locator("button[type=submit]").click();
+      await expect(section.locator("button")).toHaveCount(2);
+    },
+  },
+  { name: "operator-profile-email", path: "/operator/profile", role: "OPERATOR" },
+  {
+    name: "mailbox",
+    path: "/forgot-password",
+    role: "SIGNED_OUT",
+    prepare: async (page, language) => {
+      const label = language === "sw" ? /^Sanduku la barua/ : /^Mailbox/;
+      await page.getByRole("button", { name: label }).click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+    },
+  },
+  {
+    name: "admin-reset-issued",
+    path: "/admin/clients",
+    role: "ADMIN",
+    prepare: async (page, language) => {
+      await resetButton(page, language, "Daudi Mrisho").click();
+      const issue = language === "sw" ? "Toa msimbo wa kuweka upya" : "Issue reset code";
+      await page.getByRole("dialog").getByRole("button", { name: issue }).click();
+      await expect(page.getByRole("dialog").locator("input.tracking-widest")).toHaveValue(
+        /^[A-Z0-9]{4}-[A-Z0-9]{4}$/,
+      );
+    },
+  },
+  {
+    name: "admin-reset-active",
+    path: "/admin/clients",
+    role: "ADMIN",
+    prepare: async (page, language) => {
+      await resetButton(page, language, "Neema Mwakyusa").click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+    },
+  },
 ];
 
 const THEMES: Theme[] = ["light", "dark"];
